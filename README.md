@@ -46,7 +46,6 @@ appdimens-net-binding/
 │   ├── AppDimens.Sdps.SmokeTest/    # Optional compile smoke APK
 │   ├── Directory.Build.props        # Android SDK / JDK fallbacks (local builds)
 │   ├── README.md                    # Consumer documentation (packed into NuGet)
-│   └── NUGET-PUBLISH.md
 ├── appdimens-ssps-net-binding/      # same structure
 └── appdimens-dynamic-net-binding/
 ```
