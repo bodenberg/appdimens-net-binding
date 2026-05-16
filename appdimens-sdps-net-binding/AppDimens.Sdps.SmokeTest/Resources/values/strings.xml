@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">AppDimens.Sdps.SmokeTest</string>
+    <string name="app_text">Smoke test…</string>
+  <string name="smoke_hint">AppDimens SDPS smoke test</string>
+</resources>

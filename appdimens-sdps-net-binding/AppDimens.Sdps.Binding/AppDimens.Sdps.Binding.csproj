@@ -1,0 +1,70 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <!-- Impede glob implícito de *.aar sob Jars/Reference (Compose/Window) pelo SDK Android -->
+    <DefaultItemExcludes>$(DefaultItemExcludes);Jars\Reference\**\*</DefaultItemExcludes>
+
+    <!-- Alinhar com compileSdk da biblioteca Android (36) e minSdk 24 da AAR -->
+    <TargetFramework>net8.0-android</TargetFramework>
+    <SupportedOSPlatformVersion>24</SupportedOSPlatformVersion>
+    <!-- Necessário quando o Manifest da AAR declara uses-sdk menor que o projeto -->
+    <AndroidMinSdkVersion>24</AndroidMinSdkVersion>
+
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <!-- Biblioteca Java/Kotlin interoperável gerada pela tooling Android -->
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);1591;BG8605;BG8606;BG8401</NoWarn>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <Authors>Jean Bodenberg</Authors>
+    <Company />
+    <Description>
+      .NET Android binding for AppDimens SDP/HDP/WDP (`io.github.bodenberg:appdimens-sdps`).
+      Exposes Java-style APIs under Com.Appdimens.Sdps.Code (Kotlin @JvmStatic; foldables via AndroidX.Window).
+      Jetpack Compose helpers in com.appdimens.sdps.compose reference androidx.compose.runtime.Composer; usable C# wrappers are not generated with the current class-parse toolchain—see README.
+      Xamarin dependencies align Kotlin stdlib, Core, Window, and Lifecycle Runtime.
+    </Description>
+    <Copyright>Copyright © Jean Bodenberg</Copyright>
+    <PackageReleaseNotes>
+      NuGet 3.5.1.2: NuGet metadata (project site, source repository URLs, README). Embedded AAR unchanged: Maven io.github.bodenberg:appdimens-sdps 3.1.5.
+      Android library: https://github.com/bodenberg/appdimens-sdps · Binding: https://github.com/bodenberg/appdimens-net-binding
+    </PackageReleaseNotes>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/bodenberg/appdimens</PackageProjectUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/bodenberg/appdimens-sdps</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>android;binding;maui;xamarin;appdimens;sdp;hdp;wdp;kotlin;window;foldable</PackageTags>
+
+    <!-- Empacota o mesmo assembly principal (o binding) -->
+    <PackageId>Bodenberg.AppDimens.Sdps</PackageId>
+    <!-- Fourth segment documents binding-only bumps while AAR stays on latest Maven until synced (see README). -->
+    <Version>3.5.1.2</Version>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- AAR publicada no Maven Central: appdimens-sdps-3.1.5 -->
+    <AndroidLibrary Bind="true" Include="Jars\appdimens-sdps-3.1.5.aar" />
+
+    <TransformFile Include="Transforms\Metadata.xml" />
+    <TransformFile Include="Transforms\EnumFields.xml" />
+    <TransformFile Include="Transforms\EnumMethods.xml" />
+
+    <None Include="..\README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+  <!-- Dependências alinhadas ao POM Gradle e ao que o código Java/Kotlin público efetivamente referencia nos binds C#.
+       Versões Xamarin abaixo restauram em net8.0-android34; pacotes AndroidX mais novos frequentemente exigem .NET 9+. -->
+  <ItemGroup>
+    <PackageReference Include="Xamarin.Kotlin.StdLib" Version="2.2.21" />
+    <PackageReference Include="Xamarin.AndroidX.Core" Version="1.17.0" />
+    <PackageReference Include="Xamarin.AndroidX.Window" Version="1.5.0" />
+    <PackageReference Include="Xamarin.AndroidX.Lifecycle.Runtime" Version="2.9.4" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,64 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <!-- Impede glob implícito de *.aar sob Jars/Reference (Compose) pelo SDK Android -->
+    <DefaultItemExcludes>$(DefaultItemExcludes);Jars\Reference\**\*</DefaultItemExcludes>
+
+    <TargetFramework>net8.0-android</TargetFramework>
+    <SupportedOSPlatformVersion>24</SupportedOSPlatformVersion>
+    <AndroidMinSdkVersion>24</AndroidMinSdkVersion>
+
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);1591;BG8605;BG8606;BG8401</NoWarn>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <Authors>Jean Bodenberg</Authors>
+    <Company />
+    <Description>
+      .NET Android binding for AppDimens Dynamic (`io.github.bodenberg:appdimens-dynamic`).
+      Public Kotlin APIs with `@JvmStatic` appear under **`Com.Appdimens.Dynamic`** (e.g. `Com.Appdimens.Dynamic.Code`).
+      Jetpack Compose and Wear helpers may reference Compose types; imperative C# surface follows the Views/code package — see README.
+    </Description>
+    <Copyright>Copyright © Jean Bodenberg</Copyright>
+    <PackageReleaseNotes>
+      NuGet 3.5.1.2: NuGet metadata (project site, source repository URLs, README). Embedded AAR unchanged: Maven io.github.bodenberg:appdimens-dynamic 3.1.5. Includes Xamarin.AndroidX.DataStore.Preferences (DimenCache).
+      Android library: https://github.com/bodenberg/appdimens-dynamic · Binding: https://github.com/bodenberg/appdimens-net-binding
+    </PackageReleaseNotes>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/bodenberg/appdimens</PackageProjectUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/bodenberg/appdimens-dynamic</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>android;binding;maui;xamarin;appdimens;dynamic;dp;sp;responsive;kotlin;window</PackageTags>
+
+    <PackageId>Bodenberg.AppDimens.Dynamic</PackageId>
+    <Version>3.5.1.2</Version>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <AndroidLibrary Bind="true" Include="Jars\appdimens-dynamic-3.1.5.aar" />
+
+    <TransformFile Include="Transforms\Metadata.xml" />
+    <TransformFile Include="Transforms\EnumFields.xml" />
+    <TransformFile Include="Transforms\EnumMethods.xml" />
+
+    <None Include="..\README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+  <!-- Runtime deps do POM Gradle (appdimens-dynamic 3.1.5); DataStore é obrigatório para DimenCache. -->
+  <ItemGroup>
+    <PackageReference Include="Xamarin.Kotlin.StdLib" Version="2.2.21" />
+    <PackageReference Include="Xamarin.AndroidX.Core" Version="1.17.0" />
+    <PackageReference Include="Xamarin.AndroidX.Window" Version="1.5.0" />
+    <PackageReference Include="Xamarin.AndroidX.Lifecycle.Runtime" Version="2.9.4" />
+    <!-- Maven appdimens-dynamic usa datastore-preferences 1.2.1; Xamarin 1.2.1 exige net9+ — 1.1.7.1 é o mais recente compatível com net8.0-android. -->
+    <PackageReference Include="Xamarin.AndroidX.DataStore.Preferences" Version="1.1.7.1" />
+  </ItemGroup>
+
+</Project>

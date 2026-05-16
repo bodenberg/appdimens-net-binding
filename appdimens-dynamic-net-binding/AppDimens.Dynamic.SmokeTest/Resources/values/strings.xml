@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">AppDimens.Dynamic.SmokeTest</string>
+    <string name="app_text">Smoke test…</string>
+    <string name="smoke_hint">AppDimens Dynamic smoke test</string>
+</resources>

@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppDimens.Ssps.Binding", "AppDimens.Ssps.Binding\AppDimens.Ssps.Binding.csproj", "{04BBAECC-4391-48F9-BB5B-62A88A2FA30D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppDimens.Ssps.SmokeTest", "AppDimens.Ssps.SmokeTest\AppDimens.Ssps.SmokeTest.csproj", "{0698A85D-3EB7-4F83-A935-2443672672E8}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{04BBAECC-4391-48F9-BB5B-62A88A2FA30D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{04BBAECC-4391-48F9-BB5B-62A88A2FA30D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{04BBAECC-4391-48F9-BB5B-62A88A2FA30D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{04BBAECC-4391-48F9-BB5B-62A88A2FA30D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0698A85D-3EB7-4F83-A935-2443672672E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0698A85D-3EB7-4F83-A935-2443672672E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0698A85D-3EB7-4F83-A935-2443672672E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0698A85D-3EB7-4F83-A935-2443672672E8}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
