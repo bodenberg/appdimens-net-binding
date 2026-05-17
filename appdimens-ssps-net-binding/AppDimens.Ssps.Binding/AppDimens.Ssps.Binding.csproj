@@ -3,7 +3,7 @@
   <PropertyGroup>
     <DefaultItemExcludes>$(DefaultItemExcludes);Jars\Reference\**\*</DefaultItemExcludes>
 
-    <TargetFramework>net8.0-android</TargetFramework>
+    <TargetFramework>net9.0-android</TargetFramework>
     <SupportedOSPlatformVersion>24</SupportedOSPlatformVersion>
     <AndroidMinSdkVersion>24</AndroidMinSdkVersion>
 
@@ -23,7 +23,7 @@
     </Description>
     <Copyright>Copyright © Jean Bodenberg</Copyright>
     <PackageReleaseNotes>
-      NuGet 3.5.1.2: NuGet metadata (project site, source repository URLs, README). Embedded AAR unchanged: Maven io.github.bodenberg:appdimens-ssps 3.1.5.
+      NuGet 3.5.1.3: Target net9.0-android; Xamarin AndroidX packages aligned for .NET 9. Embedded AAR unchanged: Maven io.github.bodenberg:appdimens-ssps 3.1.5.
       Android library: https://github.com/bodenberg/appdimens-ssps · Binding: https://github.com/bodenberg/appdimens-net-binding
     </PackageReleaseNotes>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
@@ -34,7 +34,7 @@
     <PackageTags>android;binding;maui;xamarin;appdimens;ssp;hsp;wsp;sp;typography;kotlin</PackageTags>
 
     <PackageId>Bodenberg.AppDimens.Ssps</PackageId>
-    <Version>3.5.1.2</Version>
+    <Version>3.5.1.3</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
@@ -51,10 +51,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Xamarin.Kotlin.StdLib" Version="2.2.21" />
-    <PackageReference Include="Xamarin.AndroidX.Core" Version="1.17.0" />
-    <PackageReference Include="Xamarin.AndroidX.Window" Version="1.5.0" />
-    <PackageReference Include="Xamarin.AndroidX.Lifecycle.Runtime" Version="2.9.4" />
+    <PackageReference Include="Xamarin.Kotlin.StdLib" Version="2.3.21" />
+    <PackageReference Include="Xamarin.AndroidX.Core" Version="1.18.0" />
+    <PackageReference Include="Xamarin.AndroidX.Window" Version="1.5.1.2" />
+    <PackageReference Include="Xamarin.AndroidX.Lifecycle.Runtime" Version="2.10.0.2" />
   </ItemGroup>
 
 </Project>

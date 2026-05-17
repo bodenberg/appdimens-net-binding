@@ -1,6 +1,6 @@
 # Bodenberg.AppDimens.Dynamic
 
-**.NET binding for Android** that wraps **[AppDimens Dynamic](https://github.com/bodenberg/appdimens-dynamic)** — responsive **`dp` / `sp` / `px`** sizing in code (no XML dimen grids), with **15 scaling strategies**, conditional **facilitators**, **aspect-ratio** and **multi-window** variants, **physical units**, **auto-resize** helpers, and optional **DataStore-backed** caching.
+**.NET 9 binding for Android** (`net9.0-android`) that wraps **[AppDimens Dynamic](https://github.com/bodenberg/appdimens-dynamic)** — responsive **`dp` / `sp` / `px`** sizing in code (no XML dimen grids), with **15 scaling strategies**, conditional **facilitators**, **aspect-ratio** and **multi-window** variants, **physical units**, **auto-resize** helpers, and optional **DataStore-backed** caching.
 
 Kotlin/Java sources, strategy semantics, and Android-focused guides live upstream:
 
@@ -13,7 +13,7 @@ Maven artifact embedded in this package: **`io.github.bodenberg:appdimens-dynami
 ## Install
 
 ```bash
-dotnet add package Bodenberg.AppDimens.Dynamic --version 3.5.1.2
+dotnet add package Bodenberg.AppDimens.Dynamic --version 3.5.1.3
 ```
 
 ---
@@ -22,12 +22,12 @@ dotnet add package Bodenberg.AppDimens.Dynamic --version 3.5.1.2
 
 | Requirement | Notes |
 |-------------|--------|
-| **Target framework** | `net8.0-android` (.NET for Android / .NET MAUI Android) |
+| **Target framework** | `net9.0-android` (.NET for Android / .NET MAUI Android) |
 | **Minimum Android API** | **24** (matches the packaged AAR) |
 | **Workload** | Android (`dotnet workload install android`) or MAUI |
-| **JDK** | **17 or 21** for the Xamarin.Android toolchain on .NET 8 |
+| **JDK** | **17 or 21** for the Xamarin.Android toolchain on .NET 9 |
 
-Use **Android SDK platform 34+** (or MSBuild `InstallAndroidDependencies`) when building bindings locally.
+Use **Android SDK platform 35+** (or MSBuild `InstallAndroidDependencies`) when building bindings locally on **.NET 9**.
 
 ---
 
@@ -243,7 +243,7 @@ Compose-first apps on .NET may need a future binding strategy or shared logic ca
 | **Xamarin.AndroidX.Core** | Core / `Context` extensions |
 | **Xamarin.AndroidX.Window** | Foldables (`FoldingFeature`) |
 | **Xamarin.AndroidX.Lifecycle.Runtime** | Lifecycle alignment with upstream AAR |
-| **Xamarin.AndroidX.DataStore.Preferences** | **`DimenCache`** persistence (**1.1.7.1** on net8; Maven library targets **1.2.1**) |
+| **Xamarin.AndroidX.DataStore.Preferences** | **`DimenCache`** persistence (**1.2.1**, aligned with Maven `datastore-preferences`) |
 
 ---
 
@@ -252,7 +252,7 @@ Compose-first apps on .NET may need a future binding strategy or shared logic ca
 | Layer | Version |
 |-------|---------|
 | **Maven / embedded `.aar`** | **`appdimens-dynamic` 3.1.5** |
-| **NuGet** | **`3.5.1.2`** — binding packaging/readme/metadata (NuGet project site &amp; source URLs) without changing the **3.1.5** Android binary |
+| **NuGet** | **`3.5.1.3`** — `net9.0-android` and updated Xamarin AndroidX/DataStore; Android binary still **3.1.5** |
 
 When Maven publishes **`3.5.1`**, run `./scripts/sync-aar-from-maven.sh 3.5.1` and align the fourth NuGet segment as needed.
 

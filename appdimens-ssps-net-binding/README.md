@@ -1,6 +1,6 @@
 # Bodenberg.AppDimens.Ssps
 
-**.NET binding for Android** that wraps **[AppDimens SSPS](https://github.com/bodenberg/appdimens-ssps)** — responsive **typography and `sp`** scaling via thousands of pre-generated **`@dimen`** resources (**SSP / HSP / WSP**), plus imperative APIs, **conditional facilitators**, **aspect-ratio** variants, **accessibility** modes, and **foldable-aware** overloads.
+**.NET 9 binding for Android** (`net9.0-android`) that wraps **[AppDimens SSPS](https://github.com/bodenberg/appdimens-ssps)** — responsive **typography and `sp`** scaling via thousands of pre-generated **`@dimen`** resources (**SSP / HSP / WSP**), plus imperative APIs, **conditional facilitators**, **aspect-ratio** variants, **accessibility** modes, and **foldable-aware** overloads.
 
 Kotlin/Java sources, XML resource naming, and Android-focused docs live upstream:
 
@@ -13,7 +13,7 @@ Maven artifact embedded in this package: **`io.github.bodenberg:appdimens-ssps`*
 ## Install
 
 ```bash
-dotnet add package Bodenberg.AppDimens.Ssps --version 3.5.1.2
+dotnet add package Bodenberg.AppDimens.Ssps --version 3.5.1.3
 ```
 
 ---
@@ -22,10 +22,11 @@ dotnet add package Bodenberg.AppDimens.Ssps --version 3.5.1.2
 
 | Requirement | Notes |
 |-------------|--------|
-| **Target framework** | `net8.0-android` (.NET for Android / .NET MAUI Android) |
+| **Target framework** | `net9.0-android` (.NET for Android / .NET MAUI Android) |
 | **Minimum Android API** | **24** |
 | **Workload** | Android or MAUI |
-| **JDK** | **17 or 21** on .NET 8 |
+| **JDK** | **17 or 21** on .NET 9 |
+| **Android SDK** | Platform **35+** for local binding builds on .NET 9 |
 
 The AAR bundles **`values-sw*`** / **`values-w*`** / **`values-h*`** dimen XML (sizes **1–600**) — usable from Android XML layouts and from code.
 
@@ -268,7 +269,7 @@ The AAR includes Compose extensions (`16.ssp`, `scaledSp()`, `sspRotate`, …) r
 | Layer | Version |
 |-------|---------|
 | **Maven / embedded `.aar`** | **`appdimens-ssps` 3.1.5** |
-| **NuGet** | **`3.5.1.2`** — binding packaging/readme/metadata (NuGet project site &amp; source URLs) without changing the **3.1.5** Android binary |
+| **NuGet** | **`3.5.1.3`** — `net9.0-android` and updated Xamarin AndroidX; Android binary still **3.1.5** |
 
 When Maven publishes **`3.5.1`**, run `./scripts/sync-aar-from-maven.sh 3.5.1` and align the fourth NuGet segment as needed.
 

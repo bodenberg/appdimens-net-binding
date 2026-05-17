@@ -4,7 +4,7 @@
     <!-- Impede glob implícito de *.aar sob Jars/Reference (Compose) pelo SDK Android -->
     <DefaultItemExcludes>$(DefaultItemExcludes);Jars\Reference\**\*</DefaultItemExcludes>
 
-    <TargetFramework>net8.0-android</TargetFramework>
+    <TargetFramework>net9.0-android</TargetFramework>
     <SupportedOSPlatformVersion>24</SupportedOSPlatformVersion>
     <AndroidMinSdkVersion>24</AndroidMinSdkVersion>
 
@@ -24,7 +24,7 @@
     </Description>
     <Copyright>Copyright © Jean Bodenberg</Copyright>
     <PackageReleaseNotes>
-      NuGet 3.5.1.2: NuGet metadata (project site, source repository URLs, README). Embedded AAR unchanged: Maven io.github.bodenberg:appdimens-dynamic 3.1.5. Includes Xamarin.AndroidX.DataStore.Preferences (DimenCache).
+      NuGet 3.5.1.3: Target net9.0-android; Xamarin AndroidX/DataStore 1.2.1 (DimenCache, aligned with Maven). Embedded AAR unchanged: Maven io.github.bodenberg:appdimens-dynamic 3.1.5.
       Android library: https://github.com/bodenberg/appdimens-dynamic · Binding: https://github.com/bodenberg/appdimens-net-binding
     </PackageReleaseNotes>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
@@ -35,7 +35,7 @@
     <PackageTags>android;binding;maui;xamarin;appdimens;dynamic;dp;sp;responsive;kotlin;window</PackageTags>
 
     <PackageId>Bodenberg.AppDimens.Dynamic</PackageId>
-    <Version>3.5.1.2</Version>
+    <Version>3.5.1.3</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
@@ -53,12 +53,20 @@
 
   <!-- Runtime deps do POM Gradle (appdimens-dynamic 3.1.5); DataStore é obrigatório para DimenCache. -->
   <ItemGroup>
-    <PackageReference Include="Xamarin.Kotlin.StdLib" Version="2.2.21" />
-    <PackageReference Include="Xamarin.AndroidX.Core" Version="1.17.0" />
-    <PackageReference Include="Xamarin.AndroidX.Window" Version="1.5.0" />
-    <PackageReference Include="Xamarin.AndroidX.Lifecycle.Runtime" Version="2.9.4" />
-    <!-- Maven appdimens-dynamic usa datastore-preferences 1.2.1; Xamarin 1.2.1 exige net9+ — 1.1.7.1 é o mais recente compatível com net8.0-android. -->
-    <PackageReference Include="Xamarin.AndroidX.DataStore.Preferences" Version="1.1.7.1" />
+    <PackageReference Include="Xamarin.Kotlin.StdLib" Version="2.3.21" />
+    <PackageReference Include="Xamarin.AndroidX.Core" Version="1.18.0" />
+    <PackageReference Include="Xamarin.AndroidX.Window" Version="1.5.1.2" />
+    <PackageReference Include="Xamarin.AndroidX.Lifecycle.Runtime" Version="2.10.0.2" />
+    <!-- Maven appdimens-dynamic usa datastore-preferences 1.2.1 -->
+    <PackageReference Include="Xamarin.AndroidX.DataStore.Preferences" Version="1.2.1" />
   </ItemGroup>
+
+  <!-- Generator omits `new` on nested sealed subclasses' _members (CS0108). Patch after bind. -->
+  <Target Name="_FixResizeBoundNestedMembersCs0108"
+          AfterTargets="GenerateBindings"
+          BeforeTargets="CoreCompile"
+          Condition="Exists('$(IntermediateOutputPath)generated\src\Com.Appdimens.Dynamic.Core.ResizeBound.cs')">
+    <Exec Command="sed -i 's/static readonly JniPeerMembers _members = new XAPeerMembers (\&quot;com\/appdimens\/dynamic\/core\/ResizeBound\$/static new readonly JniPeerMembers _members = new XAPeerMembers (\&quot;com\/appdimens\/dynamic\/core\/ResizeBound$/g' &quot;$(IntermediateOutputPath)generated/src/Com.Appdimens.Dynamic.Core.ResizeBound.cs&quot;" />
+  </Target>
 
 </Project>
