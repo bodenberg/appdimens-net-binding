@@ -1,6 +1,6 @@
 # AppDimens .NET Bindings
 
-Monorepo of **.NET 9 for Android** (and **.NET MAUI** Android) bindings for the [AppDimens](https://github.com/bodenberg/appdimens) responsive dimension libraries. All packages target **`net9.0-android`**. Each folder ships a **NuGet package** that embeds the upstream **Maven AAR**, runs **Xamarin.Android binding**, and exposes Kotlin/Java APIs to C#.
+Monorepo of **.NET 10 for Android** (and **.NET MAUI** Android) bindings for the [AppDimens](https://github.com/bodenberg/appdimens) responsive dimension libraries. All packages target **`net10.0-android`**. Each folder ships a **NuGet package** that embeds the upstream **Maven AAR**, runs **Xamarin.Android binding**, and exposes Kotlin/Java APIs to C#.
 
 Android implementation, XML naming, and feature documentation live in the **upstream repositories** listed below. This repository contains **binding projects**, **MSBuild transforms**, **smoke-test apps**, and **publish notes** only.
 
@@ -14,12 +14,12 @@ Android implementation, XML naming, and feature documentation live in the **upst
 | [**Bodenberg.AppDimens.Ssps**](https://www.nuget.org/packages/Bodenberg.AppDimens.Ssps) | [`appdimens-ssps-net-binding/`](appdimens-ssps-net-binding/) | [appdimens-ssps](https://github.com/bodenberg/appdimens-ssps) | **Typography only** — SSP/HSP/WSP (smaller if you do not need layout dimens) |
 | [**Bodenberg.AppDimens.Dynamic**](https://www.nuget.org/packages/Bodenberg.AppDimens.Dynamic) | [`appdimens-dynamic-net-binding/`](appdimens-dynamic-net-binding/) | [appdimens-dynamic](https://github.com/bodenberg/appdimens-dynamic) | **Code-only** scaling — 15 strategies, no pre-built `@dimen` XML grids |
 
-**Current NuGet version:** `3.5.1.3` (see each package README for embedded Maven AAR version).
+**Current NuGet version:** `3.5.1.4` (see each package README for embedded Maven AAR version).
 
 ```bash
-dotnet add package Bodenberg.AppDimens.Sdps --version 3.5.1.3
-dotnet add package Bodenberg.AppDimens.Ssps --version 3.5.1.3
-dotnet add package Bodenberg.AppDimens.Dynamic --version 3.5.1.3
+dotnet add package Bodenberg.AppDimens.Sdps --version 3.5.1.4
+dotnet add package Bodenberg.AppDimens.Ssps --version 3.5.1.4
+dotnet add package Bodenberg.AppDimens.Dynamic --version 3.5.1.4
 ```
 
 ### Which package should I use?
@@ -62,11 +62,11 @@ appdimens-net-binding/
 
 | Requirement | Notes |
 |-------------|--------|
-| **.NET** | **9** with Android workload (`dotnet workload install android`) or MAUI |
-| **Target framework** | `net9.0-android` |
+| **.NET** | **10** with Android workload (`dotnet workload install android`) or MAUI |
+| **Target framework** | `net10.0-android` |
 | **Minimum Android API** | **24** (matches packaged AARs) |
-| **JDK** | **17 or 21** for Xamarin.Android on .NET 9 |
-| **Android SDK** | Platform **35+** for local binding builds |
+| **JDK** | **17 or 21** for Xamarin.Android on .NET 10 |
+| **Android SDK** | Platform **36+** for local binding builds |
 
 Each subfolder includes `Directory.Build.props` with common paths (`ANDROID_HOME`, `~/Android/Sdk`, OpenJDK 17/21) so command-line builds work without extra environment setup on many Linux/macOS machines.
 
@@ -96,13 +96,13 @@ Refresh the embedded AAR after a new Maven release:
 
 ### Smoke-test APKs (binding validation)
 
-Minimal apps (`*.SmokeTest`) compile against each binding on **.NET 9**. To produce signed APKs for device/emulator testing:
+Minimal apps (`*.SmokeTest`) compile against each binding on **.NET 10**. To produce signed APKs for device/emulator testing:
 
 ```bash
-dotnet publish AppDimens.Sdps.SmokeTest/AppDimens.Sdps.SmokeTest.csproj -c Release -f net9.0-android -p:AndroidPackageFormat=apk
+dotnet publish AppDimens.Sdps.SmokeTest/AppDimens.Sdps.SmokeTest.csproj -c Release -f net10.0-android -p:AndroidPackageFormat=apk
 ```
 
-Pre-built APKs for the current binding release are copied to [`artifacts/smoke-apks/`](artifacts/smoke-apks/) when generated locally (filenames include package id and version **3.5.1.3**).
+Pre-built APKs for the current binding release are copied to [`artifacts/smoke-apks/`](artifacts/smoke-apks/) when generated locally (filenames include package id and version **3.5.1.4**).
 
 ---
 

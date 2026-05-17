@@ -1,6 +1,6 @@
 # Bodenberg.AppDimens.Sdps
 
-**.NET 9 binding for Android** (`net9.0-android`) that wraps **[AppDimens SDPS](https://github.com/bodenberg/appdimens-sdps)** — responsive **layout** (`SDP` / `HDP` / `WDP`) and **typography** (`SSP` / `HSP` / `WSP`) in one library, backed by thousands of pre-generated **`@dimen`** resources, plus imperative APIs, **conditional facilitators**, **aspect-ratio** variants, **accessibility** text modes, and **foldable-aware** overloads.
+**.NET 10 binding for Android** (`net10.0-android`) that wraps **[AppDimens SDPS](https://github.com/bodenberg/appdimens-sdps)** — responsive **layout** (`SDP` / `HDP` / `WDP`) and **typography** (`SSP` / `HSP` / `WSP`) in one library, backed by thousands of pre-generated **`@dimen`** resources, plus imperative APIs, **conditional facilitators**, **aspect-ratio** variants, **accessibility** text modes, and **foldable-aware** overloads.
 
 Kotlin/Java sources, XML naming, and Android-focused guides live upstream:
 
@@ -13,7 +13,7 @@ Maven artifact embedded in this package: **`io.github.bodenberg:appdimens-sdps`*
 ## Install
 
 ```bash
-dotnet add package Bodenberg.AppDimens.Sdps --version 3.5.1.3
+dotnet add package Bodenberg.AppDimens.Sdps --version 3.5.1.4
 ```
 
 Pin a version explicitly when you rely on a specific package revision (see **Package version vs embedded AAR** below).
@@ -24,12 +24,12 @@ Pin a version explicitly when you rely on a specific package revision (see **Pac
 
 | Requirement | Notes |
 |-------------|--------|
-| **Target framework** | `net9.0-android` (.NET for Android / .NET MAUI Android) |
+| **Target framework** | `net10.0-android` (.NET for Android / .NET MAUI Android) |
 | **Minimum Android API** | **24** (matches the packaged AAR) |
 | **Workload** | Android (`dotnet workload install android`) or MAUI |
-| **JDK** | **17 or 21** for the Xamarin.Android toolchain on .NET 9 |
+| **JDK** | **17 or 21** for the Xamarin.Android toolchain on .NET 10 |
 
-Use **Android SDK platform 35+** (or MSBuild `InstallAndroidDependencies`) when building bindings locally on **.NET 9**.
+Use **Android SDK platform 36+** (or MSBuild `InstallAndroidDependencies`) when building bindings locally on **.NET 10**.
 
 The AAR bundles **`values-sw*`** / **`values-w*`** / **`values-h*`** dimen XML (sizes **1–600**) for both **dp** and **sp** buckets.
 
@@ -334,7 +334,7 @@ The AAR includes Compose extensions (`16.sdp`, `18.ssp`, `scaledSp()`, facilitat
 | Layer | Version |
 |-------|---------|
 | **Maven / embedded `.aar`** | **`appdimens-sdps` 3.1.5** |
-| **NuGet** | **`3.5.1.3`** — `net9.0-android` and updated Xamarin AndroidX; Android binary still **3.1.5** |
+| **NuGet** | **`3.5.1.4`** — `net10.0-android` and updated Xamarin AndroidX; Android binary still **3.1.5** |
 
 When Maven publishes **`3.5.1`**, run `./scripts/sync-aar-from-maven.sh 3.5.1` and align the fourth NuGet segment as needed.
 
