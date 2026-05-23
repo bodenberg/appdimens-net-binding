@@ -14,6 +14,7 @@ src/AppDimens.Maui.Resources/Generated/
 build/
 !src/build/
 !src/build/**
+!artifacts
 
 # Local configuration file (sdk path, etc)
 local.properties

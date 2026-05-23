@@ -12,6 +12,7 @@ src/AppDimens.Maui.Resources/Generated/
 # Gradle files
 .gradle/
 build/
+!artifacts
 
 # Local configuration file (sdk path, etc)
 local.properties
