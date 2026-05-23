@@ -16,6 +16,7 @@
     <Project Path="src/AppDimens.Maui.Markup/AppDimens.Maui.Markup.csproj" />
     <Project Path="src/AppDimens.Maui.Resources/AppDimens.Maui.Resources.csproj" />
     <Project Path="src/AppDimens.Maui.Responsive/AppDimens.Maui.Responsive.csproj" />
+    <Project Path="src/AppDimens.Maui.BuildTasks/AppDimens.Maui.BuildTasks.csproj" />
     <Project Path="src/AppDimens.Maui.Sdk/AppDimens.Maui.Sdk.csproj" />
     <Project Path="src/AppDimens.Maui.SourceGen/AppDimens.Maui.SourceGen.csproj" />
     <Project Path="src/AppDimens.Maui.Xaml/AppDimens.Maui.Xaml.csproj" />

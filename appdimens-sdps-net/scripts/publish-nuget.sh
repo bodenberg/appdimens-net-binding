@@ -35,6 +35,7 @@ PKG_ID="Bodenberg.AppDimens.Maui.Sdps"
 OUT_DIR="$ROOT/artifacts/nuget"
 GENERATED="$ROOT/src/AppDimens.Maui.Resources/Generated"
 SDK_PROJ="$ROOT/src/AppDimens.Maui.Sdk/AppDimens.Maui.Sdk.csproj"
+TESTS_PROJ="$ROOT/tests/AppDimens.Maui.Tests/AppDimens.Maui.Tests.csproj"
 NUPKG="$OUT_DIR/${PKG_ID}.${VERSION}.nupkg"
 SNUPKG="$OUT_DIR/${PKG_ID}.${VERSION}.snupkg"
 NUGET_SOURCE="https://api.nuget.org/v3/index.json"
@@ -52,13 +53,15 @@ if [[ ! -f "$GENERATED/buckets.json" ]]; then
   exit 1
 fi
 
+echo "==> Restore (solution)..."
+dotnet restore "$ROOT/AppDimens.Maui.slnx"
+
 echo "==> Tests (Release)..."
-dotnet test "$ROOT/tests/AppDimens.Maui.Tests/AppDimens.Maui.Tests.csproj" -c Release --no-restore 2>/dev/null \
-  || dotnet test "$ROOT/tests/AppDimens.Maui.Tests/AppDimens.Maui.Tests.csproj" -c Release
+dotnet test "$TESTS_PROJ" -c Release --no-restore
 
 mkdir -p "$OUT_DIR"
 echo "==> dotnet pack..."
-dotnet pack "$SDK_PROJ" -c Release -o "$OUT_DIR" \
+dotnet pack "$SDK_PROJ" -c Release -o "$OUT_DIR" --no-restore \
   /p:IncludeSymbols=true \
   /p:SymbolPackageFormat=snupkg
 
