@@ -42,10 +42,6 @@ NUGET_SOURCE="https://api.nuget.org/v3/index.json"
 echo "==> Package: ${PKG_ID} v${VERSION}"
 echo "==> SDK: $(dotnet --version)"
 
-if ! dotnet workload list 2>/dev/null | grep -qi maui; then
-  echo "WARNING: 'maui' workload not listed in 'dotnet workload list'. Install with: dotnet workload install maui" >&2
-fi
-
 if [[ ! -f "$GENERATED/buckets.json" ]]; then
   echo "==> Generating buckets (generate-dimens.py)..."
   python3 "$ROOT/scripts/generate-dimens.py"

@@ -1,0 +1,26 @@
+<Project>
+  <Import Project="Directory.Pack.targets" Condition="Exists('Directory.Pack.targets')" />
+
+  <PropertyGroup>
+    <!-- Only the AppDimens.Maui.Sdk meta-package is published to NuGet -->
+    <IsPackable Condition="'$(MSBuildProjectName)' != 'AppDimens.Maui.Sdk'">false</IsPackable>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Authors>Jean Bodenberg</Authors>
+    <Company>Bodenberg</Company>
+    <Product>AppDimens.Maui.Sdps</Product>
+    <Copyright>Copyright © Jean Bodenberg</Copyright>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/bodenberg/appdimens-net</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/bodenberg/appdimens</PackageProjectUrl>
+    <PackageTags>maui;appdimens;sdp;ssp;hdp;wdp;responsive;dimensions;xaml</PackageTags>
+    <Version>1.0.1</Version>
+    <AppDimensDesignBaseDp>300</AppDimensDesignBaseDp>
+    <!-- Default for restore/graph when TargetFramework is not set yet -->
+    <MauiVersion>10.0.20</MauiVersion>
+    <MauiVersion Condition="'$(TargetFramework)' == 'net8.0'">8.0.100</MauiVersion>
+    <MauiVersion Condition="'$(TargetFramework)' == 'net9.0'">9.0.40</MauiVersion>
+    <MauiVersion Condition="'$(TargetFramework)' == 'net10.0'">10.0.20</MauiVersion>
+  </PropertyGroup>
+</Project>
