@@ -9,9 +9,11 @@ BenchmarkDotNet.Artifacts/
 # Generated dimens (run scripts/generate-dimens.py or build AppDimens.Maui.Resources)
 src/AppDimens.Maui.Resources/Generated/
 
-# Gradle files
+# Gradle files (keep src/build/*.targets for NuGet pack)
 .gradle/
 build/
+!src/build/
+!src/build/**
 
 # Local configuration file (sdk path, etc)
 local.properties
