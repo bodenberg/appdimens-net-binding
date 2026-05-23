@@ -62,7 +62,7 @@ All C# helpers in `DimenFacilitators` have matching short and normal markup exte
 | `SdpScreen` | `{sdpScreen:16, Screen=20, UiMode=Television, QualifierType=SmallWidth, Threshold=600}` | `{dimen:SdpScreen …}` |
 | `SspScreen` … `WemScreen` | `{sspScreen:…}` … `{wemScreen:…}` | `{dimen:SspScreen …}` … |
 
-**C# only (no XAML token):** `Responsive.Value(…).Screen(…)` chains beyond `{scaled:…}`; `SdpPx()` / `SspPx()`; binding converters; source-gen `Dimen._16sdp`.
+**C# only (no XAML token):** `Responsive.Value(…).Screen(…)` chains beyond `{scaled:…}`; `SdpPx()` / `SspPx()`; binding converters.
 
 **Normal syntax only:** inverters on `hdpa`/`wdpa`/`hspa`/`wspa` via `{dimen:Hdpa Value=16 Inverter=…}` (no dedicated short prefix).
 

@@ -18,20 +18,4 @@
         TargetPath="%(ReferenceCopyLocalPaths.Filename)%(ReferenceCopyLocalPaths.Extension)" />
     </ItemGroup>
   </Target>
-
-  <Target Name="AddSourceGenAnalyzerToPackage"
-          BeforeTargets="GenerateNuspec"
-          Condition="'$(MSBuildProjectName)' == 'AppDimens.Maui.Sdk'">
-    <MSBuild Projects="$(MSBuildThisFileDirectory)src/AppDimens.Maui.SourceGen/AppDimens.Maui.SourceGen.csproj"
-             Targets="Build"
-             Properties="Configuration=$(Configuration);TargetFramework=netstandard2.0" />
-    <PropertyGroup>
-      <_SourceGenDll>$(MSBuildThisFileDirectory)src/AppDimens.Maui.SourceGen/bin/$(Configuration)/netstandard2.0/AppDimens.Maui.SourceGen.dll</_SourceGenDll>
-    </PropertyGroup>
-    <ItemGroup Condition="Exists('$(_SourceGenDll)')">
-      <_PackageFiles Include="$(_SourceGenDll)" PackagePath="analyzers/dotnet/cs" BuildAction="None" />
-    </ItemGroup>
-    <Warning Text="AppDimens.Maui.SourceGen.dll not found at $(_SourceGenDll); NuGet package will ship without analyzer."
-             Condition="!Exists('$(_SourceGenDll)')" />
-  </Target>
 </Project>

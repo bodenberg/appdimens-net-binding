@@ -6,7 +6,7 @@
 - [ ] `python3 scripts/generate-dimens.py` → layout v2 (`buckets.json`, `Dimens.Base.xaml`, `Dimens.{N}.xaml`)
 - [ ] `dotnet test` Release — all pass
 - [ ] `./scripts/publish-nuget.sh` — pack checks pass
-- [ ] `.nupkg` contains net8/net9/net10 DLLs, analyzer, Generated content
+- [ ] `.nupkg` contains net8/net9/net10 DLLs and Generated content
 
 ## Quality gates
 

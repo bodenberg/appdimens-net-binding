@@ -71,7 +71,7 @@ if [[ ! -f "$NUPKG" ]]; then
 fi
 
 echo "==> .nupkg contents (summary):"
-unzip -l "$NUPKG" | grep -E "lib/net|analyzers/|buckets\.json|README" || true
+unzip -l "$NUPKG" | grep -E "lib/net|buckets\.json|README" || true
 DLL_COUNT="$(unzip -l "$NUPKG" | grep -c '\.dll' || true)"
 echo "    DLLs in package: ${DLL_COUNT}"
 
@@ -81,7 +81,6 @@ MISSING=0
 for pattern in \
   "lib/net8.0/AppDimens.Maui.dll" \
   "lib/net10.0/AppDimens.Maui.dll" \
-  "analyzers/dotnet/cs/AppDimens.Maui.SourceGen.dll" \
   "contentFiles/any/any/Generated/buckets.json" \
   "contentFiles/any/any/Generated/Dimens.300.xaml" \
   "contentFiles/any/any/Generated/Dimens.Base.xaml"; do

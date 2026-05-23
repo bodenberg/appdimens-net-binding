@@ -23,7 +23,6 @@ It brings the Android experience of `@dimen/_16sdp`, orientation inverters, disc
 - [Responsive builders](#responsive-builders)
 - [Conditional helpers](#conditional-helpers)
 - [Converters and physical units](#converters-and-physical-units)
-- [Source Generator](#source-generator)
 - [Static `AppDimensSdps` API](#static-appdimenssdps-api)
 - [Screen metrics](#screen-metrics)
 - [Compatible MAUI properties](#compatible-maui-properties)
@@ -49,7 +48,6 @@ It brings the Android experience of `@dimen/_16sdp`, orientation inverters, disc
 | **Dual XAML** | **Short** syntax `{sdp:16}` and **normal** `{dimen:Sdp Value=16}` |
 | **Fluent C#** | `16.Sdp()`, `PaddingSdp()`, `FontSsp()` |
 | **Binding** | `IValueConverter` for `{Binding}` |
-| **Source generator** | Typed compile-time `Dimen._16sdp` |
 | **Reactivity** | Resolver refreshes metrics on rotation/resize; XAML markup is load-time (see [Screen rotation and resize](#screen-rotation-and-resize)) |
 
 ---
@@ -61,14 +59,14 @@ It brings the Android experience of `@dimen/_16sdp`, orientation inverters, disc
 | .NET | **8**, **9**, or **10** |
 | .NET MAUI | 8.0+ / 9.0+ / 10.0+ (per SDK) |
 | Platforms | Android, iOS, macOS, Windows (via MAUI) |
-| NuGet version | **3.5.1.4** |
+| NuGet version | **3.5.2** |
 
 ---
 
 ## Installation
 
 ```bash
-dotnet add package Bodenberg.AppDimens.Maui.Sdps --version 3.5.1.4
+dotnet add package Bodenberg.AppDimens.Maui.Sdps --version 3.5.2
 ```
 
 Project reference (local development):
@@ -704,7 +702,7 @@ MAUI equivalents:
 | Android | MAUI (recommended) |
 |---------|-------------------|
 | `@dimen/_16sdp` | `{sdp:16}` or `{dimen:Sdp Value=16}` |
-| `@dimen/_16sdp` in Kotlin | `16.Sdp()` or `Dimen._16sdp` (source gen) |
+| `@dimen/_16sdp` in Kotlin | `16.Sdp()` or `AppDimensSdps.Sdp(16)` |
 | `@dimen/_minus8sdp` | `{sdp:-8}` or `(-8).Sdp()` |
 | `@dimen/_100wdp` | `{wdp:100}` or `100.Wdp()` |
 
@@ -1146,24 +1144,6 @@ double area = DimenPhysicalUnits.Area(5, UnitType.Cm, density);
 
 ---
 
-## Source Generator
-
-The package includes the `AppDimens.Maui.SourceGen` analyzer for typed static access:
-
-```csharp
-using AppDimens.Maui.Generated;
-
-double p = Dimen._16sdp;   // AppDimensSdps.Sdp(16)
-double f = Dimen._20ssp;   // AppDimensSdps.Ssp(20)
-// Generated indices: 1…96 (sdp and ssp)
-```
-
-Active automatically when referencing `Bodenberg.AppDimens.Maui.Sdps` (no extra configuration).
-
-For indices > 96 or negatives, use extensions (`16.Sdp()`) or XAML markups.
-
----
-
 ## Static `AppDimensSdps` API
 
 Alternative without extensions:
@@ -1254,14 +1234,14 @@ Markups return `double`. Use them on properties that accept `double`:
 | `16.sdpRotate(45)` | `16.SdpRotate(45)` |
 | `16.scaledDp().screen(...)` | `16.ScaledDp().Screen(...).Sdp()` or `Responsive.Value(16)...` |
 | `DimenSdp.warmup(ctx)` | `AppDimensSdps.Warmup()` |
-| `Dimen._16sdp` (generated) | `Dimen._16sdp` (MAUI source gen) |
+| `Dimen._16sdp` (Kotlin generated) | `16.Sdp()` or `AppDimensSdps.Sdp(16)` |
 
 ### What **does not** exist (by design)
 
 - Android qualifiers `-land` / `-port` → use inverters + builders
 - `@dimen` in project Android `res/values` → use MAUI markup or C# extensions
 - Compose `@Composable` API → use MAUI markup or C#
-- `{StaticResource _16sdp}` XAML ResourceDictionary → use `{sdp:16}` or source gen
+- `{StaticResource _16sdp}` XAML ResourceDictionary → use `{sdp:16}` or `16.Sdp()`
 
 ---
 
@@ -1270,7 +1250,7 @@ Markups return `double`. Use them on properties that accept `double`:
 - **`DimensionCache`**: thread-safe `ConcurrentDictionary`; O(1) lookup after first calculation
 - **Automatic invalidation** on screen change (rotation, DPI, resize)
 - **`Warmup()`**: precomputes aspect-ratio factors (cold start)
-- **Hot path**: zero reflection; source generator for frequent indices (1–96)
+- **Hot path**: zero reflection; cached `DimensionCache` lookups
 - Suitable for virtualized lists, animations, and dashboards
 
 Internal BenchmarkDotNet run: cached lookup hit is typically **< 50 ns** on desktop-class hardware.
@@ -1282,7 +1262,6 @@ Internal BenchmarkDotNet run: cached lookup hit is typically **< 50 ns** on desk
 | Item | Status |
 |------|--------|
 | DP helpers `hdpMode`, `wdpQualifier`, etc. | Helper is **sdp**-named only; use `Resolve()` for an explicit axis |
-| Source generator | Indices **1–96** (sdp/ssp); others via extensions |
 | `PaddingSdp` / `MarginSdp` | Uniform value only |
 | Buckets in `Bucket` mode | Requires `Generated` folder accessible at runtime |
 | `sema`/`hema`/`wema` | MAUI extension beyond Android (sem + aspect ratio) |
@@ -1332,7 +1311,6 @@ That was IL trimming removing XAML-only types. **Fixed in the package:** `AppDim
 | `AppDimens.Maui.Builders` | `Responsive.Value()` |
 | `AppDimens.Maui.Converters` | `IValueConverter`, physical units |
 | `AppDimens.Maui.Resources` | Bucket data (~358×3 axes) |
-| `AppDimens.Maui.SourceGen` | `Dimen._Nsdp` analyzer |
 
 ---
 

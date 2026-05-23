@@ -15,7 +15,7 @@
     <RepositoryUrl>https://github.com/bodenberg/appdimens-net-binding</RepositoryUrl>
     <PackageProjectUrl>https://github.com/bodenberg/appdimens</PackageProjectUrl>
     <PackageTags>maui;appdimens;sdp;ssp;hdp;wdp;responsive;dimensions;xaml</PackageTags>
-    <Version>3.5.1.4</Version>
+    <Version>3.5.2</Version>
     <AppDimensDesignBaseDp>300</AppDimensDesignBaseDp>
     <!-- Default for restore/graph when TargetFramework is not set yet -->
     <MauiVersion>10.0.20</MauiVersion>

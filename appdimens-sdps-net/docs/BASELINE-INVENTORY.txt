@@ -11,14 +11,12 @@ SDK: 10.0.300
 /home/bodenberg/Documentos/GitHub/appdimens-net/appdimens-sdps-net/src/AppDimens.Maui.Converters/AppDimens.Maui.Converters.csproj
 /home/bodenberg/Documentos/GitHub/appdimens-net/appdimens-sdps-net/src/AppDimens.Maui.Core/AppDimens.Maui.Core.csproj
 /home/bodenberg/Documentos/GitHub/appdimens-net/appdimens-sdps-net/src/AppDimens.Maui.Extensions/AppDimens.Maui.Extensions.csproj
-/home/bodenberg/Documentos/GitHub/appdimens-net/appdimens-sdps-net/src/AppDimens.Maui.Generators/AppDimens.Maui.Generators.csproj
 /home/bodenberg/Documentos/GitHub/appdimens-net/appdimens-sdps-net/src/AppDimens.Maui.Helpers/AppDimens.Maui.Helpers.csproj
 /home/bodenberg/Documentos/GitHub/appdimens-net/appdimens-sdps-net/src/AppDimens.Maui.Inverters/AppDimens.Maui.Inverters.csproj
 /home/bodenberg/Documentos/GitHub/appdimens-net/appdimens-sdps-net/src/AppDimens.Maui.Markup/AppDimens.Maui.Markup.csproj
 /home/bodenberg/Documentos/GitHub/appdimens-net/appdimens-sdps-net/src/AppDimens.Maui.Resources/AppDimens.Maui.Resources.csproj
 /home/bodenberg/Documentos/GitHub/appdimens-net/appdimens-sdps-net/src/AppDimens.Maui.Responsive/AppDimens.Maui.Responsive.csproj
 /home/bodenberg/Documentos/GitHub/appdimens-net/appdimens-sdps-net/src/AppDimens.Maui.Sdk/AppDimens.Maui.Sdk.csproj
-/home/bodenberg/Documentos/GitHub/appdimens-net/appdimens-sdps-net/src/AppDimens.Maui.SourceGen/AppDimens.Maui.SourceGen.csproj
 /home/bodenberg/Documentos/GitHub/appdimens-net/appdimens-sdps-net/src/AppDimens.Maui.Xaml/AppDimens.Maui.Xaml.csproj
 /home/bodenberg/Documentos/GitHub/appdimens-net/appdimens-sdps-net/tests/AppDimens.Maui.Tests/AppDimens.Maui.Tests.csproj
 

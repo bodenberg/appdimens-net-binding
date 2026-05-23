@@ -21,7 +21,7 @@
 | ID | Issue | Mitigation |
 |----|-------|------------|
 | R6 | AARs not in git | CI runs `sync-aar-from-maven.sh` |
-| R10 | NuGet 3.5.1.4 vs Maven 3.1.5 | Documented in binding READMEs |
+| R10 | MAUI NuGet 3.5.2 vs bindings 3.5.1.4 vs Maven 3.1.5 | Documented in READMEs |
 | R11 | Benchmarks not in CI gate | Manual `dotnet run` on benchmarks project |
 
 ## Validation
