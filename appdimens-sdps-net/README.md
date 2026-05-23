@@ -63,10 +63,6 @@ It brings the Android experience of `@dimen/_16sdp`, orientation inverters, disc
 | Platforms | Android, iOS, macOS, Windows (via MAUI) |
 | NuGet version | **1.0.1** |
 
-NuGet package: **`Bodenberg.AppDimens.Maui.Sdps`**
-
-Publishing to NuGet.org: see [`NUGET-PUBLISH.md`](NUGET-PUBLISH.md) and the `scripts/publish-nuget.sh` script.
-
 ---
 
 ## Installation
