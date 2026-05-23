@@ -53,8 +53,8 @@ if [[ ! -f "$GENERATED/buckets.json" ]]; then
   exit 1
 fi
 
-echo "==> Restore (solution)..."
-dotnet restore "$ROOT/AppDimens.Maui.slnx"
+echo "==> Restore (CI graph)..."
+"$ROOT/scripts/restore-ci.sh"
 
 echo "==> Tests (Release)..."
 dotnet test "$TESTS_PROJ" -c Release --no-restore
