@@ -61,7 +61,7 @@ It brings the Android experience of `@dimen/_16sdp`, orientation inverters, disc
 | .NET | **8**, **9**, or **10** |
 | .NET MAUI | 8.0+ / 9.0+ / 10.0+ (per SDK) |
 | Platforms | Android, iOS, macOS, Windows (via MAUI) |
-| NuGet version | **1.0.0** |
+| NuGet version | **1.0.1** |
 
 NuGet package: **`Bodenberg.AppDimens.Maui.Sdps`**
 
@@ -72,7 +72,7 @@ Publishing to NuGet.org: see [`NUGET-PUBLISH.md`](NUGET-PUBLISH.md) and the `scr
 ## Installation
 
 ```bash
-dotnet add package Bodenberg.AppDimens.Maui.Sdps --version 1.0.0
+dotnet add package Bodenberg.AppDimens.Maui.Sdps --version 1.0.1
 ```
 
 Project reference (local development):

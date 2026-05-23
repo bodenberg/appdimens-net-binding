@@ -1,11 +1,7 @@
 <Project>
   <!-- NuGet: auto-imported via buildTransitive/Bodenberg.AppDimens.Maui.Sdps.targets -->
-  <Import Project="$(MSBuildThisFileDirectory)..\build\AppDimens.Maui.Trimming.targets"
-          Condition="Exists('$(MSBuildThisFileDirectory)..\build\AppDimens.Maui.Trimming.targets')" />
-  <Import Project="$(MSBuildThisFileDirectory)..\..\build\AppDimens.Maui.Trimming.targets"
-          Condition="!Exists('$(MSBuildThisFileDirectory)..\build\AppDimens.Maui.Trimming.targets') AND Exists('$(MSBuildThisFileDirectory)..\..\build\AppDimens.Maui.Trimming.targets')" />
-  <Import Project="$(MSBuildThisFileDirectory)..\build\AppDimens.Maui.ShortMarkup.targets"
-          Condition="Exists('$(MSBuildThisFileDirectory)..\build\AppDimens.Maui.ShortMarkup.targets')" />
-  <Import Project="$(MSBuildThisFileDirectory)..\..\build\AppDimens.Maui.ShortMarkup.targets"
-          Condition="!Exists('$(MSBuildThisFileDirectory)..\build\AppDimens.Maui.ShortMarkup.targets') AND Exists('$(MSBuildThisFileDirectory)..\..\build\AppDimens.Maui.ShortMarkup.targets')" />
+  <Import Project="$(MSBuildThisFileDirectory)..\build\Bodenberg.AppDimens.Maui.Sdps.targets"
+          Condition="Exists('$(MSBuildThisFileDirectory)..\build\Bodenberg.AppDimens.Maui.Sdps.targets')" />
+  <Import Project="$(MSBuildThisFileDirectory)..\..\build\Bodenberg.AppDimens.Maui.Sdps.targets"
+          Condition="!Exists('$(MSBuildThisFileDirectory)..\build\Bodenberg.AppDimens.Maui.Sdps.targets') AND Exists('$(MSBuildThisFileDirectory)..\..\build\Bodenberg.AppDimens.Maui.Sdps.targets')" />
 </Project>

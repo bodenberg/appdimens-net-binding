@@ -15,13 +15,13 @@ Android implementation, XML naming, and feature documentation live in the **upst
 | [**Bodenberg.AppDimens.Dynamic**](https://www.nuget.org/packages/Bodenberg.AppDimens.Dynamic) | [`appdimens-dynamic-net-binding/`](appdimens-dynamic-net-binding/) | [appdimens-dynamic](https://github.com/bodenberg/appdimens-dynamic) | **Code-only** scaling — 15 strategies, no pre-built `@dimen` XML grids |
 | [**Bodenberg.AppDimens.Maui.Sdps**](https://www.nuget.org/packages/Bodenberg.AppDimens.Maui.Sdps) | [`appdimens-sdps-net/`](appdimens-sdps-net/) | [appdimens-sdps](https://github.com/bodenberg/appdimens-sdps) | **.NET MAUI nativo** — SDP/HDP/WDP/SSP sem binding Android (`net8` / `net9` / `net10`) |
 
-**Versões NuGet atuais:** bindings Android **`3.5.1.4`** · MAUI nativo **`1.0.0`** (veja cada README para a versão do AAR Maven embutido nos bindings).
+**Versões NuGet atuais:** bindings Android **`3.5.1.4`** · MAUI nativo **`1.0.1`** (veja cada README para a versão do AAR Maven embutido nos bindings).
 
 ```bash
 dotnet add package Bodenberg.AppDimens.Sdps --version 3.5.1.4
 dotnet add package Bodenberg.AppDimens.Ssps --version 3.5.1.4
 dotnet add package Bodenberg.AppDimens.Dynamic --version 3.5.1.4
-dotnet add package Bodenberg.AppDimens.Maui.Sdps --version 1.0.0
+dotnet add package Bodenberg.AppDimens.Maui.Sdps --version 1.0.1
 ```
 
 ### Which package should I use?

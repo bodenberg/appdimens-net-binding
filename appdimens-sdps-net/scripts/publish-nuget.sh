@@ -105,10 +105,8 @@ if [[ "$PUSH" == true ]]; then
     exit 1
   fi
   echo "==> Pushing to NuGet.org..."
+  # dotnet nuget push uploads the companion .snupkg automatically when it sits beside the .nupkg.
   dotnet nuget push "$NUPKG" --api-key "$NUGET_API_KEY" --source "$NUGET_SOURCE" --skip-duplicate
-  if [[ -f "$SNUPKG" ]]; then
-    dotnet nuget push "$SNUPKG" --api-key "$NUGET_API_KEY" --source "$NUGET_SOURCE" --skip-duplicate
-  fi
   echo "==> Published. Wait for indexing: https://www.nuget.org/packages/${PKG_ID}"
 else
   echo "==> Pack complete (no push). To publish:"

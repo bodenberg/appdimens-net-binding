@@ -12,4 +12,4 @@ The appdimens-net monorepo is now aligned for repeatable builds and NuGet public
 
 **Remaining operational items:** physical device validation of the sample app, optional benchmark regression gates, and Maven AAR version sync when upstream publishes 3.5.1.
 
-**Recommendation:** Publish under **1.0.0**; document layout v2 and axis-neutral keys (`_N`) for anyone with hardcoded `Generated/sw/` paths.
+**Recommendation:** Published **1.0.0** (initial); **1.0.1** maintenance release for NuGet packaging. Document layout v2 and axis-neutral keys (`_N`) for anyone with hardcoded `Generated/sw/` paths.

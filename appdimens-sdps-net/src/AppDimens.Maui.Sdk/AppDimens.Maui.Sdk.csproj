@@ -9,6 +9,9 @@
     <IsPackable>true</IsPackable>
   </PropertyGroup>
   <ItemGroup>
+    <None Include="..\build\Bodenberg.AppDimens.Maui.Sdps.targets"
+          Pack="true"
+          PackagePath="build\Bodenberg.AppDimens.Maui.Sdps.targets" />
     <None Include="buildTransitive\Bodenberg.AppDimens.Maui.Sdps.targets"
           Pack="true"
           PackagePath="buildTransitive\Bodenberg.AppDimens.Maui.Sdps.targets" />
@@ -39,10 +42,6 @@
     <ProjectReference Include="..\AppDimens.Maui.Responsive\AppDimens.Maui.Responsive.csproj" PrivateAssets="all" />
     <ProjectReference Include="..\AppDimens.Maui.Inverters\AppDimens.Maui.Inverters.csproj" PrivateAssets="all" />
     <ProjectReference Include="..\AppDimens.Maui.Resources\AppDimens.Maui.Resources.csproj" PrivateAssets="all" />
-    <ProjectReference Include="..\AppDimens.Maui.SourceGen\AppDimens.Maui.SourceGen.csproj"
-                      OutputItemType="Analyzer"
-                      ReferenceOutputAssembly="false"
-                      SetTargetFramework="TargetFramework=netstandard2.0" />
   </ItemGroup>
   <Target Name="_BuildAppDimensBuildTasksBeforePack"
           BeforeTargets="GenerateNuspec"
