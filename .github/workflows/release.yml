@@ -23,7 +23,6 @@ jobs:
       - uses: actions/setup-dotnet@v5
         with:
           global-json-file: global.json
-      - run: dotnet workload install maui
       - run: python3 scripts/generate-dimens.py
       - run: dotnet test tests/AppDimens.Maui.Tests/AppDimens.Maui.Tests.csproj -c Release
       - name: Pack
