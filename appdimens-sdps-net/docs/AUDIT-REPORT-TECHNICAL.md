@@ -1,7 +1,7 @@
 # Technical Audit Report
 
 **Date:** 2026-05-21  
-**Scope:** appdimens-net monorepo
+**Scope:** appdimens-net-binding monorepo
 
 ## Resolved in this audit
 

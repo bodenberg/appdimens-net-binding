@@ -61,14 +61,14 @@ It brings the Android experience of `@dimen/_16sdp`, orientation inverters, disc
 | .NET | **8**, **9**, or **10** |
 | .NET MAUI | 8.0+ / 9.0+ / 10.0+ (per SDK) |
 | Platforms | Android, iOS, macOS, Windows (via MAUI) |
-| NuGet version | **1.0.1** |
+| NuGet version | **3.5.1.4** |
 
 ---
 
 ## Installation
 
 ```bash
-dotnet add package Bodenberg.AppDimens.Maui.Sdps --version 1.0.1
+dotnet add package Bodenberg.AppDimens.Maui.Sdps --version 3.5.1.4
 ```
 
 Project reference (local development):
@@ -1340,4 +1340,4 @@ That was IL trimming removing XAML-only types. **Fixed in the package:** `AppDim
 
 Apache-2.0 — Copyright © Jean Bodenberg
 
-Repository: [appdimens-net](https://github.com/bodenberg/appdimens-net) · Android reference: [appdimens-sdps](https://github.com/bodenberg/appdimens-sdps)
+Repository: [appdimens-net-binding](https://github.com/bodenberg/appdimens-net-binding) · Android reference: [appdimens-sdps](https://github.com/bodenberg/appdimens-sdps)
