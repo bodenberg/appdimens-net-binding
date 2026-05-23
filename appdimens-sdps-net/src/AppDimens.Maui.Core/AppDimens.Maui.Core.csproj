@@ -1,9 +1,0 @@
-<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFrameworks>net8.0;net9.0;net10.0</TargetFrameworks>
-    <RootNamespace>AppDimens.Maui.Core</RootNamespace>
-    <AssemblyName>AppDimens.Maui.Core</AssemblyName>
-    <Description>Core scaling engine, metrics, and caches for AppDimens MAUI SDP.</Description>
-    <IsPackable>true</IsPackable>
-  </PropertyGroup>
-</Project>

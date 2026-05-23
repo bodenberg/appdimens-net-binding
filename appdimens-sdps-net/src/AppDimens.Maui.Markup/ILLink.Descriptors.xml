@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<linker>
-  <!-- Short XAML markup ({sdp:16}, {sdpPh:8}, facilitators, etc.) is resolved at runtime by type name.
-       Release trimming must not remove extension types referenced only from XAML. -->
-  <assembly fullname="AppDimens.Maui.Markup" preserve="all" />
-</linker>

@@ -1,7 +1,0 @@
-<Project>
-  <!-- NuGet: auto-imported via build/Bodenberg.AppDimens.Maui.Sdps.targets -->
-  <Import Project="$(MSBuildThisFileDirectory)AppDimens.Maui.Trimming.targets"
-          Condition="Exists('$(MSBuildThisFileDirectory)AppDimens.Maui.Trimming.targets')" />
-  <Import Project="$(MSBuildThisFileDirectory)AppDimens.Maui.ShortMarkup.targets"
-          Condition="Exists('$(MSBuildThisFileDirectory)AppDimens.Maui.ShortMarkup.targets')" />
-</Project>

@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<linker>
-  <!-- XAML markup and converter assemblies are referenced only from XAML, not from C#. -->
-  <assembly fullname="AppDimens.Maui.Markup" preserve="all" />
-  <assembly fullname="AppDimens.Maui.Xaml" preserve="all" />
-  <assembly fullname="AppDimens.Maui.Converters" preserve="all" />
-</linker>

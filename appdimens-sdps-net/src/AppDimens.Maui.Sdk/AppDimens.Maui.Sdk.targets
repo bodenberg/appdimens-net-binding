@@ -1,4 +1,0 @@
-<Project>
-  <!-- ProjectReference: imported when referencing AppDimens.Maui.Sdk.csproj -->
-  <Import Project="$(MSBuildThisFileDirectory)buildTransitive\Bodenberg.AppDimens.Maui.Sdps.targets" />
-</Project>

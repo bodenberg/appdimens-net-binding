@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<linker>
-  <!-- IValueConverter types are often referenced only from XAML StaticResource / bindings. -->
-  <assembly fullname="AppDimens.Maui.Converters" preserve="all" />
-</linker>
