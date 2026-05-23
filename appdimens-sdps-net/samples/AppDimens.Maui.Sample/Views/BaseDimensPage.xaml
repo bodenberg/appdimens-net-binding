@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:dimen="clr-namespace:AppDimens.Maui.Xaml;assembly=AppDimens.Maui.Xaml"
+             xmlns:sdp="clr-namespace:AppDimens.Maui.Markup;assembly=AppDimens.Maui.Markup"
+             xmlns:ssp="clr-namespace:AppDimens.Maui.Markup;assembly=AppDimens.Maui.Markup"
+             xmlns:hdp="clr-namespace:AppDimens.Maui.Markup;assembly=AppDimens.Maui.Markup"
+             xmlns:wdp="clr-namespace:AppDimens.Maui.Markup;assembly=AppDimens.Maui.Markup"
+             xmlns:sem="clr-namespace:AppDimens.Maui.Markup;assembly=AppDimens.Maui.Markup"
+             xmlns:sdpa="clr-namespace:AppDimens.Maui.Markup;assembly=AppDimens.Maui.Markup"
+             x:Class="AppDimens.Maui.Sample.Views.BaseDimensPage"
+             Title="Dimensões">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="{sdp:20}" Spacing="0">
+            <Label Text="Dimensões base" Style="{StaticResource PageTitle}" />
+            <Label Text="Mesmo índice em sintaxe short, long (dimen:) e C# — valores devem coincidir."
+                   Style="{StaticResource Caption}" Margin="{sdp:12}" />
+
+            <Label Text="Sintaxe short (AppDimens.Maui.Markup)" Style="{StaticResource SectionTitle}" />
+
+            <Border Style="{StaticResource Card}">
+                <Grid ColumnDefinitions="*,Auto,72" ColumnSpacing="{sdp:10}">
+                    <VerticalStackLayout Spacing="{sdp:2}" VerticalOptions="Center">
+                        <Label Text="SDP" FontAttributes="Bold" FontSize="{ssp:15}" TextColor="{StaticResource TextPrimary}" />
+                        <Label Text="{}{sdp:16}" FontFamily="Courier" FontSize="{ssp:10}" TextColor="{StaticResource TextSecondary}" />
+                    </VerticalStackLayout>
+                    <BoxView Grid.Column="1" Color="{StaticResource SdpColor}" WidthRequest="{sdp:16}" HeightRequest="{sdp:16}" CornerRadius="{sdp:6}" VerticalOptions="Center" />
+                    <Label Grid.Column="2" x:Name="SdpShortPxLabel" FontAttributes="Bold" FontSize="{ssp:13}" TextColor="{StaticResource SdpColor}" HorizontalTextAlignment="End" VerticalOptions="Center" />
+                </Grid>
+            </Border>
+
+            <Border Style="{StaticResource Card}">
+                <Grid ColumnDefinitions="*,72" ColumnSpacing="{sdp:10}">
+                    <VerticalStackLayout Spacing="{sdp:2}" VerticalOptions="Center">
+                        <Label Text="SSP" FontAttributes="Bold" FontSize="{ssp:15}" TextColor="{StaticResource TextPrimary}" />
+                        <Label Text="{}{ssp:18}" FontFamily="Courier" FontSize="{ssp:10}" TextColor="{StaticResource TextSecondary}" />
+                    </VerticalStackLayout>
+                    <Label Grid.Column="1" Text="Aa" FontSize="{ssp:18}" TextColor="{StaticResource SspColor}" HorizontalTextAlignment="End" VerticalOptions="Center" />
+                </Grid>
+            </Border>
+
+            <Border Style="{StaticResource Card}">
+                <Grid ColumnDefinitions="*,Auto,72" ColumnSpacing="{sdp:10}">
+                    <VerticalStackLayout Spacing="{sdp:2}" VerticalOptions="Center">
+                        <Label Text="HDP" FontAttributes="Bold" FontSize="{ssp:15}" TextColor="{StaticResource TextPrimary}" />
+                        <Label Text="{}{hdp:48}" FontFamily="Courier" FontSize="{ssp:10}" TextColor="{StaticResource TextSecondary}" />
+                    </VerticalStackLayout>
+                    <BoxView Grid.Column="1" Color="{StaticResource HdpColor}" HeightRequest="{hdp:48}" WidthRequest="{sdp:24}" CornerRadius="{sdp:6}" VerticalOptions="Center" />
+                    <Label Grid.Column="2" x:Name="HdpShortPxLabel" FontAttributes="Bold" FontSize="{ssp:13}" TextColor="{StaticResource HdpColor}" HorizontalTextAlignment="End" VerticalOptions="Center" />
+                </Grid>
+            </Border>
+
+            <Border Style="{StaticResource Card}">
+                <Grid ColumnDefinitions="*,Auto,72" ColumnSpacing="{sdp:10}">
+                    <VerticalStackLayout Spacing="{sdp:2}" VerticalOptions="Center">
+                        <Label Text="WDP" FontAttributes="Bold" FontSize="{ssp:15}" TextColor="{StaticResource TextPrimary}" />
+                        <Label Text="{}{wdp:120}" FontFamily="Courier" FontSize="{ssp:10}" TextColor="{StaticResource TextSecondary}" />
+                    </VerticalStackLayout>
+                    <BoxView Grid.Column="1" Color="{StaticResource WdpColor}" WidthRequest="{wdp:120}" HeightRequest="{sdp:16}" CornerRadius="{sdp:6}" VerticalOptions="Center" />
+                    <Label Grid.Column="2" x:Name="WdpShortPxLabel" FontAttributes="Bold" FontSize="{ssp:13}" TextColor="{StaticResource WdpColor}" HorizontalTextAlignment="End" VerticalOptions="Center" />
+                </Grid>
+            </Border>
+
+            <Border Style="{StaticResource Card}">
+                <Grid ColumnDefinitions="*,72" ColumnSpacing="{sdp:10}">
+                    <VerticalStackLayout Spacing="{sdp:2}" VerticalOptions="Center">
+                        <Label Text="SEM" FontAttributes="Bold" FontSize="{ssp:15}" TextColor="{StaticResource TextPrimary}" />
+                        <Label Text="{}{sem:18}" FontFamily="Courier" FontSize="{ssp:10}" TextColor="{StaticResource TextSecondary}" />
+                    </VerticalStackLayout>
+                    <Label Grid.Column="1" Text="Aa" FontSize="{sem:18}" TextColor="{StaticResource SspColor}" HorizontalTextAlignment="End" VerticalOptions="Center" />
+                </Grid>
+            </Border>
+
+            <Border Style="{StaticResource Card}">
+                <Grid ColumnDefinitions="*,Auto,72" ColumnSpacing="{sdp:10}">
+                    <VerticalStackLayout Spacing="{sdp:2}" VerticalOptions="Center">
+                        <Label Text="SDPA" FontAttributes="Bold" FontSize="{ssp:15}" TextColor="{StaticResource TextPrimary}" />
+                        <Label Text="{}{sdpa:16}" FontFamily="Courier" FontSize="{ssp:10}" TextColor="{StaticResource TextSecondary}" />
+                    </VerticalStackLayout>
+                    <BoxView Grid.Column="1" Color="{StaticResource ArColor}" WidthRequest="{sdpa:16}" HeightRequest="{sdpa:16}" CornerRadius="{sdp:6}" VerticalOptions="Center" />
+                    <Label Grid.Column="2" x:Name="SdpaShortPxLabel" FontAttributes="Bold" FontSize="{ssp:13}" TextColor="{StaticResource ArColor}" HorizontalTextAlignment="End" VerticalOptions="Center" />
+                </Grid>
+            </Border>
+
+            <Label Text="Sintaxe long (AppDimens.Maui.Xaml, dimen:)" Style="{StaticResource SectionTitle}" />
+
+            <Border Style="{StaticResource Card}">
+                <Grid ColumnDefinitions="*,Auto,72" ColumnSpacing="{dimen:Sdp Value=10}">
+                    <VerticalStackLayout Spacing="{dimen:Sdp Value=2}" VerticalOptions="Center">
+                        <Label Text="SDP" FontAttributes="Bold" FontSize="{dimen:Ssp Value=15}" TextColor="{StaticResource TextPrimary}" />
+                        <Label Text="{}{dimen:Sdp Value=16}" FontFamily="Courier" FontSize="{dimen:Ssp Value=10}" TextColor="{StaticResource TextSecondary}" />
+                    </VerticalStackLayout>
+                    <BoxView Grid.Column="1" Color="{StaticResource SdpColor}" WidthRequest="{dimen:Sdp Value=16}" HeightRequest="{dimen:Sdp Value=16}" CornerRadius="{dimen:Sdp Value=6}" VerticalOptions="Center" />
+                    <Label Grid.Column="2" x:Name="SdpPxLabel" FontAttributes="Bold" FontSize="{dimen:Ssp Value=13}" TextColor="{StaticResource SdpColor}" HorizontalTextAlignment="End" VerticalOptions="Center" />
+                </Grid>
+            </Border>
+
+            <Border Style="{StaticResource Card}">
+                <Grid ColumnDefinitions="*,72" ColumnSpacing="{dimen:Sdp Value=10}">
+                    <VerticalStackLayout Spacing="{dimen:Sdp Value=2}" VerticalOptions="Center">
+                        <Label Text="SSP" FontAttributes="Bold" FontSize="{dimen:Ssp Value=15}" TextColor="{StaticResource TextPrimary}" />
+                        <Label Text="{}{dimen:Ssp Value=18}" FontFamily="Courier" FontSize="{dimen:Ssp Value=10}" TextColor="{StaticResource TextSecondary}" />
+                    </VerticalStackLayout>
+                    <Label Grid.Column="1" Text="Aa" FontSize="{dimen:Ssp Value=18}" TextColor="{StaticResource SspColor}" HorizontalTextAlignment="End" VerticalOptions="Center" />
+                </Grid>
+            </Border>
+
+            <Border Style="{StaticResource Card}">
+                <Grid ColumnDefinitions="*,Auto,72" ColumnSpacing="{dimen:Sdp Value=10}">
+                    <VerticalStackLayout Spacing="{dimen:Sdp Value=2}" VerticalOptions="Center">
+                        <Label Text="HDP" FontAttributes="Bold" FontSize="{dimen:Ssp Value=15}" TextColor="{StaticResource TextPrimary}" />
+                        <Label Text="{}{dimen:Hdp Value=48}" FontFamily="Courier" FontSize="{dimen:Ssp Value=10}" TextColor="{StaticResource TextSecondary}" />
+                    </VerticalStackLayout>
+                    <BoxView Grid.Column="1" Color="{StaticResource HdpColor}" HeightRequest="{dimen:Hdp Value=48}" WidthRequest="{dimen:Sdp Value=24}" CornerRadius="{dimen:Sdp Value=6}" VerticalOptions="Center" />
+                    <Label Grid.Column="2" x:Name="HdpPxLabel" FontAttributes="Bold" FontSize="{dimen:Ssp Value=13}" TextColor="{StaticResource HdpColor}" HorizontalTextAlignment="End" VerticalOptions="Center" />
+                </Grid>
+            </Border>
+
+            <Border Style="{StaticResource Card}">
+                <Grid ColumnDefinitions="*,Auto,72" ColumnSpacing="{dimen:Sdp Value=10}">
+                    <VerticalStackLayout Spacing="{dimen:Sdp Value=2}" VerticalOptions="Center">
+                        <Label Text="WDP" FontAttributes="Bold" FontSize="{dimen:Ssp Value=15}" TextColor="{StaticResource TextPrimary}" />
+                        <Label Text="{}{dimen:Wdp Value=120}" FontFamily="Courier" FontSize="{dimen:Ssp Value=10}" TextColor="{StaticResource TextSecondary}" />
+                    </VerticalStackLayout>
+                    <BoxView Grid.Column="1" Color="{StaticResource WdpColor}" WidthRequest="{dimen:Wdp Value=120}" HeightRequest="{dimen:Sdp Value=16}" CornerRadius="{dimen:Sdp Value=6}" VerticalOptions="Center" />
+                    <Label Grid.Column="2" x:Name="WdpPxLabel" FontAttributes="Bold" FontSize="{dimen:Ssp Value=13}" TextColor="{StaticResource WdpColor}" HorizontalTextAlignment="End" VerticalOptions="Center" />
+                </Grid>
+            </Border>
+
+            <Border Style="{StaticResource Card}">
+                <Grid ColumnDefinitions="*,72" ColumnSpacing="{dimen:Sdp Value=10}">
+                    <VerticalStackLayout Spacing="{dimen:Sdp Value=2}" VerticalOptions="Center">
+                        <Label Text="SEM" FontAttributes="Bold" FontSize="{dimen:Ssp Value=15}" TextColor="{StaticResource TextPrimary}" />
+                        <Label Text="{}{dimen:Sem Value=18}" FontFamily="Courier" FontSize="{dimen:Ssp Value=10}" TextColor="{StaticResource TextSecondary}" />
+                    </VerticalStackLayout>
+                    <Label Grid.Column="1" Text="Aa" FontSize="{dimen:Sem Value=18}" TextColor="{StaticResource SspColor}" HorizontalTextAlignment="End" VerticalOptions="Center" />
+                </Grid>
+            </Border>
+
+            <Border Style="{StaticResource Card}">
+                <Grid ColumnDefinitions="*,Auto,72" ColumnSpacing="{dimen:Sdp Value=10}">
+                    <VerticalStackLayout Spacing="{dimen:Sdp Value=2}" VerticalOptions="Center">
+                        <Label Text="SDPA" FontAttributes="Bold" FontSize="{dimen:Ssp Value=15}" TextColor="{StaticResource TextPrimary}" />
+                        <Label Text="{}{dimen:Sdpa Value=16}" FontFamily="Courier" FontSize="{dimen:Ssp Value=10}" TextColor="{StaticResource TextSecondary}" />
+                    </VerticalStackLayout>
+                    <BoxView Grid.Column="1" Color="{StaticResource ArColor}" WidthRequest="{dimen:Sdpa Value=16}" HeightRequest="{dimen:Sdpa Value=16}" CornerRadius="{dimen:Sdp Value=6}" VerticalOptions="Center" />
+                    <Label Grid.Column="2" x:Name="SdpaPxLabel" FontAttributes="Bold" FontSize="{dimen:Ssp Value=13}" TextColor="{StaticResource ArColor}" HorizontalTextAlignment="End" VerticalOptions="Center" />
+                </Grid>
+            </Border>
+
+            <Label Text="Via C# (extensões fluentes)" Style="{StaticResource SectionTitle}" />
+            <VerticalStackLayout x:Name="CardsHost" Spacing="0" />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

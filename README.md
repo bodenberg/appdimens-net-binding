@@ -1,6 +1,6 @@
 # AppDimens .NET Bindings
 
-Monorepo of **.NET 10 for Android** (and **.NET MAUI** Android) bindings for the [AppDimens](https://github.com/bodenberg/appdimens) responsive dimension libraries. All packages target **`net10.0-android`**. Each folder ships a **NuGet package** that embeds the upstream **Maven AAR**, runs **Xamarin.Android binding**, and exposes Kotlin/Java APIs to C#.
+Monorepo of **.NET 10 for Android** bindings and a **native .NET MAUI** library for the [AppDimens](https://github.com/bodenberg/appdimens) responsive dimension ecosystem. **Android binding** packages target **`net10.0-android`** and embed upstream **Maven AARs**. **MAUI** package **`Bodenberg.AppDimens.Maui.Sdps`** targets **`net8.0`**, **`net9.0`**, and **`net10.0`** (multi-platform).
 
 Android implementation, XML naming, and feature documentation live in the **upstream repositories** listed below. This repository contains **binding projects**, **MSBuild transforms**, **smoke-test apps**, and **publish notes** only.
 
@@ -13,22 +13,25 @@ Android implementation, XML naming, and feature documentation live in the **upst
 | [**Bodenberg.AppDimens.Sdps**](https://www.nuget.org/packages/Bodenberg.AppDimens.Sdps) | [`appdimens-sdps-net-binding/`](appdimens-sdps-net-binding/) | [appdimens-sdps](https://github.com/bodenberg/appdimens-sdps) | **Layout + typography** — SDP/HDP/WDP and SSP/HSP/WSP via `@dimen` grids and code APIs |
 | [**Bodenberg.AppDimens.Ssps**](https://www.nuget.org/packages/Bodenberg.AppDimens.Ssps) | [`appdimens-ssps-net-binding/`](appdimens-ssps-net-binding/) | [appdimens-ssps](https://github.com/bodenberg/appdimens-ssps) | **Typography only** — SSP/HSP/WSP (smaller if you do not need layout dimens) |
 | [**Bodenberg.AppDimens.Dynamic**](https://www.nuget.org/packages/Bodenberg.AppDimens.Dynamic) | [`appdimens-dynamic-net-binding/`](appdimens-dynamic-net-binding/) | [appdimens-dynamic](https://github.com/bodenberg/appdimens-dynamic) | **Code-only** scaling — 15 strategies, no pre-built `@dimen` XML grids |
+| [**Bodenberg.AppDimens.Maui.Sdps**](https://www.nuget.org/packages/Bodenberg.AppDimens.Maui.Sdps) | [`appdimens-sdps-net/`](appdimens-sdps-net/) | [appdimens-sdps](https://github.com/bodenberg/appdimens-sdps) | **.NET MAUI nativo** — SDP/HDP/WDP/SSP sem binding Android (`net8` / `net9` / `net10`) |
 
-**Current NuGet version:** `3.5.1.4` (see each package README for embedded Maven AAR version).
+**Versões NuGet atuais:** bindings Android **`3.5.1.4`** · MAUI nativo **`1.0.0`** (veja cada README para a versão do AAR Maven embutido nos bindings).
 
 ```bash
 dotnet add package Bodenberg.AppDimens.Sdps --version 3.5.1.4
 dotnet add package Bodenberg.AppDimens.Ssps --version 3.5.1.4
 dotnet add package Bodenberg.AppDimens.Dynamic --version 3.5.1.4
+dotnet add package Bodenberg.AppDimens.Maui.Sdps --version 1.0.0
 ```
 
 ### Which package should I use?
 
 | Need | Package |
 |------|---------|
-| Responsive **margins, padding, sizes** and **text** with `@dimen/_16sdp`-style XML | **Sdps** |
+| Responsive **margins, padding, sizes** and **text** with `@dimen/_16sdp`-style XML (Android binding) | **Sdps** |
 | **Text / `sp` only**, smaller dependency | **Ssps** |
 | **Runtime strategies** (percent, auto, fluid, …) without thousands of XML dimens | **Dynamic** |
+| **MAUI multiplataforma** (Android, iOS, Windows, macOS) com `{sdp:16}` e APIs C# nativas | **Maui.Sdps** |
 
 You can combine packages only when your app design allows overlapping responsibilities; most apps pick **one primary** approach per surface.
 
@@ -39,7 +42,8 @@ You can combine packages only when your app design allows overlapping responsibi
 Each binding is a self-contained tree:
 
 ```
-appdimens-net-binding/
+appdimens-net/
+├── appdimens-sdps-net/              # Native MAUI SDP (net8/9/10)
 ├── appdimens-sdps-net-binding/
 │   ├── AppDimens.Sdps.sln
 │   ├── AppDimens.Sdps.Binding/      # NuGet + AAR binding
@@ -63,7 +67,7 @@ appdimens-net-binding/
 | Requirement | Notes |
 |-------------|--------|
 | **.NET** | **10** with Android workload (`dotnet workload install android`) or MAUI |
-| **Target framework** | `net10.0-android` |
+| **Target framework** | Bindings: `net10.0-android` · MAUI: `net8.0` / `net9.0` / `net10.0` |
 | **Minimum Android API** | **24** (matches packaged AARs) |
 | **JDK** | **17 or 21** for Xamarin.Android on .NET 10 |
 | **Android SDK** | Platform **36+** for local binding builds |
@@ -114,7 +118,7 @@ Pre-built APKs for the current binding release are copied to [`artifacts/smoke-a
 | **Source repository** | Per package → upstream Android repo (`appdimens-sdps`, `appdimens-ssps`, `appdimens-dynamic`) |
 | **Binding source** (this repo) | https://github.com/bodenberg/appdimens-net-binding |
 
-Publishing steps: see `NUGET-PUBLISH.md` inside each binding folder.
+Publishing steps: [`NUGET-PUBLISH.md`](NUGET-PUBLISH.md) (MAUI nativo + bindings Android).
 
 ---
 
@@ -123,6 +127,7 @@ Publishing steps: see `NUGET-PUBLISH.md` inside each binding folder.
 | Topic | Where |
 |-------|--------|
 | **Sdps** usage, C# namespaces, XML dimens | [appdimens-sdps-net-binding/README.md](appdimens-sdps-net-binding/README.md) |
+| **Maui.Sdps** nativo (XAML, markup, builders) | [appdimens-sdps-net/README.md](appdimens-sdps-net/README.md) |
 | **Ssps** typography APIs | [appdimens-ssps-net-binding/README.md](appdimens-ssps-net-binding/README.md) |
 | **Dynamic** strategies & facilitators | [appdimens-dynamic-net-binding/README.md](appdimens-dynamic-net-binding/README.md) |
 | **Dynamic** strategy guide (Android) | [appdimens-dynamic/DOCUMENTATION](https://github.com/bodenberg/appdimens-dynamic/tree/main/DOCUMENTATION) |

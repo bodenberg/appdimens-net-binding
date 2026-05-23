@@ -1,0 +1,14 @@
+{
+  "profiles": {
+    "Windows Machine": {
+      "commandName": "Project",
+      "nativeDebugging": false
+    },
+    "Mac Catalyst": {
+      "commandName": "Project"
+    },
+    "iOS Simulator": {
+      "commandName": "Project"
+    }
+  }
+}

@@ -1,0 +1,35 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      push_nuget:
+        description: Push to NuGet.org
+        required: true
+        default: 'false'
+        type: choice
+        options:
+          - 'false'
+          - 'true'
+
+jobs:
+  release-maui:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: appdimens-sdps-net
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+      - run: dotnet workload install maui
+      - run: python3 scripts/generate-dimens.py
+      - run: dotnet test tests/AppDimens.Maui.Tests/AppDimens.Maui.Tests.csproj -c Release
+      - name: Pack
+        run: ./scripts/publish-nuget.sh
+      - name: Push NuGet
+        if: inputs.push_nuget == 'true'
+        env:
+          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+        run: ./scripts/publish-nuget.sh --push

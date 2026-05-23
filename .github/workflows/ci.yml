@@ -1,0 +1,55 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  maui:
+    name: MAUI build & test
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: appdimens-sdps-net
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+      - name: Install MAUI workload
+        run: dotnet workload install maui
+      - name: Generate dimens (layout v2)
+        run: python3 scripts/generate-dimens.py
+      - name: Restore
+        run: dotnet restore tests/AppDimens.Maui.Tests/AppDimens.Maui.Tests.csproj
+      - name: Test Release
+        run: dotnet test tests/AppDimens.Maui.Tests/AppDimens.Maui.Tests.csproj -c Release --no-restore
+      - name: Pack verify
+        run: ./scripts/publish-nuget.sh
+      - name: Security audit
+        run: dotnet list tests/AppDimens.Maui.Tests/AppDimens.Maui.Tests.csproj package --vulnerable --include-transitive 2>&1 | tee ../vulnerable.txt; if grep -q 'has the following vulnerable' ../vulnerable.txt; then exit 1; fi
+
+  bindings:
+    name: Android bindings build
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        module:
+          - appdimens-sdps-net-binding
+          - appdimens-ssps-net-binding
+          - appdimens-dynamic-net-binding
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+      - name: Install Android workload
+        run: dotnet workload install android
+      - name: Sync AAR from Maven
+        working-directory: ${{ matrix.module }}
+        run: chmod +x scripts/sync-aar-from-maven.sh && ./scripts/sync-aar-from-maven.sh 3.1.5
+      - name: Build solution
+        working-directory: ${{ matrix.module }}
+        run: dotnet build -c Release

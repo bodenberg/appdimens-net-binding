@@ -1,0 +1,54 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>net8.0;net9.0;net10.0</TargetFrameworks>
+    <RootNamespace>AppDimens.Maui.Sdk</RootNamespace>
+    <AssemblyName>AppDimens.Maui.Sdk</AssemblyName>
+    <PackageId>Bodenberg.AppDimens.Maui.Sdps</PackageId>
+    <Description>Responsive SDP/HDP/WDP/SSP dimensions for .NET MAUI — native Android AppDimens SDP parity.</Description>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <IsPackable>true</IsPackable>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="buildTransitive\Bodenberg.AppDimens.Maui.Sdps.targets"
+          Pack="true"
+          PackagePath="buildTransitive\Bodenberg.AppDimens.Maui.Sdps.targets" />
+    <None Include="..\build\AppDimens.Maui.Trimming.targets"
+          Pack="true"
+          PackagePath="build\AppDimens.Maui.Trimming.targets" />
+    <None Include="..\build\AppDimens.Maui.ShortMarkup.targets"
+          Pack="true"
+          PackagePath="build\AppDimens.Maui.ShortMarkup.targets" />
+    <None Include="..\AppDimens.Maui.BuildTasks\bin\$(Configuration)\netstandard2.0\AppDimens.Maui.BuildTasks.dll"
+          Pack="true"
+          PackagePath="build\AppDimens.Maui.BuildTasks.dll"
+          Condition="Exists('..\AppDimens.Maui.BuildTasks\bin\$(Configuration)\netstandard2.0\AppDimens.Maui.BuildTasks.dll')" />
+    <None Include="..\..\README.md" Pack="true" PackagePath="\" />
+    <None Include="..\AppDimens.Maui.Resources\Generated\**\*"
+          Pack="true"
+          PackagePath="contentFiles/any/any/Generated/%(RecursiveDir)%(Filename)%(Extension)"
+          PackageCopyToOutput="true"
+          Visible="false" />
+    <ProjectReference Include="..\AppDimens.Maui\AppDimens.Maui.csproj" PrivateAssets="all" />
+    <ProjectReference Include="..\AppDimens.Maui.Core\AppDimens.Maui.Core.csproj" PrivateAssets="all" />
+    <ProjectReference Include="..\AppDimens.Maui.Extensions\AppDimens.Maui.Extensions.csproj" PrivateAssets="all" />
+    <ProjectReference Include="..\AppDimens.Maui.Markup\AppDimens.Maui.Markup.csproj" PrivateAssets="all" />
+    <ProjectReference Include="..\AppDimens.Maui.Xaml\AppDimens.Maui.Xaml.csproj" PrivateAssets="all" />
+    <ProjectReference Include="..\AppDimens.Maui.Builders\AppDimens.Maui.Builders.csproj" PrivateAssets="all" />
+    <ProjectReference Include="..\AppDimens.Maui.Helpers\AppDimens.Maui.Helpers.csproj" PrivateAssets="all" />
+    <ProjectReference Include="..\AppDimens.Maui.Converters\AppDimens.Maui.Converters.csproj" PrivateAssets="all" />
+    <ProjectReference Include="..\AppDimens.Maui.Responsive\AppDimens.Maui.Responsive.csproj" PrivateAssets="all" />
+    <ProjectReference Include="..\AppDimens.Maui.Inverters\AppDimens.Maui.Inverters.csproj" PrivateAssets="all" />
+    <ProjectReference Include="..\AppDimens.Maui.Resources\AppDimens.Maui.Resources.csproj" PrivateAssets="all" />
+    <ProjectReference Include="..\AppDimens.Maui.SourceGen\AppDimens.Maui.SourceGen.csproj"
+                      OutputItemType="Analyzer"
+                      ReferenceOutputAssembly="false"
+                      SetTargetFramework="TargetFramework=netstandard2.0" />
+  </ItemGroup>
+  <Target Name="_BuildAppDimensBuildTasksBeforePack"
+          BeforeTargets="GenerateNuspec"
+          Condition="'$(IsPackable)' == 'true'">
+    <MSBuild Projects="$(MSBuildThisFileDirectory)..\AppDimens.Maui.BuildTasks\AppDimens.Maui.BuildTasks.csproj"
+             Targets="Build"
+             Properties="Configuration=$(Configuration)" />
+  </Target>
+</Project>

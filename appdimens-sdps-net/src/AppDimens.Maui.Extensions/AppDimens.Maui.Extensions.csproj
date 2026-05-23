@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>net8.0;net9.0;net10.0</TargetFrameworks>
+    <RootNamespace>AppDimens.Maui.Extensions</RootNamespace>
+    <AssemblyName>AppDimens.Maui.Extensions</AssemblyName>
+    <Description>Fluent extension methods for AppDimens MAUI SDP.</Description>
+    <IsPackable>true</IsPackable>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AppDimens.Maui\AppDimens.Maui.csproj" />
+    <ProjectReference Include="..\AppDimens.Maui.Core\AppDimens.Maui.Core.csproj" />
+    <ProjectReference Include="..\AppDimens.Maui.Inverters\AppDimens.Maui.Inverters.csproj" />
+  </ItemGroup>
+</Project>

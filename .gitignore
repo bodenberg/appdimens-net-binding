@@ -1,3 +1,14 @@
+bin/
+obj/
+*.user
+*.suo
+.DS_Store
+TestResults/
+BenchmarkDotNet.Artifacts/
+
+# Generated dimens (run scripts/generate-dimens.py or build AppDimens.Maui.Resources)
+src/AppDimens.Maui.Resources/Generated/
+
 # Gradle files
 .gradle/
 build/
@@ -49,3 +60,5 @@ google-services.json
 NUGET-PUBLISH.md
 Directory.Build.props
 CLAUDE.local.md
+CHANGELOG.md
+

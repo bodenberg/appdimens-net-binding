@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:dimen="clr-namespace:AppDimens.Maui.Xaml;assembly=AppDimens.Maui.Xaml"
+             xmlns:sdp="clr-namespace:AppDimens.Maui.Markup;assembly=AppDimens.Maui.Markup"
+             xmlns:ssp="clr-namespace:AppDimens.Maui.Markup;assembly=AppDimens.Maui.Markup"
+             xmlns:scaled="clr-namespace:AppDimens.Maui.Markup;assembly=AppDimens.Maui.Markup"
+             xmlns:sdpRotate="clr-namespace:AppDimens.Maui.Markup;assembly=AppDimens.Maui.Markup"
+             xmlns:hdpRotate="clr-namespace:AppDimens.Maui.Markup;assembly=AppDimens.Maui.Markup"
+             xmlns:sdpQualifier="clr-namespace:AppDimens.Maui.Markup;assembly=AppDimens.Maui.Markup"
+             xmlns:sdpMode="clr-namespace:AppDimens.Maui.Markup;assembly=AppDimens.Maui.Markup"
+             xmlns:sdpScreen="clr-namespace:AppDimens.Maui.Markup;assembly=AppDimens.Maui.Markup"
+             x:Class="AppDimens.Maui.Sample.Views.AdvancedPage"
+             Title="Avançado">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="{sdp:20}" Spacing="0">
+            <Label Text="Avançado" Style="{StaticResource PageTitle}" />
+            <Label Text="Facilitadores Rotate, Qualifier, Mode e Screen — short e long lado a lado."
+                   Style="{StaticResource Caption}" Margin="{sdp:12}" />
+
+            <Label Text="Sintaxe short (AppDimens.Maui.Markup)" Style="{StaticResource SectionTitle}" />
+
+            <Border Style="{StaticResource Card}">
+                <VerticalStackLayout Spacing="{sdp:6}">
+                    <Label Text="Responsive" FontAttributes="Bold" FontSize="{ssp:15}" TextColor="{StaticResource TextPrimary}" />
+                    <Label Text="{}{scaled:14, Tablet=18, Landscape=16, Desktop=20}"
+                           FontFamily="Courier" FontSize="{ssp:10}" TextColor="{StaticResource TextSecondary}" LineBreakMode="WordWrap" />
+                    <Label Text="Texto responsivo" FontSize="{scaled:14, Tablet=18, Landscape=16, Desktop=20}" TextColor="{StaticResource Success}" />
+                    <Label x:Name="ScaledShortPxLabel" Style="{StaticResource Caption}" />
+                </VerticalStackLayout>
+            </Border>
+
+            <Border Style="{StaticResource Card}">
+                <Grid ColumnDefinitions="*,Auto,72" ColumnSpacing="{sdp:10}">
+                    <VerticalStackLayout Spacing="{sdp:2}" VerticalOptions="Center">
+                        <Label Text="SdpRotate" FontAttributes="Bold" FontSize="{ssp:15}" TextColor="{StaticResource TextPrimary}" />
+                        <Label Text="{}{sdpRotate:30, Rotation=45, Orientation=Landscape}"
+                               FontFamily="Courier" FontSize="{ssp:10}" TextColor="{StaticResource TextSecondary}" LineBreakMode="WordWrap" />
+                    </VerticalStackLayout>
+                    <BoxView Grid.Column="1" Color="{StaticResource Warning}" WidthRequest="{sdpRotate:30, Rotation=45, Orientation=Landscape}" HeightRequest="{sdpRotate:30, Rotation=45, Orientation=Landscape}" CornerRadius="{sdp:6}" VerticalOptions="Center" />
+                    <Label Grid.Column="2" x:Name="RotateShortPxLabel" FontAttributes="Bold" FontSize="{ssp:13}" TextColor="{StaticResource Warning}" HorizontalTextAlignment="End" VerticalOptions="Center" />
+                </Grid>
+            </Border>
+
+            <Border Style="{StaticResource Card}">
+                <Grid ColumnDefinitions="*,Auto,72" ColumnSpacing="{sdp:10}">
+                    <VerticalStackLayout Spacing="{sdp:2}" VerticalOptions="Center">
+                        <Label Text="HdpRotate" FontAttributes="Bold" FontSize="{ssp:15}" TextColor="{StaticResource TextPrimary}" />
+                        <Label Text="{}{hdpRotate:48, Rotation=64, Orientation=Landscape}"
+                               FontFamily="Courier" FontSize="{ssp:10}" TextColor="{StaticResource TextSecondary}" LineBreakMode="WordWrap" />
+                    </VerticalStackLayout>
+                    <BoxView Grid.Column="1" Color="{StaticResource Warning}" HeightRequest="{hdpRotate:48, Rotation=64, Orientation=Landscape}" WidthRequest="{sdp:24}" CornerRadius="{sdp:6}" VerticalOptions="Center" />
+                    <Label Grid.Column="2" x:Name="HdpRotateShortPxLabel" FontAttributes="Bold" FontSize="{ssp:13}" TextColor="{StaticResource Warning}" HorizontalTextAlignment="End" VerticalOptions="Center" />
+                </Grid>
+            </Border>
+
+            <Border Style="{StaticResource Card}">
+                <VerticalStackLayout Spacing="{sdp:4}">
+                    <Label Text="SdpQualifier" FontAttributes="Bold" FontSize="{ssp:15}" TextColor="{StaticResource TextPrimary}" />
+                    <Label Text="{}{sdpQualifier:16, Qualified=20, QualifierType=SmallWidth, Threshold=600}"
+                           FontFamily="Courier" FontSize="{ssp:10}" TextColor="{StaticResource TextSecondary}" LineBreakMode="WordWrap" />
+                    <Label Text="Valor base" FontSize="{sdpQualifier:16, Qualified=20, QualifierType=SmallWidth, Threshold=600}" TextColor="{StaticResource TextPrimary}" />
+                    <Label x:Name="QualifierShortPxLabel" Style="{StaticResource Caption}" />
+                </VerticalStackLayout>
+            </Border>
+
+            <Border Style="{StaticResource Card}">
+                <VerticalStackLayout Spacing="{sdp:4}">
+                    <Label Text="SdpMode" FontAttributes="Bold" FontSize="{ssp:15}" TextColor="{StaticResource TextPrimary}" />
+                    <Label Text="{}{sdpMode:16, Mode=24, UiMode=Desk}"
+                           FontFamily="Courier" FontSize="{ssp:10}" TextColor="{StaticResource TextSecondary}" LineBreakMode="WordWrap" />
+                    <Label Text="Valor base" FontSize="{sdpMode:16, Mode=24, UiMode=Desk}" TextColor="{StaticResource TextPrimary}" />
+                    <Label x:Name="ModeShortPxLabel" Style="{StaticResource Caption}" />
+                </VerticalStackLayout>
+            </Border>
+
+            <Border Style="{StaticResource Card}">
+                <VerticalStackLayout Spacing="{sdp:4}">
+                    <Label Text="SdpScreen" FontAttributes="Bold" FontSize="{ssp:15}" TextColor="{StaticResource TextPrimary}" />
+                    <Label Text="{}{sdpScreen:16, Screen=20, UiMode=Television, QualifierType=SmallWidth, Threshold=600}"
+                           FontFamily="Courier" FontSize="{ssp:10}" TextColor="{StaticResource TextSecondary}" LineBreakMode="WordWrap" />
+                    <Label Text="Valor base" FontSize="{sdpScreen:16, Screen=20, UiMode=Television, QualifierType=SmallWidth, Threshold=600}" TextColor="{StaticResource TextPrimary}" />
+                    <Label x:Name="ScreenShortPxLabel" Style="{StaticResource Caption}" />
+                </VerticalStackLayout>
+            </Border>
+
+            <Label Text="Sintaxe long (AppDimens.Maui.Xaml, dimen:)" Style="{StaticResource SectionTitle}" />
+
+            <Border Style="{StaticResource Card}">
+                <VerticalStackLayout Spacing="{dimen:Sdp Value=6}">
+                    <Label Text="Responsive" FontAttributes="Bold" FontSize="{dimen:Ssp Value=15}" TextColor="{StaticResource TextPrimary}" />
+                    <Label Text="{}{dimen:Scaled Value=14, Tablet=18, Landscape=16, Desktop=20}"
+                           FontFamily="Courier" FontSize="{dimen:Ssp Value=10}" TextColor="{StaticResource TextSecondary}" LineBreakMode="WordWrap" />
+                    <Label Text="Texto responsivo" FontSize="{dimen:Scaled Value=14, Tablet=18, Landscape=16, Desktop=20}" TextColor="{StaticResource Success}" />
+                    <Label x:Name="ScaledPxLabel" Style="{StaticResource Caption}" />
+                </VerticalStackLayout>
+            </Border>
+
+            <Border Style="{StaticResource Card}">
+                <Grid ColumnDefinitions="*,Auto,72" ColumnSpacing="{dimen:Sdp Value=10}">
+                    <VerticalStackLayout Spacing="{dimen:Sdp Value=2}" VerticalOptions="Center">
+                        <Label Text="SdpRotate" FontAttributes="Bold" FontSize="{dimen:Ssp Value=15}" TextColor="{StaticResource TextPrimary}" />
+                        <Label Text="{}{dimen:SdpRotate Base=30, Rotation=45, Orientation=Landscape}"
+                               FontFamily="Courier" FontSize="{dimen:Ssp Value=10}" TextColor="{StaticResource TextSecondary}" LineBreakMode="WordWrap" />
+                    </VerticalStackLayout>
+                    <BoxView Grid.Column="1" Color="{StaticResource Warning}" WidthRequest="{dimen:SdpRotate Base=30, Rotation=45, Orientation=Landscape}" HeightRequest="{dimen:SdpRotate Base=30, Rotation=45, Orientation=Landscape}" CornerRadius="{dimen:Sdp Value=6}" VerticalOptions="Center" />
+                    <Label Grid.Column="2" x:Name="RotatePxLabel" FontAttributes="Bold" FontSize="{dimen:Ssp Value=13}" TextColor="{StaticResource Warning}" HorizontalTextAlignment="End" VerticalOptions="Center" />
+                </Grid>
+            </Border>
+
+            <Border Style="{StaticResource Card}">
+                <Grid ColumnDefinitions="*,Auto,72" ColumnSpacing="{dimen:Sdp Value=10}">
+                    <VerticalStackLayout Spacing="{dimen:Sdp Value=2}" VerticalOptions="Center">
+                        <Label Text="HdpRotate" FontAttributes="Bold" FontSize="{dimen:Ssp Value=15}" TextColor="{StaticResource TextPrimary}" />
+                        <Label Text="{}{dimen:HdpRotate Base=48, Rotation=64, Orientation=Landscape}"
+                               FontFamily="Courier" FontSize="{dimen:Ssp Value=10}" TextColor="{StaticResource TextSecondary}" LineBreakMode="WordWrap" />
+                    </VerticalStackLayout>
+                    <BoxView Grid.Column="1" Color="{StaticResource Warning}" HeightRequest="{dimen:HdpRotate Base=48, Rotation=64, Orientation=Landscape}" WidthRequest="{dimen:Sdp Value=24}" CornerRadius="{dimen:Sdp Value=6}" VerticalOptions="Center" />
+                    <Label Grid.Column="2" x:Name="HdpRotatePxLabel" FontAttributes="Bold" FontSize="{dimen:Ssp Value=13}" TextColor="{StaticResource Warning}" HorizontalTextAlignment="End" VerticalOptions="Center" />
+                </Grid>
+            </Border>
+
+            <Border Style="{StaticResource Card}">
+                <VerticalStackLayout Spacing="{dimen:Sdp Value=4}">
+                    <Label Text="SdpQualifier" FontAttributes="Bold" FontSize="{dimen:Ssp Value=15}" TextColor="{StaticResource TextPrimary}" />
+                    <Label Text="{}{dimen:SdpQualifier Base=16, Qualified=20, QualifierType=SmallWidth, Threshold=600}"
+                           FontFamily="Courier" FontSize="{dimen:Ssp Value=10}" TextColor="{StaticResource TextSecondary}" LineBreakMode="WordWrap" />
+                    <Label Text="Valor base" FontSize="{dimen:SdpQualifier Base=16, Qualified=20, QualifierType=SmallWidth, Threshold=600}" TextColor="{StaticResource TextPrimary}" />
+                    <Label x:Name="QualifierPxLabel" Style="{StaticResource Caption}" />
+                </VerticalStackLayout>
+            </Border>
+
+            <Border Style="{StaticResource Card}">
+                <VerticalStackLayout Spacing="{dimen:Sdp Value=4}">
+                    <Label Text="SdpMode" FontAttributes="Bold" FontSize="{dimen:Ssp Value=15}" TextColor="{StaticResource TextPrimary}" />
+                    <Label Text="{}{dimen:SdpMode Base=16, Mode=24, UiMode=Desk}"
+                           FontFamily="Courier" FontSize="{dimen:Ssp Value=10}" TextColor="{StaticResource TextSecondary}" LineBreakMode="WordWrap" />
+                    <Label Text="Valor base" FontSize="{dimen:SdpMode Base=16, Mode=24, UiMode=Desk}" TextColor="{StaticResource TextPrimary}" />
+                    <Label x:Name="ModePxLabel" Style="{StaticResource Caption}" />
+                </VerticalStackLayout>
+            </Border>
+
+            <Border Style="{StaticResource Card}">
+                <VerticalStackLayout Spacing="{dimen:Sdp Value=4}">
+                    <Label Text="SdpScreen" FontAttributes="Bold" FontSize="{dimen:Ssp Value=15}" TextColor="{StaticResource TextPrimary}" />
+                    <Label Text="{}{dimen:SdpScreen Base=16, Screen=20, UiMode=Television, QualifierType=SmallWidth, Threshold=600}"
+                           FontFamily="Courier" FontSize="{dimen:Ssp Value=10}" TextColor="{StaticResource TextSecondary}" LineBreakMode="WordWrap" />
+                    <Label Text="Valor base" FontSize="{dimen:SdpScreen Base=16, Screen=20, UiMode=Television, QualifierType=SmallWidth, Threshold=600}" TextColor="{StaticResource TextPrimary}" />
+                    <Label x:Name="ScreenPxLabel" Style="{StaticResource Caption}" />
+                </VerticalStackLayout>
+            </Border>
+
+            <Label Text="Referência C# (todos os facilitadores)" Style="{StaticResource SectionTitle}" />
+            <VerticalStackLayout x:Name="CardsHost" Spacing="0" />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

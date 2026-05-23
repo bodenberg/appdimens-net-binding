@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:dimen="clr-namespace:AppDimens.Maui.Xaml;assembly=AppDimens.Maui.Xaml"
+             xmlns:sdp="clr-namespace:AppDimens.Maui.Markup;assembly=AppDimens.Maui.Markup"
+             x:Class="AppDimens.Maui.Sample.Views.BenchmarkPage"
+             Title="Benchmark">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="{sdp:20}" Spacing="{sdp:8}">
+            <Label Text="Benchmark" Style="{StaticResource PageTitle}" />
+            <Label Text="50.000 iterações por teste (após warmup). Valores em ns/op."
+                   Style="{StaticResource Caption}" Margin="{sdp:8}" />
+
+            <Button x:Name="RunButton" Text="Executar benchmark" Style="{StaticResource PrimaryButton}" Clicked="OnRunClicked" />
+            <ActivityIndicator x:Name="Spinner" IsRunning="False" IsVisible="False" Color="{StaticResource Accent}" />
+            <Label x:Name="StatusLabel" Style="{StaticResource Caption}" />
+
+            <VerticalStackLayout x:Name="ResultsHost" Spacing="{sdp:8}" Margin="{sdp:8}" />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

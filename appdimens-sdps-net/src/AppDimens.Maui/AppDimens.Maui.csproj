@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>net8.0;net9.0;net10.0</TargetFrameworks>
+    <RootNamespace>AppDimens.Maui</RootNamespace>
+    <AssemblyName>AppDimens.Maui</AssemblyName>
+    <Description>AppDimens SDP for .NET MAUI — responsive dimensions with Android parity.</Description>
+    <IsPackable>true</IsPackable>
+  </PropertyGroup>
+  <ItemGroup>
+    <TrimmerRootDescriptor Include="ILLink.Descriptors.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Maui.Essentials" Version="$(MauiVersion)" />
+    <PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AppDimens.Maui.Core\AppDimens.Maui.Core.csproj" />
+    <ProjectReference Include="..\AppDimens.Maui.Inverters\AppDimens.Maui.Inverters.csproj" />
+    <ProjectReference Include="..\AppDimens.Maui.Responsive\AppDimens.Maui.Responsive.csproj" />
+  </ItemGroup>
+</Project>
