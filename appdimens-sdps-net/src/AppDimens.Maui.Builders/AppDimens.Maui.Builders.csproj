@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>net8.0;net9.0;net10.0</TargetFrameworks>
+    <RootNamespace>AppDimens.Maui.Builders</RootNamespace>
+    <AssemblyName>AppDimens.Maui.Builders</AssemblyName>
+    <Description>Responsive builders and DimenScaled for AppDimens MAUI SDP.</Description>
+    <IsPackable>true</IsPackable>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AppDimens.Maui\AppDimens.Maui.csproj" />
+    <ProjectReference Include="..\AppDimens.Maui.Core\AppDimens.Maui.Core.csproj" />
+    <ProjectReference Include="..\AppDimens.Maui.Inverters\AppDimens.Maui.Inverters.csproj" />
+  </ItemGroup>
+</Project>

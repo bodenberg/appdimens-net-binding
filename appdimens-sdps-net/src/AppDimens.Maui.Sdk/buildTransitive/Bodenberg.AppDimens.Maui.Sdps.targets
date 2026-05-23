@@ -1,0 +1,7 @@
+<Project>
+  <!-- NuGet: auto-imported via buildTransitive/Bodenberg.AppDimens.Maui.Sdps.targets -->
+  <Import Project="$(MSBuildThisFileDirectory)..\build\Bodenberg.AppDimens.Maui.Sdps.targets"
+          Condition="Exists('$(MSBuildThisFileDirectory)..\build\Bodenberg.AppDimens.Maui.Sdps.targets')" />
+  <Import Project="$(MSBuildThisFileDirectory)..\..\build\Bodenberg.AppDimens.Maui.Sdps.targets"
+          Condition="!Exists('$(MSBuildThisFileDirectory)..\build\Bodenberg.AppDimens.Maui.Sdps.targets') AND Exists('$(MSBuildThisFileDirectory)..\..\build\Bodenberg.AppDimens.Maui.Sdps.targets')" />
+</Project>

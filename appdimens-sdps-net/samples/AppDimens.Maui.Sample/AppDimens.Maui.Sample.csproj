@@ -1,0 +1,83 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>net10.0-android</TargetFrameworks>
+    <TargetFrameworks Condition="!$([MSBuild]::IsOSPlatform('linux'))">$(TargetFrameworks);net10.0-ios;net10.0-maccatalyst</TargetFrameworks>
+    <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net10.0-windows10.0.19041.0</TargetFrameworks>
+
+    <OutputType>Exe</OutputType>
+    <RootNamespace>AppDimens.Maui.Sample</RootNamespace>
+    <AssemblyName>AppDimens.Maui.Sample</AssemblyName>
+    <Description>Cross-platform AppDimens MAUI SDP sample app.</Description>
+    <IsPackable>false</IsPackable>
+    <UseMaui>true</UseMaui>
+    <SingleProject>true</SingleProject>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+
+    <ApplicationTitle>AppDimens</ApplicationTitle>
+    <ApplicationId>com.bodenberg.appdimens.sample</ApplicationId>
+    <ApplicationDisplayVersion>1.0.1</ApplicationDisplayVersion>
+    <ApplicationVersion>1</ApplicationVersion>
+
+    <WindowsPackageType>None</WindowsPackageType>
+
+    <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">15.0</SupportedOSPlatformVersion>
+    <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">15.0</SupportedOSPlatformVersion>
+    <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">24</SupportedOSPlatformVersion>
+    <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</SupportedOSPlatformVersion>
+    <TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
+
+    <MauiVersion>10.0.20</MauiVersion>
+    <JavaSdkDirectory Condition="'$(JavaSdkDirectory)' == '' and Exists('/usr/lib/jvm/java-21-openjdk')">/usr/lib/jvm/java-21-openjdk</JavaSdkDirectory>
+  </PropertyGroup>
+
+  <!-- Avoid SIGABRT on startup (x86_64 emulator / Clear Storage).
+       https://github.com/dotnet/android/issues/10708 — store only .so uncompressed, never .dll -->
+  <PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
+    <AndroidStoreUncompressedFileExtensions>.so</AndroidStoreUncompressedFileExtensions>
+    <AndroidCreatePackagePerAbi>true</AndroidCreatePackagePerAbi>
+    <RuntimeIdentifiers Condition="$([MSBuild]::IsOSPlatform('linux'))">android-x64</RuntimeIdentifiers>
+  </PropertyGroup>
+  <!-- Debug: embed assemblies in APK (same profile as Release; runs on emulator without IDE fast deploy) -->
+  <PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android' AND '$(Configuration)' == 'Debug'">
+    <EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
+    <AndroidUseFastDeployment>false</AndroidUseFastDeployment>
+  </PropertyGroup>
+  <!-- Release: embed assemblies in APK (stable after Clear Storage) -->
+  <PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android' AND '$(Configuration)' == 'Release'">
+    <EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
+    <AndroidUseFastDeployment>false</AndroidUseFastDeployment>
+  </PropertyGroup>
+
+  <!-- Dimen markup requires Runtime inflator (Padding→Thickness via IProvideValueTarget) -->
+  <ItemGroup>
+    <MauiXaml Update="Views\**\*.xaml" Inflator="Runtime" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#6366F1" />
+    <MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#0F172A" BaseSize="128,128" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\AppDimens.Maui.Sdk\AppDimens.Maui.Sdk.csproj" />
+    <!-- Demo APIs (extensions, XAML markup); NuGet package exposes all via Sdk at runtime -->
+    <ProjectReference Include="..\..\src\AppDimens.Maui.Extensions\AppDimens.Maui.Extensions.csproj" />
+    <ProjectReference Include="..\..\src\AppDimens.Maui.Markup\AppDimens.Maui.Markup.csproj" />
+    <ProjectReference Include="..\..\src\AppDimens.Maui.Xaml\AppDimens.Maui.Xaml.csproj" />
+    <ProjectReference Include="..\..\src\AppDimens.Maui.Helpers\AppDimens.Maui.Helpers.csproj" />
+    <ProjectReference Include="..\..\src\AppDimens.Maui.Builders\AppDimens.Maui.Builders.csproj" />
+    <ProjectReference Include="..\..\src\AppDimens.Maui.Core\AppDimens.Maui.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\src\AppDimens.Maui.Resources\Generated\**\*">
+      <Link>Generated\%(RecursiveDir)%(Filename)%(Extension)</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+</Project>

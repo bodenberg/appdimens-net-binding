@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<linker>
+  <!-- Long XAML markup ({dimen:Sdp Value=16}, facilitators, etc.) is resolved at runtime by type name. -->
+  <assembly fullname="AppDimens.Maui.Xaml" preserve="all" />
+</linker>

@@ -1,0 +1,19 @@
+<Project>
+  <!--
+    Roots XAML-only assemblies for IL trimming (Release / NativeAOT).
+    NuGet: imported via buildTransitive/Bodenberg.AppDimens.Maui.Sdps.targets.
+    ProjectReference apps: AppDimens.Maui/ILLink.Descriptors.xml also roots these assemblies.
+  -->
+  <ItemGroup>
+    <TrimmerRootAssembly Include="AppDimens.Maui.Markup" RootMode="All" />
+    <TrimmerRootAssembly Include="AppDimens.Maui.Xaml" RootMode="All" />
+  </ItemGroup>
+
+  <Target Name="_AppDimensMauiSdpsRootConverters"
+          BeforeTargets="_RunILLink"
+          Condition="@(ReferencePath->WithMetadataValue('Filename', 'AppDimens.Maui.Converters')) != ''">
+    <ItemGroup>
+      <TrimmerRootAssembly Include="AppDimens.Maui.Converters" RootMode="All" />
+    </ItemGroup>
+  </Target>
+</Project>

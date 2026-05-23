@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+       xmlns:views="clr-namespace:AppDimens.Maui.Sample.Views"
+       x:Class="AppDimens.Maui.Sample.AppShell"
+       Shell.FlyoutBehavior="Disabled"
+       Shell.NavBarHasShadow="False"
+       Shell.BackgroundColor="{StaticResource Surface}"
+       Shell.ForegroundColor="{StaticResource TextPrimary}"
+       Shell.TitleColor="{StaticResource TextPrimary}"
+       Shell.TabBarBackgroundColor="{StaticResource Surface}"
+       Shell.TabBarTitleColor="{StaticResource TextSecondary}"
+       Shell.TabBarUnselectedColor="{StaticResource TextSecondary}"
+       Shell.TabBarForegroundColor="{StaticResource PrimaryLight}"
+       Title="AppDimens">
+
+    <ShellContent Title="Início" ContentTemplate="{DataTemplate views:HomePage}" Route="home" />
+    <ShellContent Title="Dimensões" ContentTemplate="{DataTemplate views:BaseDimensPage}" Route="dimens" />
+    <ShellContent Title="Inversores" ContentTemplate="{DataTemplate views:InvertersPage}" Route="inverters" />
+    <ShellContent Title="Avançado" ContentTemplate="{DataTemplate views:AdvancedPage}" Route="advanced" />
+    <ShellContent Title="Benchmark" ContentTemplate="{DataTemplate views:BenchmarkPage}" Route="benchmark" />
+</Shell>

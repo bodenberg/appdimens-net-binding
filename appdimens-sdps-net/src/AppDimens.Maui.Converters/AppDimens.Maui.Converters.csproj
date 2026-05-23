@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>net8.0;net9.0;net10.0</TargetFrameworks>
+    <RootNamespace>AppDimens.Maui.Converters</RootNamespace>
+    <AssemblyName>AppDimens.Maui.Converters</AssemblyName>
+    <Description>IValueConverter bindings for AppDimens MAUI SDP.</Description>
+    <IsPackable>true</IsPackable>
+    <IsTrimmable>true</IsTrimmable>
+  </PropertyGroup>
+  <ItemGroup>
+    <TrimmerRootDescriptor Include="ILLink.Descriptors.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AppDimens.Maui\AppDimens.Maui.csproj" />
+    <ProjectReference Include="..\AppDimens.Maui.Core\AppDimens.Maui.Core.csproj" />
+  </ItemGroup>
+</Project>

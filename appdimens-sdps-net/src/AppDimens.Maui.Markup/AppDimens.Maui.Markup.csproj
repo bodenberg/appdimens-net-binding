@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>net8.0;net9.0;net10.0</TargetFrameworks>
+    <RootNamespace>AppDimens.Maui.Markup</RootNamespace>
+    <AssemblyName>AppDimens.Maui.Markup</AssemblyName>
+    <Description>Short-form XAML markup extensions: {sdp:16}, {ssp:18}, etc.</Description>
+    <IsPackable>true</IsPackable>
+    <IsTrimmable>true</IsTrimmable>
+  </PropertyGroup>
+  <ItemGroup>
+    <TrimmerRootDescriptor Include="ILLink.Descriptors.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Maui.Controls.Xaml" Version="$(MauiVersion)" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AppDimens.Maui\AppDimens.Maui.csproj" />
+    <ProjectReference Include="..\AppDimens.Maui.Core\AppDimens.Maui.Core.csproj" />
+    <ProjectReference Include="..\AppDimens.Maui.Inverters\AppDimens.Maui.Inverters.csproj" />
+    <ProjectReference Include="..\AppDimens.Maui.Builders\AppDimens.Maui.Builders.csproj" />
+    <ProjectReference Include="..\AppDimens.Maui.Helpers\AppDimens.Maui.Helpers.csproj" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,7 @@
+<Project>
+  <!-- MAUI apps only (ProjectReference workflow). -->
+  <Import Project="$(MSBuildThisFileDirectory)src/build/AppDimens.Maui.Trimming.targets"
+          Condition="'$(UseMaui)' == 'true' AND '$(DisableAppDimensMauiTrimming)' != 'true' AND Exists('$(MSBuildThisFileDirectory)src/build/AppDimens.Maui.Trimming.targets')" />
+  <Import Project="$(MSBuildThisFileDirectory)src/build/AppDimens.Maui.ShortMarkup.targets"
+          Condition="'$(UseMaui)' == 'true' AND '$(DisableAppDimensShortMarkupExpansion)' != 'true' AND Exists('$(MSBuildThisFileDirectory)src/build/AppDimens.Maui.ShortMarkup.targets')" />
+</Project>
