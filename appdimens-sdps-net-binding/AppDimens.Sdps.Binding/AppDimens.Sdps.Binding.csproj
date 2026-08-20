@@ -70,18 +70,18 @@
 
   <!-- net8: versões estáveis compatíveis com o TFM mais antigo -->
   <ItemGroup Condition="$(TargetFramework.StartsWith('net8.0-android'))">
-    <PackageReference Include="Xamarin.Kotlin.StdLib" Version="2.1.50" />
-    <PackageReference Include="Xamarin.AndroidX.Core" Version="1.6.0" />
-    <PackageReference Include="Xamarin.AndroidX.Window" Version="1.0.0" />
-    <PackageReference Include="Xamarin.AndroidX.Lifecycle.Runtime" Version="2.5.1" />
+    <PackageReference Include="Xamarin.Kotlin.StdLib" Version="2.2.21" />
+    <PackageReference Include="Xamarin.AndroidX.Core" Version="1.16.0.3" />
+    <PackageReference Include="Xamarin.AndroidX.Window" Version="1.4.0.1" />
+    <PackageReference Include="Xamarin.AndroidX.Lifecycle.Runtime" Version="2.9.4" />
   </ItemGroup>
 
   <!-- net9: versões intermediárias compatíveis com net9 -->
   <ItemGroup Condition="$(TargetFramework.StartsWith('net9.0-android'))">
     <PackageReference Include="Xamarin.Kotlin.StdLib" Version="2.3.21" />
-    <PackageReference Include="Xamarin.AndroidX.Core" Version="1.11.0" />
-    <PackageReference Include="Xamarin.AndroidX.Window" Version="1.2.0" />
-    <PackageReference Include="Xamarin.AndroidX.Lifecycle.Runtime" Version="2.7.0" />
+    <PackageReference Include="Xamarin.AndroidX.Core" Version="1.17.0.2" />
+    <PackageReference Include="Xamarin.AndroidX.Window" Version="1.5.1.2" />
+    <PackageReference Include="Xamarin.AndroidX.Lifecycle.Runtime" Version="2.10.0.2" />
   </ItemGroup>
 
   <!-- net10 / net11: alinhados ao POM Gradle appdimens-sdps 3.1.7; NuGet pins usam os pacotes Xamarin publicados correspondentes -->
