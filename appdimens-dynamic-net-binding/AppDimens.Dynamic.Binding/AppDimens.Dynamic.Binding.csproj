@@ -4,10 +4,17 @@
     <!-- Impede glob implícito de *.aar sob Jars/Reference (Compose/Window) pelo SDK Android -->
     <DefaultItemExcludes>$(DefaultItemExcludes);Jars\Reference\**\*;Maven\**</DefaultItemExcludes>
 
-    <TargetFramework>net10.0-android</TargetFramework>
+    <!-- Compatível com apps net8–11 Android / MAUI Android.
+         API level no TFM (34/35/36/37) é exigido pelos pacotes Xamarin.AndroidX.
+         net11 só entra quando o SDK em uso é 11+ (evita NETSDK1139 no SDK 10). -->
+    <TargetFrameworks>net8.0-android34.0;net9.0-android35.0;net10.0-android36.0</TargetFrameworks>
+    <TargetFrameworks Condition="$([MSBuild]::VersionGreaterThanOrEquals('$(NETCoreSdkVersion)', '11.0'))">$(TargetFrameworks);net11.0-android37.0</TargetFrameworks>
     <SupportedOSPlatformVersion>24</SupportedOSPlatformVersion>
+    <!-- Necessário quando o Manifest da AAR declara uses-sdk menor que o projeto -->
     <AndroidMinSdkVersion>24</AndroidMinSdkVersion>
 
+    <!-- net8-android workload marcado EOL em SDKs novos — ainda suportamos consumidores net8 -->
+    <CheckEolTargetFramework>false</CheckEolTargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>

@@ -39,25 +39,33 @@ if [[ ${#BUILT_TFMS[@]} -eq 0 ]]; then
   exit 1
 fi
 
-python3 - "$STAGING" "$ROOT/AppDimens.Sdps.Binding/bin/Release" "${BUILT_TFMS[@]}" <<'PY'
+VERSION="$(sed -n 's:.*<Version>\([^<]*\)</Version>.*:\1:p' AppDimens.Sdps.Binding/AppDimens.Sdps.Binding.csproj | head -1)"
+if [[ -z "$VERSION" ]]; then
+  echo "Could not read <Version> from AppDimens.Sdps.Binding.csproj" >&2
+  exit 1
+fi
+
+python3 - "$STAGING" "$ROOT/AppDimens.Sdps.Binding/bin/Release" "${BUILT_TFMS[@]}" "$VERSION" <<'PY'
 import sys, zipfile
 from pathlib import Path
 
 staging = Path(sys.argv[1])
 out_dir = Path(sys.argv[2])
-tfms = sys.argv[3:]
+tfms = sys.argv[3:-1]
+version = sys.argv[-1]
+pkg_name = f"Bodenberg.AppDimens.Sdps.{version}.nupkg"
 out_dir.mkdir(parents=True, exist_ok=True)
 
 # Prefer net10 base nuspec when present
 base_tfm = next((t for t in ("net10.0-android36.0", "net9.0-android35.0", "net8.0-android34.0", "net11.0-android37.0") if t in tfms), tfms[0])
 merged = staging / "merged"
 merged.mkdir()
-with zipfile.ZipFile(staging / f"out-{base_tfm}" / "Bodenberg.AppDimens.Sdps.3.6.0.nupkg") as zf:
+with zipfile.ZipFile(staging / f"out-{base_tfm}" / pkg_name) as zf:
     zf.extractall(merged)
 
 lib = merged / "lib"
 for tfm in tfms:
-    with zipfile.ZipFile(staging / f"out-{tfm}" / "Bodenberg.AppDimens.Sdps.3.6.0.nupkg") as zf:
+    with zipfile.ZipFile(staging / f"out-{tfm}" / pkg_name) as zf:
         for name in zf.namelist():
             if name.startswith("lib/") and not name.endswith("/"):
                 target = merged / name
@@ -66,16 +74,16 @@ for tfm in tfms:
 
 deps = {
     "net8.0-android34.0": [
-        ("Xamarin.AndroidX.Core", "1.16.0.3"),
-        ("Xamarin.AndroidX.Lifecycle.Runtime", "2.9.4"),
-        ("Xamarin.AndroidX.Window", "1.4.0.1"),
-        ("Xamarin.Kotlin.StdLib", "2.2.21"),
+        ("Xamarin.AndroidX.Core", "1.19.0.1"),
+        ("Xamarin.AndroidX.Lifecycle.Runtime", "2.11.0.1"),
+        ("Xamarin.AndroidX.Window", "1.5.1.3"),
+        ("Xamarin.Kotlin.StdLib", "2.4.0.1"),
     ],
     "net9.0-android35.0": [
-        ("Xamarin.AndroidX.Core", "1.17.0.2"),
-        ("Xamarin.AndroidX.Lifecycle.Runtime", "2.10.0.2"),
-        ("Xamarin.AndroidX.Window", "1.5.1.2"),
-        ("Xamarin.Kotlin.StdLib", "2.3.21"),
+        ("Xamarin.AndroidX.Core", "1.19.0.1"),
+        ("Xamarin.AndroidX.Lifecycle.Runtime", "2.11.0.1"),
+        ("Xamarin.AndroidX.Window", "1.5.1.3"),
+        ("Xamarin.Kotlin.StdLib", "2.4.0.1"),
     ],
     "net10.0-android36.0": [
         ("Xamarin.AndroidX.Core", "1.19.0.1"),
@@ -108,7 +116,7 @@ if n != 1:
     raise SystemExit("failed to rewrite nuspec dependencies")
 nuspec.write_text(text2)
 
-out = out_dir / "Bodenberg.AppDimens.Sdps.3.6.0.nupkg"
+out = out_dir / pkg_name
 if out.exists():
     out.unlink()
 with zipfile.ZipFile(out, "w", zipfile.ZIP_DEFLATED) as zf:

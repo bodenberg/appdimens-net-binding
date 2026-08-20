@@ -2,7 +2,6 @@ using Android.Content.PM;
 using Android.Content.Res;
 using Com.Appdimens.Sdps;
 using Com.Appdimens.Sdps.Code;
-using Com.Appdimens.Sdps.Common;
 
 namespace AppDimens.Sdps.SmokeTest;
 

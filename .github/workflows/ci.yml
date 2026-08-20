@@ -50,9 +50,4 @@ jobs:
         run: chmod +x scripts/sync-aar-from-maven.sh && ./scripts/sync-aar-from-maven.sh
       - name: Build solution
         working-directory: ${{ matrix.module }}
-        run: |
-          if [ "${{ matrix.module }}" = "appdimens-sdps-net-binding" ]; then
-            dotnet build AppDimens.Sdps.Binding/AppDimens.Sdps.Binding.csproj -c Release -f net10.0-android36.0 /m:1
-          else
-            dotnet build -c Release -f net10.0-android /m:1
-          fi
+        run: dotnet build -c Release /m:1
