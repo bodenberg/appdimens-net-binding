@@ -1,6 +1,6 @@
 # Bodenberg.AppDimens.Maui.Sdps
 
-**Fully native .NET MAUI** responsive sizing library with architectural, functional, and ergonomic parity with [AppDimens SDP Android](https://github.com/bodenberg/appdimens-sdps) v3.1.5.
+**Fully native .NET MAUI** responsive sizing library with architectural, functional, and ergonomic parity with [AppDimens SDP Android](https://github.com/bodenberg/appdimens-sdps) v3.1.7.
 
 It brings the Android experience of `@dimen/_16sdp`, orientation inverters, discrete buckets, aspect ratio, and conditional builders to MAUI — **with no JNI bindings, AARs, or embedded Android code**.
 

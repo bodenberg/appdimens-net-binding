@@ -1,7 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <DefaultItemExcludes>$(DefaultItemExcludes);Jars\Reference\**\*</DefaultItemExcludes>
+    <!-- Impede glob implícito de *.aar sob Jars/Reference (Compose/Window) pelo SDK Android -->
+    <DefaultItemExcludes>$(DefaultItemExcludes);Jars\Reference\**\*;Maven\**</DefaultItemExcludes>
 
     <TargetFramework>net10.0-android</TargetFramework>
     <SupportedOSPlatformVersion>24</SupportedOSPlatformVersion>
@@ -28,7 +29,7 @@
     </PackageReleaseNotes>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/bodenberg/appdimens</PackageProjectUrl>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageReadmeFile>..\README.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/bodenberg/appdimens-ssps</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>android;binding;maui;xamarin;appdimens;ssp;hsp;wsp;sp;typography;kotlin</PackageTags>

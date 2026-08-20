@@ -1,8 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <!-- Impede glob implícito de *.aar sob Jars/Reference (Compose) pelo SDK Android -->
-    <DefaultItemExcludes>$(DefaultItemExcludes);Jars\Reference\**\*</DefaultItemExcludes>
+    <!-- Impede glob implícito de *.aar sob Jars/Reference (Compose/Window) pelo SDK Android -->
+    <DefaultItemExcludes>$(DefaultItemExcludes);Jars\Reference\**\*;Maven\**</DefaultItemExcludes>
 
     <TargetFramework>net10.0-android</TargetFramework>
     <SupportedOSPlatformVersion>24</SupportedOSPlatformVersion>
@@ -29,7 +29,7 @@
     </PackageReleaseNotes>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/bodenberg/appdimens</PackageProjectUrl>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageReadmeFile>..\README.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/bodenberg/appdimens-dynamic</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>android;binding;maui;xamarin;appdimens;dynamic;dp;sp;responsive;kotlin;window</PackageTags>
@@ -62,11 +62,7 @@
   </ItemGroup>
 
   <!-- Generator omits `new` on nested sealed subclasses' _members (CS0108). Patch after bind. -->
-  <Target Name="_FixResizeBoundNestedMembersCs0108"
-          AfterTargets="GenerateBindings"
-          BeforeTargets="CoreCompile"
-          Condition="Exists('$(IntermediateOutputPath)generated\src\Com.Appdimens.Dynamic.Core.ResizeBound.cs')">
-    <Exec Command="sed -i 's/static readonly JniPeerMembers _members = new XAPeerMembers (\&quot;com\/appdimens\/dynamic\/core\/ResizeBound\$/static new readonly JniPeerMembers _members = new XAPeerMembers (\&quot;com\/appdimens\/dynamic\/core\/ResizeBound$/g' &quot;$(IntermediateOutputPath)generated/src/Com.Appdimens.Dynamic.Core.ResizeBound.cs&quot;" />
-  </Target>
+  <!-- NOTE: The previous sed-based patch was broken on Linux (wrong class name, path separators, regex terminator).
+       If CS0108 reappears on ResizeBound, re-add a corrected post-build fix targeting JniPeerMembers with Linux paths. -->
 
 </Project>

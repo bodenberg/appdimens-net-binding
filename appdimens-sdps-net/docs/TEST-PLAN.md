@@ -16,7 +16,7 @@
 
 ## Bindings (CI)
 
-- `sync-aar-from-maven.sh 3.1.5` + `dotnet build -c Release` per binding solution
+- `sync-aar-from-maven.sh` + `dotnet build -c Release` per binding solution
 
 ## Manual / E2E (pre-release)
 

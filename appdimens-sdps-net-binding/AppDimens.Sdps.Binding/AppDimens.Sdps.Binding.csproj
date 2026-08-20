@@ -40,7 +40,7 @@
     </PackageReleaseNotes>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/bodenberg/appdimens</PackageProjectUrl>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageReadmeFile>..\README.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/bodenberg/appdimens-sdps</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>android;binding;maui;xamarin;appdimens;sdp;hdp;wdp;kotlin;window;foldable;net8;net9;net10;net11</PackageTags>
@@ -84,7 +84,7 @@
     <PackageReference Include="Xamarin.AndroidX.Lifecycle.Runtime" Version="2.10.0.2" />
   </ItemGroup>
 
-  <!-- net10 / net11: alinhados ao POM Gradle appdimens-sdps 3.1.7 (kotlin 2.4.10, core 1.19.0, window 1.5.1) -->
+  <!-- net10 / net11: alinhados ao POM Gradle appdimens-sdps 3.1.7; NuGet pins usam os pacotes Xamarin publicados correspondentes -->
   <ItemGroup Condition="$(TargetFramework.StartsWith('net10.0-android')) Or $(TargetFramework.StartsWith('net11.0-android'))">
     <PackageReference Include="Xamarin.Kotlin.StdLib" Version="2.4.0.1" />
     <PackageReference Include="Xamarin.AndroidX.Core" Version="1.19.0.1" />

@@ -72,7 +72,7 @@ appdimens-net-binding/
 | **JDK** | **17 or 21** for Xamarin.Android on .NET 10 |
 | **Android SDK** | Platform **36+** for local binding builds |
 
-Each subfolder includes `Directory.Build.props` with common paths (`ANDROID_HOME`, `~/Android/Sdk`, OpenJDK 17/21) so command-line builds work without extra environment setup on many Linux/macOS machines.
+The `appdimens-sdps-net/` module includes `Directory.Build.props` with common paths (`ANDROID_HOME`, `~/Android/Sdk`, OpenJDK 17/21) so command-line MAUI builds work without extra environment setup on many Linux/macOS machines. The Android binding modules do not include this file.
 
 ---
 

@@ -1,4 +1,4 @@
-# AppDimens SDP — Parity Matrix (Android v3.1.5 → MAUI)
+# AppDimens SDP — Parity Matrix (Android v3.1.7 → MAUI)
 
 ## Generated resources (MAUI layout v2)
 

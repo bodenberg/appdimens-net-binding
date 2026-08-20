@@ -17,7 +17,7 @@ jobs:
       - uses: actions/checkout@v6
       - uses: actions/setup-dotnet@v5
         with:
-          global-json-file: global.json
+          global-json-file: appdimens-sdps-net/global.json
       - name: Generate dimens (layout v2)
         run: python3 scripts/generate-dimens.py
       - name: Restore
@@ -42,12 +42,12 @@ jobs:
       - uses: actions/checkout@v6
       - uses: actions/setup-dotnet@v5
         with:
-          global-json-file: global.json
+          global-json-file: ${{ matrix.module }}/global.json
       - name: Install Android workload
         run: dotnet workload install android
       - name: Sync AAR from Maven
         working-directory: ${{ matrix.module }}
-        run: chmod +x scripts/sync-aar-from-maven.sh && ./scripts/sync-aar-from-maven.sh 3.1.5
+        run: chmod +x scripts/sync-aar-from-maven.sh && ./scripts/sync-aar-from-maven.sh
       - name: Build solution
         working-directory: ${{ matrix.module }}
         run: dotnet build -c Release

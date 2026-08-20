@@ -58,7 +58,6 @@ google-services.json
 *.sln.docstates
 
 .DS_Store
-NUGET-PUBLISH.md
 CLAUDE.local.md
 CHANGELOG.md
 
