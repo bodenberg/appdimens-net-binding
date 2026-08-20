@@ -58,13 +58,6 @@
     <None Include="..\README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Xamarin.Kotlin.StdLib" Version="2.3.21" />
-    <PackageReference Include="Xamarin.AndroidX.Core" Version="1.18.0" />
-    <PackageReference Include="Xamarin.AndroidX.Window" Version="1.5.1.2" />
-    <PackageReference Include="Xamarin.AndroidX.Lifecycle.Runtime" Version="2.10.0.2" />
-  </ItemGroup>
-
   <!-- net8: versões compatíveis com net8.0-android21.0 -->
   <ItemGroup Condition="$(TargetFramework.StartsWith('net8.0-android'))">
     <PackageReference Include="Xamarin.Kotlin.StdLib" Version="2.2.21" />
