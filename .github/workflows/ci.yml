@@ -52,7 +52,7 @@ jobs:
         working-directory: ${{ matrix.module }}
         run: |
           if [ "${{ matrix.module }}" = "appdimens-sdps-net-binding" ]; then
-            dotnet build -c Release -f net10.0-android36.0
+            dotnet build -c Release -f net10.0-android36.0 /m:1
           else
-            dotnet build -c Release -f net10.0-android
+            dotnet build -c Release -f net10.0-android /m:1
           fi

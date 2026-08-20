@@ -29,7 +29,7 @@
     </PackageReleaseNotes>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/bodenberg/appdimens</PackageProjectUrl>
-    <PackageReadmeFile>..\README.md</PackageReadmeFile>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/bodenberg/appdimens-dynamic</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>android;binding;maui;xamarin;appdimens;dynamic;dp;sp;responsive;kotlin;window</PackageTags>
