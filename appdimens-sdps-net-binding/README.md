@@ -1,19 +1,19 @@
 # Bodenberg.AppDimens.Sdps
 
-**.NET 10 binding for Android** (`net10.0-android`) that wraps **[AppDimens SDPS](https://github.com/bodenberg/appdimens-sdps)** — responsive **layout** (`SDP` / `HDP` / `WDP`) and **typography** (`SSP` / `HSP` / `WSP`) in one library, backed by thousands of pre-generated **`@dimen`** resources, plus imperative APIs, **conditional facilitators**, **aspect-ratio** variants, **accessibility** text modes, and **foldable-aware** overloads.
+**.NET Android binding** (`net8.0-android` … `net11.0-android`) that wraps **[AppDimens SDPS](https://github.com/bodenberg/appdimens-sdps)** — responsive **layout** (`SDP` / `HDP` / `WDP`) and **typography** (`SSP` / `HSP` / `WSP`) in one library, backed by thousands of pre-generated **`@dimen`** resources, plus imperative APIs, **conditional facilitators**, **aspect-ratio** variants, **accessibility** text modes, and **foldable-aware** overloads.
 
 Kotlin/Java sources, XML naming, and Android-focused guides live upstream:
 
 **→ [bodenberg/appdimens-sdps](https://github.com/bodenberg/appdimens-sdps)**
 
-Maven artifact embedded in this package: **`io.github.bodenberg:appdimens-sdps`** [`3.1.5`](https://central.sonatype.com/artifact/io.github.bodenberg/appdimens-sdps/3.1.5).
+Maven artifact embedded in this package: **`io.github.bodenberg:appdimens-sdps`** [`3.1.7`](https://central.sonatype.com/artifact/io.github.bodenberg/appdimens-sdps/3.1.7).
 
 ---
 
 ## Install
 
 ```bash
-dotnet add package Bodenberg.AppDimens.Sdps --version 3.5.1.4
+dotnet add package Bodenberg.AppDimens.Sdps --version 3.6.0
 ```
 
 Pin a version explicitly when you rely on a specific package revision (see **Package version vs embedded AAR** below).
@@ -24,12 +24,12 @@ Pin a version explicitly when you rely on a specific package revision (see **Pac
 
 | Requirement | Notes |
 |-------------|--------|
-| **Target framework** | `net10.0-android` (.NET for Android / .NET MAUI Android) |
+| **Target frameworks** | **`net8.0-android34.0`**, **`net9.0-android35.0`**, **`net10.0-android36.0`**, **`net11.0-android37.0`** |
 | **Minimum Android API** | **24** (matches the packaged AAR) |
 | **Workload** | Android (`dotnet workload install android`) or MAUI |
-| **JDK** | **17 or 21** for the Xamarin.Android toolchain on .NET 10 |
+| **JDK** | **17 or 21** for the Xamarin.Android toolchain |
 
-Use **Android SDK platform 36+** (or MSBuild `InstallAndroidDependencies`) when building bindings locally on **.NET 10**.
+Use **Android SDK platform 36+** (or MSBuild `InstallAndroidDependencies`) when building bindings locally. **`net11.0-android`** requires a .NET 11 SDK with the Android workload (preview or stable).
 
 The AAR bundles **`values-sw*`** / **`values-w*`** / **`values-h*`** dimen XML (sizes **1–600**) for both **dp** and **sp** buckets.
 
@@ -50,7 +50,8 @@ The AAR bundles **`values-sw*`** / **`values-w*`** / **`values-h*`** dimen XML (
 | **Facilitators** | **`Rotate`**, **`Mode`**, **`Qualifier`**, **`Screen`** (+ **Plain** px variants for dp) |
 | **Builders** | **`DimenScaled`** (layout) and **`ScaledSp`** (text) — priority-based rule lists |
 | **Physical units** | **`DimenPhysicalUnits`** — mm / cm / inch helpers |
-| **Prefetch** | **`WarmupSdpsFactors`** — optional aspect-ratio factor warmup |
+| **Config helper** | **`SdpsConfig`** — warmup + `OnConfigurationChanged` refresh (C# addition) |
+| **Prefetch** | **`WarmupSdpsFactors`** / **`SdpsConfig.Warmup`** — aspect-ratio factor warmup |
 
 **SDPS** is the **all-in-one** responsive dimen package (layout + type). Use **[AppDimens SSPS](https://github.com/bodenberg/appdimens-ssps)** if you only need typography, or **[AppDimens Dynamic](https://github.com/bodenberg/appdimens-dynamic)** for code-only multi-strategy scaling without XML grids.
 
@@ -69,6 +70,7 @@ Public Kotlin **`@JvmStatic`** APIs appear under **`Com.Appdimens.Sdps.*`**:
 | **Extensions** | `DimenExtensionsKt`, `DimenSspExtensionsKt`, `DimenSspScaledKt` |
 | **Shared enums** | `Com.Appdimens.Sdps.Common` — `DpQualifier`, `Inverter`, `Orientation`, `UiModeType`, `UnitType` |
 | **AR factors** | `Com.Appdimens.Sdps.Core` — `AppDimensSdpsFactors` |
+| **Config orchestration** | `Com.Appdimens.Sdps.SdpsConfig` — warmup / ensure / config-change event |
 | **Compose (limited)** | `Com.Appdimens.Sdps.Compose.*` — see **Jetpack Compose** below |
 
 Foldable overloads accept **`AndroidX.Window.Layout.IFoldingFeature`** from **Xamarin.AndroidX.Window**.
@@ -80,6 +82,7 @@ Foldable overloads accept **`AndroidX.Window.Layout.IFoldingFeature`** from **Xa
 ```csharp
 using Android.App;
 using Android.OS;
+using Com.Appdimens.Sdps;
 using Com.Appdimens.Sdps.Code;
 
 [Activity(Label = "My App", MainLauncher = true)]
@@ -89,7 +92,7 @@ public class MainActivity : Activity
     {
         base.OnCreate(savedInstanceState);
 
-        DimenSdp.WarmupSdpsFactors(this);
+        SdpsConfig.Warmup(this);
 
         float paddingPx = DimenSdp.Sdp(this, 16);
         float cardHeight  = DimenSdp.Hdp(this, 120);
@@ -102,6 +105,79 @@ public class MainActivity : Activity
 ```
 
 Apply **`paddingPx`** / **`titlePx`** as pixel sizes on `View` layout params or `TextView.TextSize`.
+
+---
+
+## Screen status, cache, and configuration
+
+XML `@dimen` resources update when Android recreates the Activity or reloads resources. **Imperative** sizes already applied to Views **do not** rewrite themselves. Use **`SdpsConfig`** when the Activity handles configuration changes without recreation (or whenever you need a single refresh entry point).
+
+```csharp
+using Android.Content.PM;
+using Android.Content.Res;
+using Com.Appdimens.Sdps;
+using Com.Appdimens.Sdps.Code;
+
+[Activity(
+    Label = "My App",
+    MainLauncher = true,
+    ConfigurationChanges = ConfigChanges.Orientation
+        | ConfigChanges.ScreenSize
+        | ConfigChanges.ScreenLayout
+        | ConfigChanges.SmallestScreenSize
+        | ConfigChanges.UiMode
+        | ConfigChanges.Density)]
+public class MainActivity : Activity
+{
+    protected override void OnCreate(Bundle? savedInstanceState)
+    {
+        base.OnCreate(savedInstanceState);
+        SdpsConfig.Warmup(this);
+        SdpsConfig.DimensionsShouldRefresh += (_, _) => ApplyDimens();
+        ApplyDimens();
+    }
+
+    protected override void OnDestroy()
+    {
+        SdpsConfig.DimensionsShouldRefresh -= OnRefresh; // or -= lambda if stored
+        base.OnDestroy();
+    }
+
+    public override void OnConfigurationChanged(Configuration newConfig)
+    {
+        base.OnConfigurationChanged(newConfig);
+        SdpsConfig.OnConfigurationChanged(this, newConfig);
+        ApplyDimens();
+    }
+
+    void ApplyDimens()
+    {
+        float pad = DimenSdp.Sdp(this, 16);
+        float title = DimenSsp.Ssp(this, 20);
+        // Re-assign View.SetPadding / LayoutParameters / TextSize here.
+    }
+}
+```
+
+| API | When to use |
+|-----|-------------|
+| **`SdpsConfig.Warmup(Context)`** | App / Activity start (prefetch AR factors) |
+| **`SdpsConfig.EnsureUpToDate(Context)`** | Before reading `*a` variants if you did not go through `OnConfigurationChanged` |
+| **`SdpsConfig.OnConfigurationChanged(Context, Configuration)`** | Inside `Activity.OnConfigurationChanged` |
+| **`SdpsConfig.DimensionsShouldRefresh`** | Subscribe to re-apply View sizes after factors refresh |
+| **`AppDimensSdpsFactors.Instance.EnsureUpToDate`** | Same as EnsureUpToDate (AAR API) |
+
+**What updates automatically vs what does not**
+
+| Layer | On rotate / resize / UiMode / density |
+|-------|----------------------------------------|
+| Next `DimenSdp.Sdp` / `DimenSsp.Ssp` / facilitators | Yes — reads current `Resources` / configuration |
+| Aspect-ratio factors (`Sdpa`, …) after Ensure/Warmup | Yes — signature includes sw / w / h / densityDpi |
+| XML `@dimen` after Activity recreate | Yes |
+| Padding / sizes already set on Views | **No** — call your `ApplyDimens()` again |
+| Foldable posture | Re-query `IFoldingFeature` and resolve again |
+
+Facilitators that branch on **screen status** (`SdpRotate`, `SdpMode`, `SdpQualifier`, `SdpScreen`, builders) must be **re-evaluated** after configuration changes — they are not live bindings.
 
 ---
 
@@ -260,7 +336,8 @@ Naming pattern: **`_<n>sdp`**, **`_<n>hdp`**, **`_<n>wdp`**, **`_<n>ssp`**, **`_
 **`Sdpa`**, **`Sspa`**, **`Hdpa`**, … apply an **aspect-ratio multiplier** on top of the XML-resolved size (aligned with **appdimens-dynamic** when the same bucket is selected).
 
 ```csharp
-DimenSdp.WarmupSdpsFactors(this);
+SdpsConfig.Warmup(this);
+// or: DimenSdp.WarmupSdpsFactors(this);
 
 float layout = DimenSdp.Sdp(this, 32);
 float layoutAr = DimenSdp.Sdpa(this, 32);
@@ -269,7 +346,7 @@ float text = DimenSsp.Ssp(this, 16);
 float textAr = DimenSsp.Sspa(this, 16);
 ```
 
-Factors live in **`Com.Appdimens.Sdps.Core.AppDimensSdpsFactors`** and invalidate when screen geometry or density changes.
+Factors live in **`Com.Appdimens.Sdps.Core.AppDimensSdpsFactors`** and invalidate when screen geometry or density changes (`smallestScreenWidthDp`, `screenWidthDp`, `screenHeightDp`, `densityDpi`).
 
 ---
 
@@ -310,7 +387,7 @@ Also: unit conversions (**`MmToCm`**, **`InchToMm`**, …) and geometry helpers 
 
 The AAR includes Compose extensions (`16.sdp`, `18.ssp`, `scaledSp()`, facilitators, …) that require **`androidx.compose.runtime.Composer`**. With the current **class-parse** binding pipeline, **usable C# wrappers for most Compose helpers are not generated**.
 
-**Recommended for .NET:**
+**.NET does not have first-class Jetpack Compose support.** Prefer:
 
 - **`Com.Appdimens.Sdps.Code`** — Activities, Fragments, custom views, MAUI Android handlers  
 - **XML `@dimen/_Nsdp`** / **`_@dimen/_Nssp`** in layout resources  
@@ -322,10 +399,12 @@ The AAR includes Compose extensions (`16.sdp`, `18.ssp`, `scaledSp()`, facilitat
 
 | NuGet | Role |
 |-------|------|
-| **Xamarin.Kotlin.StdLib** | Kotlin runtime |
+| **Xamarin.Kotlin.StdLib** | Kotlin runtime (version pinned per TFM) |
 | **Xamarin.AndroidX.Core** | Core / resources |
 | **Xamarin.AndroidX.Window** | Foldables (`FoldingFeature`) |
 | **Xamarin.AndroidX.Lifecycle.Runtime** | Lifecycle alignment with upstream AAR |
+
+Pins differ slightly by TFM (`net8` … `net11`) so restore stays compatible across SDKs; **net10/net11** track the AAR POM (Kotlin 2.4.x, Core 1.19.x, Window 1.5.1).
 
 ---
 
@@ -333,10 +412,18 @@ The AAR includes Compose extensions (`16.sdp`, `18.ssp`, `scaledSp()`, facilitat
 
 | Layer | Version |
 |-------|---------|
-| **Maven / embedded `.aar`** | **`appdimens-sdps` 3.1.5** |
-| **NuGet** | **`3.5.1.4`** — `net10.0-android` and updated Xamarin AndroidX; Android binary still **3.1.5** |
+| **Maven / embedded `.aar`** | **`appdimens-sdps` 3.1.7** |
+| **NuGet** | **`3.6.0`** — multi-TFM net8–11 + `SdpsConfig` + AAR 3.1.7 |
 
-When Maven publishes **`3.5.1`**, run `./scripts/sync-aar-from-maven.sh 3.5.1` and align the fourth NuGet segment as needed.
+Reference copies of the Maven **`.pom`**, **`.module`**, and **`-javadoc.jar`** live under `AppDimens.Sdps.Binding/Maven/` (not loaded at runtime).
+
+When Maven publishes a newer AAR, run:
+
+```bash
+./scripts/sync-aar-from-maven.sh 3.1.7
+```
+
+Then update `<AndroidLibrary Include=...>` and the NuGet `<Version>` in the `.csproj`.
 
 ---
 
@@ -344,13 +431,17 @@ When Maven publishes **`3.5.1`**, run `./scripts/sync-aar-from-maven.sh 3.5.1` a
 
 ```bash
 cd appdimens-sdps-net-binding
-dotnet build AppDimens.Sdps.sln -c Release
+# Per TFM (recommended — each TFM with a matching .NET SDK / Android workload):
+dotnet build AppDimens.Sdps.Binding/AppDimens.Sdps.Binding.csproj -c Release -f net10.0-android36.0
+
+# Multi-TFM NuGet (net8–11) — builds each TFM then merges one .nupkg:
+./scripts/build-and-pack-all-tfms.sh
 ```
 
-Smoke test: **`AppDimens.Sdps.SmokeTest`**. See [NUGET-PUBLISH.md](NUGET-PUBLISH.md).
+Smoke test: **`AppDimens.Sdps.SmokeTest`** (exercises `SdpsConfig` + `OnConfigurationChanged`).
 
 ```bash
-./scripts/sync-aar-from-maven.sh 3.1.5
+dotnet build AppDimens.Sdps.SmokeTest/AppDimens.Sdps.SmokeTest.csproj -c Release -f net10.0-android36.0
 ```
 
 ---

@@ -15,10 +15,10 @@ Android implementation, XML naming, and feature documentation live in the **upst
 | [**Bodenberg.AppDimens.Dynamic**](https://www.nuget.org/packages/Bodenberg.AppDimens.Dynamic) | [`appdimens-dynamic-net-binding/`](appdimens-dynamic-net-binding/) | [appdimens-dynamic](https://github.com/bodenberg/appdimens-dynamic) | **Code-only** scaling — 15 strategies, no pre-built `@dimen` XML grids |
 | [**Bodenberg.AppDimens.Maui.Sdps**](https://www.nuget.org/packages/Bodenberg.AppDimens.Maui.Sdps) | [`appdimens-sdps-net/`](appdimens-sdps-net/) | [appdimens-sdps](https://github.com/bodenberg/appdimens-sdps) | **.NET MAUI nativo** — SDP/HDP/WDP/SSP sem binding Android (`net8` / `net9` / `net10`) |
 
-**Versões NuGet atuais:** bindings Android **`3.5.1.4`** · MAUI nativo **`3.5.2`** (veja cada README para a versão do AAR Maven embutido nos bindings).
+**Versões NuGet atuais:** **Sdps** binding **`3.6.0`** (AAR **3.1.7**, TFMs net8–11) · Ssps/Dynamic bindings **`3.5.1.4`** · MAUI nativo **`3.5.2`**.
 
 ```bash
-dotnet add package Bodenberg.AppDimens.Sdps --version 3.5.1.4
+dotnet add package Bodenberg.AppDimens.Sdps --version 3.6.0
 dotnet add package Bodenberg.AppDimens.Ssps --version 3.5.1.4
 dotnet add package Bodenberg.AppDimens.Dynamic --version 3.5.1.4
 dotnet add package Bodenberg.AppDimens.Maui.Sdps --version 3.5.2
@@ -67,7 +67,7 @@ appdimens-net-binding/
 | Requirement | Notes |
 |-------------|--------|
 | **.NET** | **10** with Android workload (`dotnet workload install android`) or MAUI |
-| **Target framework** | Bindings: `net10.0-android` · MAUI: `net8.0` / `net9.0` / `net10.0` |
+| **Target framework** | **Sdps** binding: `net8.0-android34.0` … `net11.0-android37.0` · outros bindings: `net10.0-android` · MAUI: `net8.0` / `net9.0` / `net10.0` |
 | **Minimum Android API** | **24** (matches packaged AARs) |
 | **JDK** | **17 or 21** for Xamarin.Android on .NET 10 |
 | **Android SDK** | Platform **36+** for local binding builds |
@@ -94,19 +94,21 @@ dotnet build -p:AndroidSdkDirectory=/path/to/Android/Sdk
 Refresh the embedded AAR after a new Maven release:
 
 ```bash
-./scripts/sync-aar-from-maven.sh 3.1.5
+./scripts/sync-aar-from-maven.sh 3.1.7
 # Update Jars/*.aar and <AndroidLibrary Include=...> in the .csproj when the filename changes
 ```
 
+Multi-TFM pack for **Sdps** (net8–11): `appdimens-sdps-net-binding/scripts/build-and-pack-all-tfms.sh`.
+
 ### Smoke-test APKs (binding validation)
 
-Minimal apps (`*.SmokeTest`) compile against each binding on **.NET 10**. To produce signed APKs for device/emulator testing:
+Minimal apps (`*.SmokeTest`) compile against each binding. **Sdps** smoke test covers **net8–11**. To produce signed APKs for device/emulator testing:
 
 ```bash
-dotnet publish AppDimens.Sdps.SmokeTest/AppDimens.Sdps.SmokeTest.csproj -c Release -f net10.0-android -p:AndroidPackageFormat=apk
+dotnet publish AppDimens.Sdps.SmokeTest/AppDimens.Sdps.SmokeTest.csproj -c Release -f net10.0-android36.0 -p:AndroidPackageFormat=apk
 ```
 
-Pre-built APKs for the current binding release are copied to [`artifacts/smoke-apks/`](artifacts/smoke-apks/) when generated locally (filenames include package id and version **3.5.1.4**).
+Pre-built APKs for the current binding release are copied to [`artifacts/smoke-apks/`](artifacts/smoke-apks/) when generated locally.
 
 ---
 
