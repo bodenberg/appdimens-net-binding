@@ -19,7 +19,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <!-- Biblioteca Java/Kotlin interoperável gerada pela tooling Android -->
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <NoWarn>$(NoWarn);1591;BG8605;BG8606;BG8401</NoWarn>
+    <NoWarn>$(NoWarn);1591;BG8605;BG8606;BG8401;NETSDK1202</NoWarn>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -68,11 +68,24 @@
     <None Include="Maven\appdimens-sdps-3.1.7-javadoc.jar" />
   </ItemGroup>
 
-  <!-- Runtime deps alinhados ao POM Gradle appdimens-sdps 3.1.7.
-       Usamos as mesmas versões para todos os TFMs porque o restore do NuGet
-       precisa resolver todos os frameworks de uma vez; separar por TFM
-       causa incompatibilidade com net8.0-android21.0 durante restore. -->
-  <ItemGroup>
+  <!-- net8: versões mais antigas compatíveis com net8.0-android21.0 durante restore multi-TFM -->
+  <ItemGroup Condition="$(TargetFramework.StartsWith('net8.0-android'))">
+    <PackageReference Include="Xamarin.Kotlin.StdLib" Version="2.2.21" />
+    <PackageReference Include="Xamarin.AndroidX.Core" Version="1.16.0.3" />
+    <PackageReference Include="Xamarin.AndroidX.Window" Version="1.4.0.1" />
+    <PackageReference Include="Xamarin.AndroidX.Lifecycle.Runtime" Version="2.9.4" />
+  </ItemGroup>
+
+  <!-- net9: versões intermediárias -->
+  <ItemGroup Condition="$(TargetFramework.StartsWith('net9.0-android'))">
+    <PackageReference Include="Xamarin.Kotlin.StdLib" Version="2.3.21" />
+    <PackageReference Include="Xamarin.AndroidX.Core" Version="1.17.0.2" />
+    <PackageReference Include="Xamarin.AndroidX.Window" Version="1.5.1.2" />
+    <PackageReference Include="Xamarin.AndroidX.Lifecycle.Runtime" Version="2.10.0.2" />
+  </ItemGroup>
+
+  <!-- net10/net11: versões alinhadas ao POM Gradle 3.1.7 -->
+  <ItemGroup Condition="$(TargetFramework.StartsWith('net10.0-android')) Or $(TargetFramework.StartsWith('net11.0-android'))">
     <PackageReference Include="Xamarin.Kotlin.StdLib" Version="2.4.0.1" />
     <PackageReference Include="Xamarin.AndroidX.Core" Version="1.19.0.1" />
     <PackageReference Include="Xamarin.AndroidX.Window" Version="1.5.1.3" />

@@ -48,6 +48,13 @@ jobs:
       - name: Sync AAR from Maven
         working-directory: ${{ matrix.module }}
         run: chmod +x scripts/sync-aar-from-maven.sh && ./scripts/sync-aar-from-maven.sh
-      - name: Build solution
+      - name: Build bindings
         working-directory: ${{ matrix.module }}
-        run: dotnet build -c Release /m:1
+        run: |
+          if [ "${{ matrix.module }}" = "appdimens-sdps-net-binding" ]; then
+            dotnet build AppDimens.Sdps.Binding/AppDimens.Sdps.Binding.csproj -c Release /m:1
+          elif [ "${{ matrix.module }}" = "appdimens-ssps-net-binding" ]; then
+            dotnet build AppDimens.Ssps.Binding/AppDimens.Ssps.Binding.csproj -c Release /m:1
+          else
+            dotnet build AppDimens.Dynamic.Binding/AppDimens.Dynamic.Binding.csproj -c Release /m:1
+          fi
