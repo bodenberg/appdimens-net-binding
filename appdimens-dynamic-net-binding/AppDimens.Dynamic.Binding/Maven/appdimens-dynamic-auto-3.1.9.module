@@ -1,0 +1,168 @@
+{
+  "formatVersion": "1.1",
+  "component": {
+    "group": "io.github.bodenberg",
+    "module": "appdimens-dynamic-auto",
+    "version": "3.1.9",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "9.5.0"
+    }
+  },
+  "variants": [
+    {
+      "name": "releaseVariantReleaseApiPublication",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.libraryelements": "aar",
+        "org.gradle.usage": "java-api"
+      },
+      "dependencies": [
+        {
+          "group": "io.github.bodenberg",
+          "module": "appdimens-dynamic",
+          "version": {
+            "requires": "3.1.9"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib",
+          "version": {
+            "requires": "2.4.10"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "appdimens-dynamic-auto-3.1.9.aar",
+          "url": "appdimens-dynamic-auto-3.1.9.aar",
+          "size": 132635,
+          "sha512": "f41bf738fcc127a2e5c4fcd559bb0c94a2906fb2fecb583cd2f3c860e3c9e6021aede1024e7734d767ae64996aa38129c4917ef4e0c649430ca10e4e03fef736",
+          "sha256": "fad3370677254c124b8545555a3f867fb794866c6381bd4494d883632af214ad",
+          "sha1": "3b2697c4dfaa87caf62541cbdaf0ea6fb062fa09",
+          "md5": "c016467aa0ed5ea9b17aed64fa3fbec6"
+        }
+      ]
+    },
+    {
+      "name": "releaseVariantReleaseRuntimePublication",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.libraryelements": "aar",
+        "org.gradle.usage": "java-runtime"
+      },
+      "dependencies": [
+        {
+          "group": "androidx.core",
+          "module": "core-ktx",
+          "version": {
+            "requires": "1.19.0"
+          }
+        },
+        {
+          "group": "androidx.compose",
+          "module": "compose-bom",
+          "version": {
+            "requires": "2026.06.01"
+          },
+          "attributes": {
+            "org.gradle.category": "platform"
+          }
+        },
+        {
+          "group": "androidx.compose.ui",
+          "module": "ui"
+        },
+        {
+          "group": "androidx.compose.runtime",
+          "module": "runtime"
+        },
+        {
+          "group": "androidx.window",
+          "module": "window",
+          "version": {
+            "requires": "1.5.1"
+          }
+        },
+        {
+          "group": "androidx.activity",
+          "module": "activity-compose",
+          "version": {
+            "requires": "1.13.0"
+          }
+        },
+        {
+          "group": "androidx.compose.ui",
+          "module": "ui-graphics"
+        },
+        {
+          "group": "androidx.compose.ui",
+          "module": "ui-tooling-preview"
+        },
+        {
+          "group": "androidx.compose.material3",
+          "module": "material3"
+        },
+        {
+          "group": "androidx.wear.compose",
+          "module": "compose-material-core",
+          "version": {
+            "requires": "1.6.2"
+          }
+        },
+        {
+          "group": "io.github.bodenberg",
+          "module": "appdimens-dynamic",
+          "version": {
+            "requires": "3.1.9"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib",
+          "version": {
+            "requires": "2.4.10"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "appdimens-dynamic-auto-3.1.9.aar",
+          "url": "appdimens-dynamic-auto-3.1.9.aar",
+          "size": 132635,
+          "sha512": "f41bf738fcc127a2e5c4fcd559bb0c94a2906fb2fecb583cd2f3c860e3c9e6021aede1024e7734d767ae64996aa38129c4917ef4e0c649430ca10e4e03fef736",
+          "sha256": "fad3370677254c124b8545555a3f867fb794866c6381bd4494d883632af214ad",
+          "sha1": "3b2697c4dfaa87caf62541cbdaf0ea6fb062fa09",
+          "md5": "c016467aa0ed5ea9b17aed64fa3fbec6"
+        }
+      ]
+    },
+    {
+      "name": "releaseVariantReleaseSourcePublication",
+      "attributes": {
+        "org.gradle.category": "documentation",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.docstype": "sources",
+        "org.gradle.usage": "java-runtime"
+      },
+      "files": [
+        {
+          "name": "appdimens-dynamic-auto-3.1.9-sources.jar",
+          "url": "appdimens-dynamic-auto-3.1.9-sources.jar",
+          "size": 55606,
+          "sha512": "b8b6f3aaac4848255eec82c1f061096507106c5d9c81e7a5d68063510f334b8d5676a4a96286f11c5c41932a67018882e2e0920fbaad2a016ca1fbfa979eff11",
+          "sha256": "f0b54c0b95488ed4654eafe1a012f46625cc97524fd2bfedb4ff3ddfe35c6721",
+          "sha1": "c45d4fe8c46c7cfa6ff790f81798a9b62f1035de",
+          "md5": "9668c7849b0f453b90916e0c594cca14"
+        }
+      ]
+    }
+  ]
+}

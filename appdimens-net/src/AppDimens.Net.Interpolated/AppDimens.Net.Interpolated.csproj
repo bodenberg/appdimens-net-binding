@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net8.0;net9.0;net10.0</TargetFrameworks>
+    <TargetFrameworks Condition="$([MSBuild]::VersionGreaterThanOrEquals('$(NETCoreSdkVersion)', '11.0'))">$(TargetFrameworks);net11.0</TargetFrameworks>
+    <RootNamespace>AppDimens.Net.Code.Interpolated</RootNamespace>
+    <AssemblyName>AppDimens.Net.Interpolated</AssemblyName>
+    <PackageId>AppDimens.Net.Interpolated</PackageId>
+    <Description>AppDimens .NET — Interpolated scaling strategy module.</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AppDimens.Net\AppDimens.Net.csproj" />
+  </ItemGroup>
+
+</Project>

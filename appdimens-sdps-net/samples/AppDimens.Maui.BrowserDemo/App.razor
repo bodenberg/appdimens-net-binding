@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AppDimens SDPS Browser Demo</title>
+    <base href="/" />
+    <style>
+        body { font-family: system-ui, sans-serif; margin: 2rem; background: #0f172a; color: #e2e8f0; }
+        .main { max-width: 760px; margin: 0 auto; }
+        .card { background: #1e293b; border-radius: 12px; padding: 1rem 1.25rem; margin: 1rem 0; }
+        table { border-collapse: collapse; width: 100%; }
+        td, th { padding: .35rem .6rem; text-align: left; border-bottom: 1px solid #334155; }
+        .v { font-variant-numeric: tabular-nums; text-align: right; }
+        .live { color: #4ade80; } .frozen { color: #f472b6; }
+        button { background: #6366f1; color: white; border: 0; padding: .5rem 1rem; border-radius: 8px; cursor: pointer; }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <Routes />
+    </div>
+    <script src="_framework/blazor.web.js"></script>
+    <script>
+        window.appdimens = {
+          getWindowSize: () =>
+            [window.innerWidth, window.innerHeight, window.devicePixelRatio || 1],
+          onResize: (dotnetRef) => {
+            const handler = () =>
+              dotnetRef.invokeMethodAsync(
+                'Resized', window.innerWidth, window.innerHeight,
+                window.devicePixelRatio || 1);
+            window.addEventListener('resize', handler);
+            return {
+              dispose: () => window.removeEventListener('resize', handler),
+            };
+          },
+        };
+    </script>
+</body>
+
+</html>

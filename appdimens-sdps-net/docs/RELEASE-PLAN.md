@@ -7,12 +7,12 @@
 
 ## Next release suggestion
 
-**3.5.2** — current MAUI package version (removed optional C# source generator)
+**3.6.0** — current MAUI package version (independent `i` APIs, window resize watcher, inverter/cache fixes)
 
 ## Steps
 
 1. Complete `PRODUCTION-CHECKLIST.md`
-2. Tag `v3.5.2` on `main` when publishing
+2. Tag `v3.6.0` on `main` when publishing
 3. GitHub Actions `release` workflow or `./scripts/publish-nuget.sh --push`
 4. Verify https://www.nuget.org/packages/Bodenberg.AppDimens.Maui.Sdps
 

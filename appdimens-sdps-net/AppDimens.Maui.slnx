@@ -4,6 +4,7 @@
   </Folder>
   <Folder Name="/samples/">
     <Project Path="samples/AppDimens.Maui.Sample/AppDimens.Maui.Sample.csproj" />
+    <Project Path="samples/AppDimens.Maui.BrowserDemo/AppDimens.Maui.BrowserDemo.csproj" />
   </Folder>
   <Folder Name="/src/">
     <Project Path="src/AppDimens.Maui.Builders/AppDimens.Maui.Builders.csproj" />

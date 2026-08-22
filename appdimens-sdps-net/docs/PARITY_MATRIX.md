@@ -1,4 +1,4 @@
-# AppDimens SDP — Parity Matrix (Android v3.1.5 → MAUI)
+# AppDimens SDP — Parity Matrix (Android v3.1.7 → MAUI 3.6.0)
 
 ## Generated resources (MAUI layout v2)
 
@@ -44,6 +44,30 @@ Bucket selection per axis (sw/w/h) is unchanged; only file layout is merged.
 | `Int.sdpRotate` | `int.SdpRotate(...)` | `{sdpRotate:30, Rotation=45, …}` | `{dimen:SdpRotate Base=30, …}` |
 | `Int.scaledDp()` | `int.ScaledDp()` | `{scaled:14, Tablet=18, …}` | `{dimen:Scaled Value=14, Tablet=18, …}` |
 | `DimenSdp.warmup` | `AppDimensSdps.Warmup()` | — | — |
+
+### Independent values — suffix `i` (MAUI 3.6.0)
+
+Android SDP aliases `*ia` to the aspect-ratio APIs; MAUI 3.6.0 gives the `i` family a
+**stronger, explicit contract**: values resolved against a frozen baseline snapshot that
+do NOT change when the screen or window is resized (per product requirement), with `ia`
+combining baseline + aspect ratio.
+
+| MAUI (C#) | Short XAML | Normal XAML |
+|-----------|------------|-------------|
+| `int.Sdpi()` / `int.Sdpia()` | `{sdpi:16}` / `{sdpia:16}` | `{dimen:Sdpi Value=16}` / `{dimen:Sdpia Value=16}` |
+| `int.Hdpi()` / `int.Hdpia()` | `{hdpi:48}` | `{dimen:Hdpi Value=48}` |
+| `int.Wdpi()` / `int.Wdpia()` | `{wdpi:120}` | `{dimen:Wdpi Value=120}` |
+| `int.Sspi()` / `int.Sspia()` | `{sspi:14}` / `{sspiA:14}` | `{dimen:Sspi Value=14}` |
+| `int.Semi()` / `int.Hemi()` / `int.Wemi()` | `{semi:16}` … | `{dimen:Semi Value=16}` … |
+| `AppDimensSdps.CaptureBaseline()` | — | re-freezes all `i` values |
+| `AppDimensSdpsWindow.Attach(window)` | — | window-resize watcher for live values |
+
+### Window resize watcher (3.6.0)
+
+Live values track display changes automatically; `AppDimensSdpsWindow.Attach(Window)`
+adds **window-bounds** tracking (desktop windows, split-screen, foldables). The resolver
+merges window bounds with display density/orientation; detaching restores display-based
+metrics.
 
 ### Facilitators (Rotate / Mode / Qualifier / Screen)
 

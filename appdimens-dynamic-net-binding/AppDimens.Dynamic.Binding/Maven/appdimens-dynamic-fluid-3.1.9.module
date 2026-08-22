@@ -1,0 +1,168 @@
+{
+  "formatVersion": "1.1",
+  "component": {
+    "group": "io.github.bodenberg",
+    "module": "appdimens-dynamic-fluid",
+    "version": "3.1.9",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "9.5.0"
+    }
+  },
+  "variants": [
+    {
+      "name": "releaseVariantReleaseApiPublication",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.libraryelements": "aar",
+        "org.gradle.usage": "java-api"
+      },
+      "dependencies": [
+        {
+          "group": "io.github.bodenberg",
+          "module": "appdimens-dynamic",
+          "version": {
+            "requires": "3.1.9"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib",
+          "version": {
+            "requires": "2.4.10"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "appdimens-dynamic-fluid-3.1.9.aar",
+          "url": "appdimens-dynamic-fluid-3.1.9.aar",
+          "size": 132891,
+          "sha512": "780c121f913de061c8347e61630acbbcbbab678afd1fe107ec63b306f797248e4aead1aea129700ca51bcfb7d51a30f0530712a9c5432e9a4286c8bb629f123e",
+          "sha256": "f22ee40ab0323da13a334d5127508bc1dcf05f5dc0d12dbc5d72de49a2c048dd",
+          "sha1": "d8a309e83f1ab24cd39509ed1e76e68a3767b28a",
+          "md5": "ed2ba1fb99d36d4332c96ce982663ed2"
+        }
+      ]
+    },
+    {
+      "name": "releaseVariantReleaseRuntimePublication",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.libraryelements": "aar",
+        "org.gradle.usage": "java-runtime"
+      },
+      "dependencies": [
+        {
+          "group": "androidx.core",
+          "module": "core-ktx",
+          "version": {
+            "requires": "1.19.0"
+          }
+        },
+        {
+          "group": "androidx.compose",
+          "module": "compose-bom",
+          "version": {
+            "requires": "2026.06.01"
+          },
+          "attributes": {
+            "org.gradle.category": "platform"
+          }
+        },
+        {
+          "group": "androidx.compose.ui",
+          "module": "ui"
+        },
+        {
+          "group": "androidx.compose.runtime",
+          "module": "runtime"
+        },
+        {
+          "group": "androidx.window",
+          "module": "window",
+          "version": {
+            "requires": "1.5.1"
+          }
+        },
+        {
+          "group": "androidx.activity",
+          "module": "activity-compose",
+          "version": {
+            "requires": "1.13.0"
+          }
+        },
+        {
+          "group": "androidx.compose.ui",
+          "module": "ui-graphics"
+        },
+        {
+          "group": "androidx.compose.ui",
+          "module": "ui-tooling-preview"
+        },
+        {
+          "group": "androidx.compose.material3",
+          "module": "material3"
+        },
+        {
+          "group": "androidx.wear.compose",
+          "module": "compose-material-core",
+          "version": {
+            "requires": "1.6.2"
+          }
+        },
+        {
+          "group": "io.github.bodenberg",
+          "module": "appdimens-dynamic",
+          "version": {
+            "requires": "3.1.9"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib",
+          "version": {
+            "requires": "2.4.10"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "appdimens-dynamic-fluid-3.1.9.aar",
+          "url": "appdimens-dynamic-fluid-3.1.9.aar",
+          "size": 132891,
+          "sha512": "780c121f913de061c8347e61630acbbcbbab678afd1fe107ec63b306f797248e4aead1aea129700ca51bcfb7d51a30f0530712a9c5432e9a4286c8bb629f123e",
+          "sha256": "f22ee40ab0323da13a334d5127508bc1dcf05f5dc0d12dbc5d72de49a2c048dd",
+          "sha1": "d8a309e83f1ab24cd39509ed1e76e68a3767b28a",
+          "md5": "ed2ba1fb99d36d4332c96ce982663ed2"
+        }
+      ]
+    },
+    {
+      "name": "releaseVariantReleaseSourcePublication",
+      "attributes": {
+        "org.gradle.category": "documentation",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.docstype": "sources",
+        "org.gradle.usage": "java-runtime"
+      },
+      "files": [
+        {
+          "name": "appdimens-dynamic-fluid-3.1.9-sources.jar",
+          "url": "appdimens-dynamic-fluid-3.1.9-sources.jar",
+          "size": 55729,
+          "sha512": "55ff123c49ee63ece5bdfea56774ff5dee35f1262db861684e77004d06014997854e4a61b57fad045086678f2541c76f161fc2e0cd6d9360320b0db4af8c80c3",
+          "sha256": "b8da83a94f08f97b8ee860b4732c5c93efa5b27382cf60d2e77b2c2a328c66e8",
+          "sha1": "e78071b5cbec0cb277c5ba0e0b38a0fba2f15f50",
+          "md5": "c43d180c45186df83bbb05cf5d653eff"
+        }
+      ]
+    }
+  ]
+}

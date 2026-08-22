@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net8.0</TargetFrameworks>
+    <RootNamespace>AppDimens.Sample.Ui</RootNamespace>
+    <AssemblyName>AppDimens.Sample.Ui</AssemblyName>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Maui.Controls" Version="8.0.100" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\src\AppDimens.Net.Sdk\AppDimens.Net.Sdk.csproj" />
+    <ProjectReference Include="..\..\..\src\AppDimens.Net.Maui\AppDimens.Net.Maui.csproj" />
+  </ItemGroup>
+
+</Project>

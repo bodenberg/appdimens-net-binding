@@ -6,14 +6,14 @@ Kotlin/Java sources, XML naming, and Android-focused guides live upstream:
 
 **→ [bodenberg/appdimens-sdps](https://github.com/bodenberg/appdimens-sdps)**
 
-Maven artifact embedded in this package: **`io.github.bodenberg:appdimens-sdps`** [`3.1.5`](https://central.sonatype.com/artifact/io.github.bodenberg/appdimens-sdps/3.1.5).
+Maven artifact embedded in this package: **`io.github.bodenberg:appdimens-sdps`** [`3.1.7`](https://central.sonatype.com/artifact/io.github.bodenberg/appdimens-sdps/3.1.7).
 
 ---
 
 ## Install
 
 ```bash
-dotnet add package Bodenberg.AppDimens.Sdps --version 3.5.1.4
+dotnet add package Bodenberg.AppDimens.Sdps --version 3.6.0
 ```
 
 Pin a version explicitly when you rely on a specific package revision (see **Package version vs embedded AAR** below).
@@ -333,10 +333,10 @@ The AAR includes Compose extensions (`16.sdp`, `18.ssp`, `scaledSp()`, facilitat
 
 | Layer | Version |
 |-------|---------|
-| **Maven / embedded `.aar`** | **`appdimens-sdps` 3.1.5** |
-| **NuGet** | **`3.5.1.4`** — `net10.0-android` and updated Xamarin AndroidX; Android binary still **3.1.5** |
+| **Maven / embedded `.aar`** | **`appdimens-sdps` 3.1.7** |
+| **NuGet** | **`3.6.0`** — `net10.0-android` and updated Xamarin AndroidX; Android binary **3.1.7** |
 
-When Maven publishes **`3.5.1`**, run `./scripts/sync-aar-from-maven.sh 3.5.1` and align the fourth NuGet segment as needed.
+When Maven publishes a new version, run `./scripts/sync-aar-from-maven.sh <maven-version>` and bump the NuGet version accordingly.
 
 ---
 
@@ -347,10 +347,16 @@ cd appdimens-sdps-net-binding
 dotnet build AppDimens.Sdps.sln -c Release
 ```
 
-Smoke test: **`AppDimens.Sdps.SmokeTest`**. See [NUGET-PUBLISH.md](NUGET-PUBLISH.md).
+Smoke test: **`AppDimens.Sdps.SmokeTest`** — produce an APK with:
 
 ```bash
-./scripts/sync-aar-from-maven.sh 3.1.5
+dotnet publish AppDimens.Sdps.SmokeTest/AppDimens.Sdps.SmokeTest.csproj -c Release -f net10.0-android -p:AndroidPackageFormat=apk
+```
+
+Sync the upstream AAR:
+
+```bash
+./scripts/sync-aar-from-maven.sh 3.1.7
 ```
 
 ---

@@ -1,4 +1,5 @@
 using AppDimens.Maui;
+using AppDimens.Maui.Extensions;
 using AppDimens.Maui.Sample.Services;
 
 namespace AppDimens.Maui.Sample.Views;
@@ -17,7 +18,16 @@ public partial class HomePage : ContentPage
         RefreshMetrics();
     }
 
-    private void RefreshMetrics() => MetricsLabel.Text = ScreenMetricsFormatter.FormatCurrent();
+    private void RefreshMetrics()
+    {
+        MetricsLabel.Text = ScreenMetricsFormatter.FormatCurrent();
+        LiveSdpLabel.Text = 16.Sdp().ToString("F2", System.Globalization.CultureInfo.InvariantCulture);
+        FrozenSdpiLabel.Text = 16.Sdpi().ToString("F2", System.Globalization.CultureInfo.InvariantCulture);
+
+        var m = AppDimensResolver.Instance.Metrics.Current;
+        SampleLog.Info($"metrics sw={m.SmallestDp:0} w={m.WidthDp:0} h={m.HeightDp:0} " +
+                       $"sdp16={LiveSdpLabel.Text} sdpi16={FrozenSdpiLabel.Text}");
+    }
 
     private void OnRefreshClicked(object? sender, EventArgs e)
     {

@@ -47,6 +47,12 @@ public enum UiModeType
     Appliance,
     VrHeadset,
     Undefined,
+    FoldOpen,
+    FoldClosed,
+    FoldHalfOpened,
+    FlipOpen,
+    FlipClosed,
+    FlipHalfOpened,
 }
 
 public enum OrientationQualifier
@@ -83,7 +89,9 @@ public readonly record struct DimenCacheKey(
     InverterType Inverter,
     bool ApplyAspectRatio,
     bool ApplyFontScale,
-    ScalingMode Mode);
+    ScalingMode Mode,
+    int FontScaleBits = 0,
+    int AxisSource = 0);
 
 public enum InverterType
 {

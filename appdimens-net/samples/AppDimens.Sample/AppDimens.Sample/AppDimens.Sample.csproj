@@ -1,0 +1,40 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks Condition="!$([MSBuild]::IsOSPlatform('linux'))">net10.0-android36.1;net8.0-android;net8.0-ios;net8.0-maccatalyst;net8.0-windows10.0.19041.0</TargetFrameworks>
+    <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('linux'))">net10.0-android36.1</TargetFrameworks>
+    <TargetFrameworks Condition="$([MSBuild]::VersionGreaterThanOrEquals('$(NETCoreSdkVersion)', '10.0')) and '$(MSBuildRuntimeType)' != 'Core'">$(TargetFrameworks);net10.0-android36.0</TargetFrameworks>
+    <OutputType>Exe</OutputType>
+    <UseMaui>true</UseMaui>
+    <SingleProject>true</SingleProject>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>AppDimens.Sample</RootNamespace>
+
+    <SupportedOSPlatformVersion Condition="$(TargetPlatformIdentifier) == 'android'">24.0</SupportedOSPlatformVersion>
+    <SupportedOSPlatformVersion Condition="$(TargetPlatformIdentifier) == 'ios'">14.2</SupportedOSPlatformVersion>
+    <SupportedOSPlatformVersion Condition="$(TargetPlatformIdentifier) == 'maccatalyst'">14.0</SupportedOSPlatformVersion>
+    <SupportedOSPlatformVersion Condition="$(TargetPlatformIdentifier) == 'windows'">10.0.17763.0</SupportedOSPlatformVersion>
+    <TargetPlatformMinVersion Condition="$(TargetPlatformIdentifier) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
+
+    <ApplicationTitle>AppDimens Sample</ApplicationTitle>
+    <ApplicationId>com.bodenberg.appdimens.sample</ApplicationId>
+    <ApplicationVersion>1</ApplicationVersion>
+    <AndroidPackageFormat>apk</AndroidPackageFormat>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="MauiProgram.cs" />
+    <Compile Include="Platforms\**\*.cs" />
+    <Compile Include="..\AppDimens.Sample.Ui\**\*.cs"
+             Exclude="..\AppDimens.Sample.Ui\bin\**;..\AppDimens.Sample.Ui\obj\**;..\AppDimens.Sample.Ui\SampleApp.cs"
+             LinkBase="SharedUi" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\src\AppDimens.Net.Sdk\AppDimens.Net.Sdk.csproj" />
+    <ProjectReference Include="..\..\..\src\AppDimens.Net.Maui\AppDimens.Net.Maui.csproj" />
+  </ItemGroup>
+
+</Project>

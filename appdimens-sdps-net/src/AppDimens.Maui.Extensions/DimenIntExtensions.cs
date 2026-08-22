@@ -33,6 +33,18 @@ public static class DimenIntExtensions
     public static double SdpLha(this int value) => R.Sdpa(value, InverterEngine.ForSdpLh());
     public static double SdpPwa(this int value) => R.Sdpa(value, InverterEngine.ForSdpPw());
 
+    // Independent variants (suffix i) — frozen against the baseline snapshot;
+    // they do NOT change when the screen or window is resized. *ia adds aspect ratio.
+    public static double Sdpi(this int value) => R.Sdpi(value);
+    public static double Sdpia(this int value) => R.Sdpia(value);
+    public static double Hdpi(this int value) => R.Hdpi(value);
+    public static double Hdpia(this int value) => R.Hdpia(value);
+    public static double Wdpi(this int value) => R.Wdpi(value);
+    public static double Wdpia(this int value) => R.Wdpia(value);
+    public static double SdpiPh(this int value) => R.Sdpi(value, InverterEngine.ForSdpPh());
+    public static double SdpiLw(this int value) => R.Sdpi(value, InverterEngine.ForSdpLw());
+    public static double SdpiPx(this int value) => R.Sdpi(value) * R.Metrics.Current.Density;
+
     public static double SdpPx(this int value) => R.Sdp(value) * R.Metrics.Current.Density;
     public static double SspPx(this int value) => R.Ssp(value) * R.Metrics.Current.Density;
 }

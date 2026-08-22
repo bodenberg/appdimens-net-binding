@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFrameworks>net10.0</TargetFrameworks>
+    <TargetFrameworks Condition="$([MSBuild]::VersionGreaterThanOrEquals('$(NETCoreSdkVersion)', '11.0'))">$(TargetFrameworks);net11.0</TargetFrameworks>
+    <RootNamespace>AppDimens.Maui.BrowserDemo</RootNamespace>
+    <AssemblyName>AppDimens.Maui.BrowserDemo</AssemblyName>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <!-- Engine modules only: no Microsoft.Maui dependency needed by the engine. -->
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\AppDimens.Maui.Core\AppDimens.Maui.Core.csproj" />
+    <ProjectReference Include="..\..\src\AppDimens.Maui.Inverters\AppDimens.Maui.Inverters.csproj" />
+    <ProjectReference Include="..\..\src\AppDimens.Maui.Responsive\AppDimens.Maui.Responsive.csproj" />
+    <ProjectReference Include="..\..\src\AppDimens.Maui.Resources\AppDimens.Maui.Resources.csproj" />
+  </ItemGroup>
+
+</Project>

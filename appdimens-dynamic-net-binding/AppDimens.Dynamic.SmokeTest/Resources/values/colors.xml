@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <!-- Demo (light) palette — espelha o ExampleActivity Compose do app Android -->
+  <color name="demoBackground">#FAFBFE</color>
+  <color name="demoCardBg">#FFFFFF</color>
+  <color name="demoPrimary">#1565C0</color>
+  <color name="demoTextSecondary">#5F6A7A</color>
+  <color name="demoResultBg">#E3F2FD</color>
+  <color name="boxBlue">#42A5F5</color>
+  <color name="boxTeal">#12D5B5</color>
+  <color name="boxPurple">#AB47BC</color>
+  <color name="boxGreen">#66BB6A</color>
+  <color name="boxAmber">#FFB300</color>
+  <color name="buttonBenchmark">#00897B</color>
+
+  <!-- Benchmark (dark) palette — espelha o BenchmarkActivity Compose -->
+  <color name="benchDarkBg">#12161F</color>
+  <color name="benchSurface">#252D3D</color>
+  <color name="benchAccentCyan">#00E5FF</color>
+  <color name="benchAccentGreen">#69FF47</color>
+  <color name="benchAccentAmber">#FFD740</color>
+  <color name="benchAccentPurple">#B388FF</color>
+  <color name="benchAccentRed">#FF5252</color>
+  <color name="benchTextPrimary">#ECF0F8</color>
+  <color name="benchTextSecondary">#8A95A8</color>
+</resources>

@@ -1,14 +1,226 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <TextView 
-        android:id="@+id/smoke_result"
-        android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:background="@color/demoBackground"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:text="@string/app_text"
-    />
-</RelativeLayout>
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- ══ Título principal ══ -->
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="AppDimens Dynamic Demo"
+            android:textColor="@color/demoPrimary"
+            android:textSize="26sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/subtitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:gravity="center"
+            android:text=".NET binding · scaled dp/sp + 14 strategies (percent, auto, resize, …) · aspect ratio &amp; multi-window aware"
+            android:textColor="@color/demoTextSecondary"
+            android:textSize="13sp" />
+
+        <!-- ══ Card de resultado do binding ══ -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/card_bg"
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:elevation="2dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Binding Smoke Test"
+                android:textColor="@color/demoPrimary"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/smoke_result"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:background="@color/demoResultBg"
+                android:padding="10dp"
+                android:text="@string/smoke_hint"
+                android:textColor="#0D47A1"
+                android:textSize="14sp" />
+        </LinearLayout>
+
+        <!-- ══ 1. Core Extensions ══ -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="1. Core Extensions (scaled)"
+            android:textColor="@color/demoPrimary"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <!-- sdp -->
+        <LinearLayout style="@style/DemoCard">
+            <TextView style="@style/DemoCardTitle" android:text="sdp — Smallest Width" />
+            <TextView style="@style/DemoCardDesc" android:text="60 × smallest-width curve (DimenSdp.Sdp)" />
+            <View
+                android:id="@+id/box_sdp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="12dp"
+                android:background="@color/boxBlue" />
+            <TextView
+                android:id="@+id/label_sdp"
+                style="@style/DemoCardLabel" />
+        </LinearLayout>
+
+        <!-- sdpa -->
+        <LinearLayout style="@style/DemoCard">
+            <TextView style="@style/DemoCardTitle" android:text="sdpa — Aspect Ratio" />
+            <TextView style="@style/DemoCardDesc" android:text="60 × smallest-width + aspect-ratio curve (Sdpa)" />
+            <View
+                android:id="@+id/box_sdpa"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="12dp"
+                android:background="@color/boxTeal" />
+            <TextView
+                android:id="@+id/label_sdpa"
+                style="@style/DemoCardLabel" />
+        </LinearLayout>
+
+        <!-- sdpi -->
+        <LinearLayout style="@style/DemoCard">
+            <TextView style="@style/DemoCardTitle" android:text="sdpi — Ignore Multi-Window" />
+            <TextView style="@style/DemoCardDesc" android:text="60 with multi-window heuristic disabled (Sdpi / window-ignore-resize)" />
+            <View
+                android:id="@+id/box_sdpi"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="12dp"
+                android:background="@color/boxAmber" />
+            <TextView
+                android:id="@+id/label_sdpi"
+                style="@style/DemoCardLabel" />
+        </LinearLayout>
+
+        <!-- hdp -->
+        <LinearLayout style="@style/DemoCard">
+            <TextView style="@style/DemoCardTitle" android:text="hdp — Screen Height" />
+            <TextView style="@style/DemoCardDesc" android:text="80 × height axis (Hdp)" />
+            <View
+                android:id="@+id/box_hdp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="12dp"
+                android:background="@color/boxPurple" />
+            <TextView
+                android:id="@+id/label_hdp"
+                style="@style/DemoCardLabel" />
+        </LinearLayout>
+
+        <!-- wdp -->
+        <LinearLayout style="@style/DemoCard">
+            <TextView style="@style/DemoCardTitle" android:text="wdp — Screen Width" />
+            <TextView style="@style/DemoCardDesc" android:text="100 × width axis (Wdp)" />
+            <View
+                android:id="@+id/box_wdp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="12dp"
+                android:background="@color/boxGreen" />
+            <TextView
+                android:id="@+id/label_wdp"
+                style="@style/DemoCardLabel" />
+        </LinearLayout>
+
+        <!-- ══ 2. Text styles ══ -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="2. Scalable Text (ssp / sem)"
+            android:textColor="@color/demoPrimary"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <LinearLayout style="@style/DemoCard">
+            <TextView
+                android:id="@+id/text_ssp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="16.ssp — scalable text"
+                android:textColor="#222222" />
+            <TextView
+                android:id="@+id/text_sspa"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:text="16.sspa — +aspect ratio"
+                android:textColor="@color/boxTeal" />
+            <TextView
+                android:id="@+id/text_sem"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:text="16.sem — ignores font scale"
+                android:textColor="@color/demoTextSecondary" />
+        </LinearLayout>
+
+        <!-- ══ 3. Builder ══ -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="3. DimenScaled Builder"
+            android:textColor="@color/demoPrimary"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <LinearLayout style="@style/DemoCard">
+            <TextView style="@style/DemoCardTitle" android:text="Chain: base(24) + AR + TV/sw600 rules" />
+            <TextView style="@style/DemoCardDesc" android:text="new DimenScaled(24).ApplyAspectRatio(true).Screen(...)" />
+            <View
+                android:id="@+id/box_builder"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="12dp"
+                android:background="@color/boxBlue" />
+            <TextView
+                android:id="@+id/label_builder"
+                style="@style/DemoCardLabel" />
+        </LinearLayout>
+
+        <!-- ══ Botão Benchmark ══ -->
+        <Button
+            android:id="@+id/btn_benchmark"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="28dp"
+            android:layout_marginBottom="24dp"
+            android:background="@drawable/btn_benchmark"
+            android:text="▶  Run Performance Benchmark\nExecutar Benchmark de Performance"
+            android:textColor="#FFFFFF"
+            android:textSize="15sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+</ScrollView>

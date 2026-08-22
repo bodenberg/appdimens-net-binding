@@ -49,7 +49,11 @@ public static class InverterEngine
     public static InverterType ForSdpLh() => InverterType.SwToLh;
     public static InverterType ForSdpPw() => InverterType.SwToPw;
     public static InverterType ForHdpLw() => InverterType.PhToLw;
-    public static InverterType ForHdpPw() => InverterType.PwToLh;
+
+    /// <summary>Height in portrait reads the width axis (Android parity: LH_TO_PW).</summary>
+    public static InverterType ForHdpPw() => InverterType.LhToPw;
     public static InverterType ForWdpLh() => InverterType.PwToLh;
-    public static InverterType ForWdpPh() => InverterType.PhToLw;
+
+    /// <summary>Width in portrait reads the height axis (Android parity: LW_TO_PH).</summary>
+    public static InverterType ForWdpPh() => InverterType.LwToPh;
 }

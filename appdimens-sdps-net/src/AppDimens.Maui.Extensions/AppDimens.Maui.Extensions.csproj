@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFrameworks>net8.0;net9.0;net10.0</TargetFrameworks>
+    <TargetFrameworks Condition="$([MSBuild]::VersionGreaterThanOrEquals('$(NETCoreSdkVersion)', '11.0'))">$(TargetFrameworks);net11.0</TargetFrameworks>
     <RootNamespace>AppDimens.Maui.Extensions</RootNamespace>
     <AssemblyName>AppDimens.Maui.Extensions</AssemblyName>
     <Description>Fluent extension methods for AppDimens MAUI SDP.</Description>

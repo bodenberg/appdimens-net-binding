@@ -251,3 +251,29 @@ public sealed class SemRotateExtension : DimenRotateExtensionBase
 {
     protected override double Resolve() => Base.SemRotate(Rotation, orientation: Orientation);
 }
+
+// Independent (suffix i) — frozen against the baseline; no auto-adjust on resize.
+public sealed class SspiExtension : DimenMarkupExtensionBase
+{
+    protected override double Resolve(AppDimensResolver r, int v) => r.Sspi(v);
+}
+
+public sealed class SspiaExtension : DimenMarkupExtensionBase
+{
+    protected override double Resolve(AppDimensResolver r, int v) => r.Sspia(v);
+}
+
+public sealed class HspiExtension : DimenMarkupExtensionBase
+{
+    protected override double Resolve(AppDimensResolver r, int v) => r.Hspi(v);
+}
+
+public sealed class WspiExtension : DimenMarkupExtensionBase
+{
+    protected override double Resolve(AppDimensResolver r, int v) => r.Wspi(v);
+}
+
+public sealed class SemiExtension : DimenMarkupExtensionBase
+{
+    protected override double Resolve(AppDimensResolver r, int v) => r.Semi(v);
+}

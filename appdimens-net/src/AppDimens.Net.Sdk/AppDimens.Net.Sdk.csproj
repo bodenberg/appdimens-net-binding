@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net8.0;net9.0;net10.0</TargetFrameworks>
+    <TargetFrameworks Condition="$([MSBuild]::VersionGreaterThanOrEquals('$(NETCoreSdkVersion)', '11.0'))">$(TargetFrameworks);net11.0</TargetFrameworks>
+    <RootNamespace>AppDimens.Net.Sdk</RootNamespace>
+    <AssemblyName>AppDimens.Net.Sdk</AssemblyName>
+    <PackageId>AppDimens.Net.Sdk</PackageId>
+    <Description>AppDimens .NET meta-package ("BOM"): pulls the principal library plus every strategy module with a single reference.</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AppDimens.Net\AppDimens.Net.csproj" />
+    <ProjectReference Include="..\AppDimens.Net.Percent\AppDimens.Net.Percent.csproj" />
+    <ProjectReference Include="..\AppDimens.Net.Power\AppDimens.Net.Power.csproj" />
+    <ProjectReference Include="..\AppDimens.Net.Fluid\AppDimens.Net.Fluid.csproj" />
+    <ProjectReference Include="..\AppDimens.Net.Auto\AppDimens.Net.Auto.csproj" />
+    <ProjectReference Include="..\AppDimens.Net.Density\AppDimens.Net.Density.csproj" />
+    <ProjectReference Include="..\AppDimens.Net.Diagonal\AppDimens.Net.Diagonal.csproj" />
+    <ProjectReference Include="..\AppDimens.Net.Fill\AppDimens.Net.Fill.csproj" />
+    <ProjectReference Include="..\AppDimens.Net.Fit\AppDimens.Net.Fit.csproj" />
+    <ProjectReference Include="..\AppDimens.Net.Interpolated\AppDimens.Net.Interpolated.csproj" />
+    <ProjectReference Include="..\AppDimens.Net.Logarithmic\AppDimens.Net.Logarithmic.csproj" />
+    <ProjectReference Include="..\AppDimens.Net.Perimeter\AppDimens.Net.Perimeter.csproj" />
+    <ProjectReference Include="..\AppDimens.Net.Resize\AppDimens.Net.Resize.csproj" />
+    <ProjectReference Include="..\AppDimens.Net.Units\AppDimens.Net.Units.csproj" />
+  </ItemGroup>
+
+</Project>

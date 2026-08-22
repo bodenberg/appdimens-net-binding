@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net8.0;net9.0;net10.0</TargetFrameworks>
+    <TargetFrameworks Condition="$([MSBuild]::VersionGreaterThanOrEquals('$(NETCoreSdkVersion)', '11.0'))">$(TargetFrameworks);net11.0</TargetFrameworks>
+    <RootNamespace>AppDimens.Net.Maui</RootNamespace>
+    <AssemblyName>AppDimens.Net.Maui</AssemblyName>
+    <PackageId>AppDimens.Net.Maui</PackageId>
+    <Description>AppDimens .NET — .NET MAUI integration: live window scopes, event-driven resize watcher, XAML markup extensions and converters.</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Maui.Controls" Version="8.0.100" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AppDimens.Net\AppDimens.Net.csproj" />
+    <ProjectReference Include="..\AppDimens.Net.Fluid\AppDimens.Net.Fluid.csproj" />
+    <ProjectReference Include="..\AppDimens.Net.Percent\AppDimens.Net.Percent.csproj" />
+  </ItemGroup>
+
+</Project>

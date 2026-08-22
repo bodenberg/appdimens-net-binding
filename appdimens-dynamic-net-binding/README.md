@@ -6,14 +6,14 @@ Kotlin/Java sources, strategy semantics, and Android-focused guides live upstrea
 
 **→ [bodenberg/appdimens-dynamic](https://github.com/bodenberg/appdimens-dynamic)** · [DOCUMENTATION](https://github.com/bodenberg/appdimens-dynamic/tree/main/DOCUMENTATION) · [KDoc search](https://appdimens3.web.app/)
 
-Maven artifact embedded in this package: **`io.github.bodenberg:appdimens-dynamic`** [`3.1.5`](https://repo1.maven.org/maven2/io/github/bodenberg/appdimens-dynamic/3.1.5/).
+Maven artifact embedded in this package: **`io.github.bodenberg:appdimens-dynamic`** [`3.1.9`](https://repo1.maven.org/maven2/io/github/bodenberg/appdimens-dynamic/3.1.9/).
 
 ---
 
 ## Install
 
 ```bash
-dotnet add package Bodenberg.AppDimens.Dynamic --version 3.5.1.4
+dotnet add package Bodenberg.AppDimens.Dynamic --version 3.6.0
 ```
 
 ---
@@ -251,10 +251,10 @@ Compose-first apps on .NET may need a future binding strategy or shared logic ca
 
 | Layer | Version |
 |-------|---------|
-| **Maven / embedded `.aar`** | **`appdimens-dynamic` 3.1.5** |
-| **NuGet** | **`3.5.1.4`** — `net10.0-android` and updated Xamarin AndroidX/DataStore; Android binary still **3.1.5** |
+| **Maven / embedded `.aar`** | **`appdimens-dynamic` 3.1.9** (core + 13 módulos satélite) |
+| **NuGet** | **`3.6.0`** — `net10.0-android` and updated Xamarin AndroidX/DataStore; Android binary **3.1.9** |
 
-When Maven publishes **`3.5.1`**, run `./scripts/sync-aar-from-maven.sh 3.5.1` and align the fourth NuGet segment as needed.
+When Maven publishes a new version, run `./scripts/sync-aar-from-maven.sh <maven-version>` and bump the NuGet version accordingly.
 
 ---
 
@@ -265,12 +265,16 @@ cd appdimens-dynamic-net-binding
 dotnet build AppDimens.Dynamic.sln -c Release
 ```
 
-Optional smoke APK: **`AppDimens.Dynamic.SmokeTest`**. See [NUGET-PUBLISH.md](NUGET-PUBLISH.md).
+Optional smoke APK: **`AppDimens.Dynamic.SmokeTest`** — produce it with:
+
+```bash
+dotnet publish AppDimens.Dynamic.SmokeTest/AppDimens.Dynamic.SmokeTest.csproj -c Release -f net10.0-android -p:AndroidPackageFormat=apk
+```
 
 Sync the upstream AAR:
 
 ```bash
-./scripts/sync-aar-from-maven.sh 3.1.5
+./scripts/sync-aar-from-maven.sh 3.1.9
 ```
 
 ---
@@ -282,7 +286,7 @@ Sync the upstream AAR:
 | AppDimens (main project — NuGet **Project website**) | https://github.com/bodenberg/appdimens |
 | Android library (NuGet **Source repository**; implementation &amp; issues) | https://github.com/bodenberg/appdimens-dynamic |
 | Strategy documentation | https://github.com/bodenberg/appdimens-dynamic/tree/main/DOCUMENTATION |
-| Maven Central | https://repo1.maven.org/maven2/io/github/bodenberg/appdimens-dynamic/3.1.5/ |
+| Maven Central | https://repo1.maven.org/maven2/io/github/bodenberg/appdimens-dynamic/3.1.9/ |
 | .NET binding monorepo | https://github.com/bodenberg/appdimens-net-binding |
 
 ---

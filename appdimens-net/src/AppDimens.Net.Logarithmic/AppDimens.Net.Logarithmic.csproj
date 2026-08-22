@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net8.0;net9.0;net10.0</TargetFrameworks>
+    <TargetFrameworks Condition="$([MSBuild]::VersionGreaterThanOrEquals('$(NETCoreSdkVersion)', '11.0'))">$(TargetFrameworks);net11.0</TargetFrameworks>
+    <RootNamespace>AppDimens.Net.Code.Logarithmic</RootNamespace>
+    <AssemblyName>AppDimens.Net.Logarithmic</AssemblyName>
+    <PackageId>AppDimens.Net.Logarithmic</PackageId>
+    <Description>AppDimens .NET — Logarithmic scaling strategy module.</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AppDimens.Net\AppDimens.Net.csproj" />
+  </ItemGroup>
+
+</Project>

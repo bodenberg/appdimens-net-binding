@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net8.0;net9.0;net10.0</TargetFrameworks>
+    <TargetFrameworks Condition="$([MSBuild]::VersionGreaterThanOrEquals('$(NETCoreSdkVersion)', '11.0'))">$(TargetFrameworks);net11.0</TargetFrameworks>
+    <RootNamespace>AppDimens.Net</RootNamespace>
+    <AssemblyName>AppDimens.Net</AssemblyName>
+    <PackageId>AppDimens.Net</PackageId>
+    <Description>AppDimens for .NET — responsive dp/sp with 14 scaling strategies. Principal module (core + scaled strategy + cache). Multiplatform: Android, iOS, MacCatalyst, Windows via .NET MAUI.</Description>
+    <PackageTags>appdimens;sdp;ssp;responsive;adaptive;maui;dimension;dp;sp</PackageTags>
+  </PropertyGroup>
+
+</Project>

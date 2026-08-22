@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net8.0</TargetFrameworks>
+    <RootNamespace>AppDimens.BenchLab.Core</RootNamespace>
+    <AssemblyName>AppDimens.BenchLab.Core</AssemblyName>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\src\AppDimens.Net.Sdk\AppDimens.Net.Sdk.csproj" />
+  </ItemGroup>
+
+</Project>
