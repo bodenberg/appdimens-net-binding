@@ -26,6 +26,24 @@
                 </VerticalStackLayout>
             </Border>
 
+            <Border Style="{StaticResource Card}" Stroke="{StaticResource Accent}">
+                <VerticalStackLayout Spacing="{sdp:6}">
+                    <Label Text="Contrato de resize (sdp vs sdpi)" FontAttributes="Bold" FontSize="{ssp:14}" TextColor="{StaticResource Accent}" />
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="{sdp:8}">
+                        <VerticalStackLayout Spacing="{sdp:2}">
+                            <Label Text="sdp 16 — ao vivo" Style="{StaticResource Caption}" TextColor="{StaticResource TextSecondary}" />
+                            <Label x:Name="LiveSdpLabel" FontFamily="Courier" FontSize="{ssp:16}" TextColor="#4ADE80" Text="-" />
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Spacing="{sdp:2}">
+                            <Label Text="sdpi 16 — congelado" Style="{StaticResource Caption}" TextColor="{StaticResource TextSecondary}" />
+                            <Label x:Name="FrozenSdpiLabel" FontFamily="Courier" FontSize="{ssp:16}" TextColor="#F472B6" Text="-" />
+                        </VerticalStackLayout>
+                    </Grid>
+                    <Label Text="Redimensione a janela/tela: sdp acompanha; sdpi fica na baseline."
+                           Style="{StaticResource Caption}" LineBreakMode="WordWrap" />
+                </VerticalStackLayout>
+            </Border>
+
             <Border Style="{StaticResource Card}" Stroke="{StaticResource Primary}">
                 <VerticalStackLayout Spacing="{sdp:6}">
                     <Label Text="Duas sintaxes XAML" FontAttributes="Bold" FontSize="{ssp:14}" TextColor="{StaticResource PrimaryLight}" />

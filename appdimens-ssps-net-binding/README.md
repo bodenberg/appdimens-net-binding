@@ -6,14 +6,14 @@ Kotlin/Java sources, XML resource naming, and Android-focused docs live upstream
 
 **→ [bodenberg/appdimens-ssps](https://github.com/bodenberg/appdimens-ssps)**
 
-Maven artifact embedded in this package: **`io.github.bodenberg:appdimens-ssps`** [`3.1.5`](https://repo1.maven.org/maven2/io/github/bodenberg/appdimens-ssps/3.1.5/).
+Maven artifact embedded in this package: **`io.github.bodenberg:appdimens-ssps`** [`3.1.7`](https://repo1.maven.org/maven2/io/github/bodenberg/appdimens-ssps/3.1.7/).
 
 ---
 
 ## Install
 
 ```bash
-dotnet add package Bodenberg.AppDimens.Ssps --version 3.5.1.4
+dotnet add package Bodenberg.AppDimens.Ssps --version 3.6.0
 ```
 
 ---
@@ -268,10 +268,10 @@ The AAR includes Compose extensions (`16.ssp`, `scaledSp()`, `sspRotate`, …) r
 
 | Layer | Version |
 |-------|---------|
-| **Maven / embedded `.aar`** | **`appdimens-ssps` 3.1.5** |
-| **NuGet** | **`3.5.1.4`** — `net10.0-android` and updated Xamarin AndroidX; Android binary still **3.1.5** |
+| **Maven / embedded `.aar`** | **`appdimens-ssps` 3.1.7** |
+| **NuGet** | **`3.6.0`** — `net10.0-android` and updated Xamarin AndroidX; Android binary **3.1.7** |
 
-When Maven publishes **`3.5.1`**, run `./scripts/sync-aar-from-maven.sh 3.5.1` and align the fourth NuGet segment as needed.
+When Maven publishes a new version, run `./scripts/sync-aar-from-maven.sh <maven-version>` and bump the NuGet version accordingly.
 
 ---
 
@@ -282,10 +282,16 @@ cd appdimens-ssps-net-binding
 dotnet build AppDimens.Ssps.sln -c Release
 ```
 
-Smoke test: **`AppDimens.Ssps.SmokeTest`**. See [NUGET-PUBLISH.md](NUGET-PUBLISH.md).
+Smoke test: **`AppDimens.Ssps.SmokeTest`** — produce an APK with:
 
 ```bash
-./scripts/sync-aar-from-maven.sh 3.1.5
+dotnet publish AppDimens.Ssps.SmokeTest/AppDimens.Ssps.SmokeTest.csproj -c Release -f net10.0-android -p:AndroidPackageFormat=apk
+```
+
+Sync the upstream AAR:
+
+```bash
+./scripts/sync-aar-from-maven.sh 3.1.7
 ```
 
 ---
@@ -305,7 +311,7 @@ Smoke test: **`AppDimens.Ssps.SmokeTest`**. See [NUGET-PUBLISH.md](NUGET-PUBLISH
 |----------|-----|
 | AppDimens (main project — NuGet **Project website**) | https://github.com/bodenberg/appdimens |
 | Android library (NuGet **Source repository**; implementation &amp; issues) | https://github.com/bodenberg/appdimens-ssps |
-| Maven Central | https://repo1.maven.org/maven2/io/github/bodenberg/appdimens-ssps/3.1.5/ |
+| Maven Central | https://repo1.maven.org/maven2/io/github/bodenberg/appdimens-ssps/3.1.7/ |
 | .NET binding monorepo | https://github.com/bodenberg/appdimens-net-binding |
 
 ---

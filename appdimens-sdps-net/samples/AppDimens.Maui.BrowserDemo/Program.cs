@@ -1,17 +1,37 @@
 using AppDimens.Maui.BrowserDemo;
-using Microsoft.AspNetCore.Components.Web;
-using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using AppDimens.Maui.Responsive;
 
-var builder = WebAssemblyHostBuilder.CreateDefault(args);
-builder.RootComponents.Add<App>("#app");
-builder.RootComponents.Add<HeadOutlet>("head::after");
+var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddRazorComponents()
+    .AddInteractiveServerComponents();
 
-builder.Services.AddScoped(sp =>
+// Generated Android-parity bucket tables read straight from disk.
+static string? FindGeneratedDir(string contentRoot)
 {
-    var http = sp.GetRequiredService<HttpClient>();
-    http.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress);
-    return http;
-});
-builder.Services.AddSingleton<BrowserDimensEngine>();
+    string[] candidates =
+    [
+        // publish layout: wwwroot carries a synced copy
+        Path.Combine(contentRoot, "wwwroot", "Generated"),
+        // dev layout: two levels up to the library root
+        Path.GetFullPath(Path.Combine(contentRoot, "..", "..", "..",
+            "src", "AppDimens.Maui.Resources", "Generated")),
+    ];
+    return candidates.FirstOrDefault(c =>
+        Directory.Exists(c) && File.Exists(Path.Combine(c, "buckets.json")));
+}
 
-await builder.Build().RunAsync();
+var generatedDir = FindGeneratedDir(builder.Environment.ContentRootPath);
+if (generatedDir != null)
+{
+    var registry = BucketRegistry.LoadFromGenerated(generatedDir);
+    builder.Services.AddSingleton(registry);
+}
+builder.Services.AddSingleton(sp => new BrowserDimensEngine(
+    sp.GetService<BucketRegistry>()));
+
+var app = builder.Build();
+app.UseStaticFiles();
+app.UseAntiforgery();
+app.MapRazorComponents<App>()
+    .AddInteractiveServerRenderMode();
+app.Run();

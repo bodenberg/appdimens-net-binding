@@ -1,8 +1,23 @@
 # Bodenberg.AppDimens.Maui.Sdps
 
-**Fully native .NET MAUI** responsive sizing library with architectural, functional, and ergonomic parity with [AppDimens SDP Android](https://github.com/bodenberg/appdimens-sdps) v3.1.5.
+**Fully native .NET MAUI** responsive sizing library with architectural, functional, and ergonomic parity with [AppDimens SDP Android](https://github.com/bodenberg/appdimens-sdps) v3.1.7.
 
 It brings the Android experience of `@dimen/_16sdp`, orientation inverters, discrete buckets, aspect ratio, and conditional builders to MAUI — **with no JNI bindings, AARs, or embedded Android code**.
+
+> **New in 3.6.0**
+> - **Independent values — the `i` suffix**: every family now ships resize-invariant variants
+>   (`16.Sdpi()`, `48.Hdpi()`, `120.Wdpi()`, `14.Sspi()`, plus aspect-ratio forms `Sdpia/Hdpia/Wdpia/Sspia`).
+>   Live APIs auto-adjust when the screen or window is resized; `i` APIs are frozen against a
+>   baseline captured at startup (`AppDimensSdps.CaptureBaseline()` to re-freeze).
+> - **Window resize watcher**: `AppDimensSdpsWindow.Attach(window)` makes live values follow the
+>   actual window (desktop, split-screen, foldables) instead of only display-level changes.
+> - **XAML + short markup for `i` values**: `{appdimens:Sdpi Value=16}`, `{sdpi:16}`, `{hdpi:48}`,
+>   `{wdpi:120}`, `{sspi:14}`, and converters with `Independent="True"`.
+> - **Fixes**: `hdpPw` / `wdpPh` inverters now actually swap axis in portrait; font-scale changes
+>   no longer serve stale cached sp values; physical-unit conversions cleaned up; foldable
+>   `UiModeType` states added; builder priority sorting cached; net11.0 target supported.
+>
+> See [docs/AUDIT-REPORT-3.6.0.md](docs/AUDIT-REPORT-3.6.0.md) for the full audit.
 
 ---
 
@@ -56,17 +71,17 @@ It brings the Android experience of `@dimen/_16sdp`, orientation inverters, disc
 
 | Requirement | Version |
 |-------------|---------|
-| .NET | **8**, **9**, or **10** |
+| .NET | **8**, **9**, **10**, or **11** |
 | .NET MAUI | 8.0+ / 9.0+ / 10.0+ (per SDK) |
 | Platforms | Android, iOS, macOS, Windows (via MAUI) |
-| NuGet version | **3.5.2** |
+| NuGet version | **3.6.0** |
 
 ---
 
 ## Installation
 
 ```bash
-dotnet add package Bodenberg.AppDimens.Maui.Sdps --version 3.5.2
+dotnet add package Bodenberg.AppDimens.Maui.Sdps --version 3.6.0
 ```
 
 Project reference (local development):
@@ -226,6 +241,49 @@ protected override void OnSizeAllocated(double width, double height)
 ### Inverters on rotation
 
 Inverters (`sdpPh`, `sdpLw`, `hdpPw`, …) choose width/height/smallest axis from **current orientation at resolve time**. After rotation, the **next** `16.SdpPh()` (or a refreshed XAML property) uses the new orientation. No separate inverter registration is required.
+
+---
+
+## Resize-independent values — the `i` suffix (3.6.0)
+
+Every dimension family has a **live** form (auto-adjusts on screen/window resize) and an
+**independent** form — the `i` suffix — resolved once against a **baseline snapshot**
+captured at initialization and therefore immune to resizes.
+
+| Live (adjusts) | Independent (`i` — frozen) | Aspect-ratio independent (`ia`) |
+|----------------|---------------------------|--------------------------------|
+| `16.Sdp()`  | `16.Sdpi()`  | `16.Sdpia()` |
+| `48.Hdp()`  | `48.Hdpi()`  | `48.Hdpia()` |
+| `120.Wdp()` | `120.Wdpi()` | `120.Wdpia()` |
+| `14.Ssp()`  | `14.Sspi()`  | `14.Sspia()` |
+| `16.Sem()`  | `16.Semi()`  | `16.Semia()` |
+
+- The baseline is captured automatically at `AppDimensSdps.Initialize()`.
+- Re-freeze on demand: `AppDimensSdps.CaptureBaseline();`
+- XAML: `{appdimens:Sdpi Value=16}` (or short `{sdpi:16}`, `{hdpi:48}`, `{wdpi:120}`,
+  `{sspi:14}`, `{sdpia:16}`), converters with `Independent="True"`.
+
+```csharp
+// live: follows the window; frozen: constant from startup until re-captured
+double padding   = 16.Sdp();    // changes on resize/rotation
+double frozenPad = 16.Sdpi();   // never changes after baseline capture
+```
+
+### Window resize watcher (desktop / split-screen / foldables)
+
+Display-level events alone do not fire when only the **window** is resized. Attach the
+watcher once so every live value tracks the window bounds:
+
+```csharp
+protected override Window CreateWindow(IActivationState? activationState)
+{
+    var window = new Window(new AppShell());
+    AppDimensSdpsWindow.Attach(window); // SizeChanged + Destroying handled for you
+    return window;
+}
+```
+
+Independent (`i`) values are **not** affected by `Attach` — that is their contract.
 
 ---
 
@@ -1170,7 +1228,7 @@ var resolver = AppDimensSdps.Resolver;
 var metrics = resolver.Metrics.Current;
 ```
 
-Static methods: `Sdp`, `Ssp`, `Hsp`, `Wsp`, `Hdp`, `Wdp`, `Sdpa`, `Sspa`, `Hspa`, `Wspa`, `Sem`, `Sema`, `Hem`, `Hema`, `Wem`, `Wema`. Inverters via `AppDimensResolver` or extensions.
+Static methods: `Sdp`, `Ssp`, `Hsp`, `Wsp`, `Hdp`, `Wdp`, `Sdpa`, `Sspa`, `Hspa`, `Wspa`, `Sem`, `Sema`, `Hem`, `Hema`, `Wem`, `Wema`; independent (3.6.0): `Sdpi`, `Sdpia`, `Hdpi`, `Hdpia`, `Wdpi`, `Wdpia`, `Sspi`, `Sspia`, `Semi`, `Semia`, `Hemi`, `Wemi`; baseline control: `CaptureBaseline()`. Inverters via `AppDimensResolver` or extensions.
 
 ---
 

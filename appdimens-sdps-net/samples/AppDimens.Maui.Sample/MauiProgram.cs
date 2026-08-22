@@ -1,5 +1,6 @@
 using AppDimens.Maui;
 using AppDimens.Maui.Core;
+using AppDimens.Maui.Sample.Services;
 
 namespace AppDimens.Maui.Sample;
 
@@ -21,6 +22,14 @@ public static class MauiProgram
             },
             Directory.Exists(generated) ? generated : null);
 
+        AppDimensLogging.Current = new SampleLogger();
+
         return builder.Build();
+    }
+
+    private sealed class SampleLogger : IAppDimensLogger
+    {
+        public void LogDebug(string message) => SampleLog.Info(message);
+        public void LogWarning(string message) => SampleLog.Info("WARN " + message);
     }
 }
