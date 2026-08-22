@@ -1,5 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">AppDimens.Dynamic.SmokeTest</string>
-    <string name="app_text">Smoke test…</string>
+    <string name="app_name">AppDimens Dynamic Demo</string>
     <string name="smoke_hint">AppDimens Dynamic smoke test</string>
 </resources>

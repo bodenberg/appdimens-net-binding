@@ -1,0 +1,32 @@
+<Solution>
+  <Folder Name="/benchlab/" />
+  <Folder Name="/benchlab/AppDimens.BenchLab/">
+    <Project Path="benchlab/AppDimens.BenchLab/AppDimens.BenchLab.Core/AppDimens.BenchLab.Core.csproj" />
+    <Project Path="benchlab/AppDimens.BenchLab/AppDimens.BenchLab.Ui/AppDimens.BenchLab.Ui.csproj" />
+  </Folder>
+  <Folder Name="/samples/" />
+  <Folder Name="/samples/AppDimens.Sample/">
+    <Project Path="samples/AppDimens.Sample/AppDimens.Sample.Ui/AppDimens.Sample.Ui.csproj" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/AppDimens.Net.Auto/AppDimens.Net.Auto.csproj" />
+    <Project Path="src/AppDimens.Net.Density/AppDimens.Net.Density.csproj" />
+    <Project Path="src/AppDimens.Net.Diagonal/AppDimens.Net.Diagonal.csproj" />
+    <Project Path="src/AppDimens.Net.Fill/AppDimens.Net.Fill.csproj" />
+    <Project Path="src/AppDimens.Net.Fit/AppDimens.Net.Fit.csproj" />
+    <Project Path="src/AppDimens.Net.Fluid/AppDimens.Net.Fluid.csproj" />
+    <Project Path="src/AppDimens.Net.Interpolated/AppDimens.Net.Interpolated.csproj" />
+    <Project Path="src/AppDimens.Net.Logarithmic/AppDimens.Net.Logarithmic.csproj" />
+    <Project Path="src/AppDimens.Net.Maui/AppDimens.Net.Maui.csproj" />
+    <Project Path="src/AppDimens.Net.Percent/AppDimens.Net.Percent.csproj" />
+    <Project Path="src/AppDimens.Net.Perimeter/AppDimens.Net.Perimeter.csproj" />
+    <Project Path="src/AppDimens.Net.Power/AppDimens.Net.Power.csproj" />
+    <Project Path="src/AppDimens.Net.Resize/AppDimens.Net.Resize.csproj" />
+    <Project Path="src/AppDimens.Net.Sdk/AppDimens.Net.Sdk.csproj" />
+    <Project Path="src/AppDimens.Net.Units/AppDimens.Net.Units.csproj" />
+    <Project Path="src/AppDimens.Net/AppDimens.Net.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/AppDimens.Net.Tests/AppDimens.Net.Tests.csproj" />
+  </Folder>
+</Solution>

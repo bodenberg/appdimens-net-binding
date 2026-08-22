@@ -1,30 +1,43 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <!-- Impede glob implícito de *.aar sob Jars/Reference (Compose) pelo SDK Android -->
-    <DefaultItemExcludes>$(DefaultItemExcludes);Jars\Reference\**\*</DefaultItemExcludes>
+    <!-- Impede glob implícito dos metadados Maven pelo SDK Android -->
+    <DefaultItemExcludes>$(DefaultItemExcludes);Maven\**</DefaultItemExcludes>
 
-    <TargetFramework>net10.0-android</TargetFramework>
+    <!-- Compatível com apps net8–11 Android / MAUI Android.
+         API level no TFM (34/35/36/37) é exigido pelos pacotes Xamarin.AndroidX.
+         net11 só entra quando o SDK em uso é 11+ (evita NETSDK1139 no SDK 10). -->
+    <TargetFrameworks>net8.0-android34.0;net9.0-android35.0;net10.0-android36.0</TargetFrameworks>
+    <TargetFrameworks Condition="$([MSBuild]::VersionGreaterThanOrEquals('$(NETCoreSdkVersion)', '11.0'))">$(TargetFrameworks);net11.0-android37.0</TargetFrameworks>
     <SupportedOSPlatformVersion>24</SupportedOSPlatformVersion>
     <AndroidMinSdkVersion>24</AndroidMinSdkVersion>
 
+    <!-- net8-android workload marcado EOL em SDKs novos — ainda suportamos consumidores net8 -->
+    <CheckEolTargetFramework>false</CheckEolTargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <NoWarn>$(NoWarn);1591;BG8605;BG8606;BG8401</NoWarn>
+    <NoWarn>$(NoWarn);1591;BG8605;BG8606;BG8401;NETSDK1202</NoWarn>
   </PropertyGroup>
 
   <PropertyGroup>
     <Authors>Jean Bodenberg</Authors>
     <Company />
     <Description>
-      .NET Android binding for AppDimens Dynamic (`io.github.bodenberg:appdimens-dynamic`).
-      Public Kotlin APIs with `@JvmStatic` appear under **`Com.Appdimens.Dynamic`** (e.g. `Com.Appdimens.Dynamic.Code`).
-      Jetpack Compose and Wear helpers may reference Compose types; imperative C# surface follows the Views/code package — see README.
+      .NET Android binding for AppDimens Dynamic (io.github.bodenberg:appdimens-dynamic 3.1.9, modular).
+      Targets net8.0-android through net11.0-android. Exposes the core + scaled strategy
+      (DimenSdp / DimenSsp / DimenScaled) under Com.Appdimens.Dynamic.Code, plus every optional
+      scaling module (fluid, fill, power, diagonal, density, fit, resize, units, perimeter,
+      interpolated, percent, auto, logarithmic) as separate bound AARs. Com.Appdimens.Dynamic.DynamicConfig
+      wraps DimenCache warmup / invalidateOnConfigChange for configuration-change refresh.
+      Jetpack Compose helpers are not practical from C# — see README.
     </Description>
     <Copyright>Copyright © Jean Bodenberg</Copyright>
     <PackageReleaseNotes>
-      NuGet 3.5.1.4: Target net10.0-android; Xamarin AndroidX/DataStore 1.2.1 (DimenCache, aligned with Maven). Embedded AAR unchanged: Maven io.github.bodenberg:appdimens-dynamic 3.1.5.
+      NuGet 3.6.0: Embedded modular AARs Maven io.github.bodenberg:appdimens-dynamic* 3.1.9
+      (core+scaled + 13 strategy modules); multi-target net8.0-android / net9.0-android /
+      net10.0-android / net11.0-android; DynamicConfig helper for warmup and configuration-change
+      dimension refresh; AndroidX/Kotlin pins aligned to AAR POM.
       Android library: https://github.com/bodenberg/appdimens-dynamic · Binding: https://github.com/bodenberg/appdimens-net-binding
     </PackageReleaseNotes>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
@@ -32,41 +45,73 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/bodenberg/appdimens-dynamic</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageTags>android;binding;maui;xamarin;appdimens;dynamic;dp;sp;responsive;kotlin;window</PackageTags>
+    <PackageTags>android;binding;maui;xamarin;appdimens;dynamic;dp;sp;responsive;fluid;percent;auto;kotlin;window;modular;net8;net9;net10;net11</PackageTags>
 
+    <!-- Empacota o mesmo assembly principal (o binding) -->
     <PackageId>Bodenberg.AppDimens.Dynamic</PackageId>
-    <Version>3.5.1.4</Version>
+    <Version>3.6.0</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
 
   <ItemGroup>
-    <AndroidLibrary Bind="true" Include="Jars\appdimens-dynamic-3.1.5.aar" />
+    <!-- AARs modulares 3.1.9: core+scaled (appdimens-dynamic) + 13 módulos de estratégia -->
+    <AndroidLibrary Bind="true" Include="Jars\appdimens-dynamic-3.1.9.aar" />
+    <AndroidLibrary Bind="true" Include="Jars\appdimens-dynamic-logarithmic-3.1.9.aar" />
+    <AndroidLibrary Bind="true" Include="Jars\appdimens-dynamic-fluid-3.1.9.aar" />
+    <AndroidLibrary Bind="true" Include="Jars\appdimens-dynamic-fill-3.1.9.aar" />
+    <AndroidLibrary Bind="true" Include="Jars\appdimens-dynamic-diagonal-3.1.9.aar" />
+    <AndroidLibrary Bind="true" Include="Jars\appdimens-dynamic-power-3.1.9.aar" />
+    <AndroidLibrary Bind="true" Include="Jars\appdimens-dynamic-density-3.1.9.aar" />
+    <AndroidLibrary Bind="true" Include="Jars\appdimens-dynamic-fit-3.1.9.aar" />
+    <AndroidLibrary Bind="true" Include="Jars\appdimens-dynamic-resize-3.1.9.aar" />
+    <AndroidLibrary Bind="true" Include="Jars\appdimens-dynamic-units-3.1.9.aar" />
+    <AndroidLibrary Bind="true" Include="Jars\appdimens-dynamic-perimeter-3.1.9.aar" />
+    <AndroidLibrary Bind="true" Include="Jars\appdimens-dynamic-interpolated-3.1.9.aar" />
+    <AndroidLibrary Bind="true" Include="Jars\appdimens-dynamic-percent-3.1.9.aar" />
+    <AndroidLibrary Bind="true" Include="Jars\appdimens-dynamic-auto-3.1.9.aar" />
 
     <TransformFile Include="Transforms\Metadata.xml" />
     <TransformFile Include="Transforms\EnumFields.xml" />
     <TransformFile Include="Transforms\EnumMethods.xml" />
 
     <None Include="..\README.md" Pack="true" PackagePath="\" />
+    <!-- Metadados Maven de referência (não entram no assembly) -->
+    <None Include="Maven\**" />
   </ItemGroup>
 
-  <!-- Runtime deps do POM Gradle (appdimens-dynamic 3.1.5); DataStore é obrigatório para DimenCache. -->
-  <ItemGroup>
+  <!-- net8: versões mais antigas compatíveis com net8.0-android21.0 durante restore multi-TFM -->
+  <ItemGroup Condition="$(TargetFramework.StartsWith('net8.0-android'))">
+    <PackageReference Include="Xamarin.Kotlin.StdLib" Version="2.2.21" />
+    <PackageReference Include="Xamarin.AndroidX.Core" Version="1.16.0.3" />
+    <PackageReference Include="Xamarin.AndroidX.Window" Version="1.4.0.1" />
+    <PackageReference Include="Xamarin.AndroidX.Lifecycle.Runtime" Version="2.9.4" />
+  </ItemGroup>
+
+  <!-- net9: versões intermediárias -->
+  <ItemGroup Condition="$(TargetFramework.StartsWith('net9.0-android'))">
     <PackageReference Include="Xamarin.Kotlin.StdLib" Version="2.3.21" />
-    <PackageReference Include="Xamarin.AndroidX.Core" Version="1.18.0" />
+    <PackageReference Include="Xamarin.AndroidX.Core" Version="1.17.0.2" />
     <PackageReference Include="Xamarin.AndroidX.Window" Version="1.5.1.2" />
     <PackageReference Include="Xamarin.AndroidX.Lifecycle.Runtime" Version="2.10.0.2" />
-    <!-- Maven appdimens-dynamic usa datastore-preferences 1.2.1 -->
-    <PackageReference Include="Xamarin.AndroidX.DataStore.Preferences" Version="1.2.1" />
   </ItemGroup>
 
-  <!-- Generator omits `new` on nested sealed subclasses' _members (CS0108). Patch after bind. -->
+  <!-- net10/net11: versões alinhadas ao POM Gradle 3.1.9 -->
+  <ItemGroup Condition="$(TargetFramework.StartsWith('net10.0-android')) Or $(TargetFramework.StartsWith('net11.0-android'))">
+    <PackageReference Include="Xamarin.Kotlin.StdLib" Version="2.4.0.1" />
+    <PackageReference Include="Xamarin.AndroidX.Core" Version="1.19.0.1" />
+    <PackageReference Include="Xamarin.AndroidX.Window" Version="1.5.1.3" />
+    <PackageReference Include="Xamarin.AndroidX.Lifecycle.Runtime" Version="2.11.0.1" />
+  </ItemGroup>
+
+  <!-- O gerador omite `new` em _members de subclasses aninhadas de ResizeBound (CS0108).
+       Corrige após gerar os bindings, antes de compilar. -->
   <Target Name="_FixResizeBoundNestedMembersCs0108"
           AfterTargets="GenerateBindings"
           BeforeTargets="CoreCompile"
-          Condition="Exists('$(IntermediateOutputPath)generated\src\Com.Appdimens.Dynamic.Core.ResizeBound.cs')">
-    <Exec Command="sed -i 's/static readonly JniPeerMembers _members = new XAPeerMembers (\&quot;com\/appdimens\/dynamic\/core\/ResizeBound\$/static new readonly JniPeerMembers _members = new XAPeerMembers (\&quot;com\/appdimens\/dynamic\/core\/ResizeBound$/g' &quot;$(IntermediateOutputPath)generated/src/Com.Appdimens.Dynamic.Core.ResizeBound.cs&quot;" />
+          Condition="Exists('$(IntermediateOutputPath)generated/src/Com.Appdimens.Dynamic.Core.ResizeBound.cs')">
+    <Exec Command="sed -i 's/static readonly JniPeerMembers _members = new XAPeerMembers/static new readonly JniPeerMembers _members = new XAPeerMembers/g' '$(IntermediateOutputPath)generated/src/Com.Appdimens.Dynamic.Core.ResizeBound.cs'" />
   </Target>
 
 </Project>

@@ -1,0 +1,183 @@
+@page "/"
+@using AppDimens.Maui.Core
+@using Microsoft.JSInterop
+@implements IDisposable
+@inject IJSRuntime JS
+@inject HttpClient Http
+@inject BrowserDimensEngine Engine
+
+<h1>AppDimens SDPS — Browser resize demo</h1>
+
+<p>
+    Resize the browser window: <b>live</b> values (<c>sdp / hdp / wdp / sdpa</c>) follow the
+    window; <b>independent</b> values (<c>sdpi / hdpi / wdpi / sdpia</c>) stay frozen at the
+    baseline captured on startup.
+</p>
+
+<section class="card">
+    <h2>Window metrics</h2>
+    <table id="metrics">
+        <tr><td>window (css px)</td><td class="v">@Fmt0(_w) × @Fmt0(_h)</td></tr>
+        <tr><td>density</td><td class="v">@_dpr.ToString("F2", Invariant)</td></tr>
+        <tr><td>smallest width (dp)</td><td class="v">@Fmt0(Engine.Metrics.Current.SmallestDp)</td></tr>
+        <tr><td>buckets loaded</td><td class="v" id="buckets-loaded">@Engine.BucketsLoaded</td></tr>
+    </table>
+    <button id="recapture" @onclick="RecaptureBaseline">Re-capture baseline now</button>
+</section>
+
+<section class="card">
+    <h2>Values (dp)</h2>
+    <table id="values">
+        <thead>
+            <tr><th>API</th><th>value</th><th>frozen?</th></tr>
+        </thead>
+        <tbody>
+            <tr><td>sdp 16 (live)</td><td class="v live">@Fmt(Engine.Sdp(16))</td><td>no — adjusts</td></tr>
+            <tr><td>sdpa 16 (live + AR)</td><td class="v live">@Fmt(Engine.Sdpa(16))</td><td>no — adjusts</td></tr>
+            <tr><td>sdpi 16</td><td class="v frozen" id="sdpi">@Fmt(Sdpi0)</td><td>yes — baseline</td></tr>
+            <tr><td>sdpia 16</td><td class="v frozen" id="sdpia">@Fmt(Sdpia0)</td><td>yes — baseline + AR</td></tr>
+            <tr><td>hdp 48 (live)</td><td class="v live">@Fmt(Engine.Hdp(48))</td><td>no — adjusts</td></tr>
+            <tr><td>hdpi 48</td><td class="v frozen" id="hdpi">@Fmt(Engine.Hdpi(48))</td><td>yes — baseline</td></tr>
+            <tr><td>wdp 120 (live)</td><td class="v live">@Fmt(Engine.Wdp(120))</td><td>no — adjusts</td></tr>
+            <tr><td>wdpi 120</td><td class="v frozen" id="wdpi">@Fmt(Engine.Wdpi(120))</td><td>yes — baseline</td></tr>
+        </tbody>
+    </table>
+</section>
+
+<section class="card">
+    <h2>Self-test: @_testResult</h2>
+    <ul id="selftest">
+        @foreach (var line in _testLines)
+        {
+            <li>@line</li>
+        }
+    </ul>
+</section>
+
+<style>
+    body { font-family: system-ui, sans-serif; margin: 2rem; background: #0f172a; color: #e2e8f0; }
+    .main { max-width: 760px; margin: 0 auto; }
+    .card { background: #1e293b; border-radius: 12px; padding: 1rem 1.25rem; margin: 1rem 0; }
+    table { border-collapse: collapse; width: 100%; }
+    td, th { padding: .35rem .6rem; text-align: left; border-bottom: 1px solid #334155; }
+    .v { font-variant-numeric: tabular-nums; text-align: right; }
+    .live { color: #4ade80; } .frozen { color: #f472b6; }
+    button { background: #6366f1; color: white; border: 0; padding: .5rem 1rem; border-radius: 8px; cursor: pointer; }
+</style>
+
+@code {
+    private static readonly System.Globalization.CultureInfo Invariant =
+        System.Globalization.CultureInfo.InvariantCulture;
+
+    private double _w, _h, _dpr = 1;
+    private double Sdpi0, Sdpia0;
+    private string _testResult = "running";
+    private readonly List<string> _testLines = new();
+    private DotNetObjectReference<ResizeBridge>? _bridge;
+    private IDisposable? _resizeSub;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender) return;
+
+        var size = await JS.InvokeAsync<double[]>("appdimens.getWindowSize");
+        ApplySize(size);
+        await Engine.InitializeAsync();
+        await Engine.EnsureBucketsAsync(Engine.Metrics.Current);
+        Engine.CaptureBaseline();
+        Sdpi0 = Engine.Sdpi(16);
+        Sdpia0 = Engine.Sdpia(16);
+        StateHasChanged();
+
+        _bridge = DotNetObjectReference.Create(new ResizeBridge(this));
+        _resizeSub = await JS.InvokeAsync<IDisposable>("appdimens.onResize", _bridge);
+
+        await RunSelfTestAsync();
+        StateHasChanged();
+    }
+
+    [JSInvokable]
+    public void OnWindowResized(double w, double h, double dpr) => ApplySize(new[] { w, h, dpr });
+
+    private void ApplySize(double[] s)
+    {
+        if (s.Length < 3) return;
+        _w = s[0]; _h = s[1]; _dpr = s[2];
+        Engine.UpdateWindow(_w, _h, _dpr);
+    }
+
+    private void RecaptureBaseline()
+    {
+        Engine.CaptureBaseline();
+        Sdpi0 = Engine.Sdpi(16);
+        Sdpia0 = Engine.Sdpia(16);
+    }
+
+    private static string Fmt(double v) => v.ToString("F2", Invariant);
+    private static string Fmt0(double v) => v.ToString("0", Invariant);
+
+    /// <summary>In-page assertions mirroring the unit-test contract.</summary>
+    private async Task RunSelfTestAsync()
+    {
+        try
+        {
+            _testLines.Clear();
+            var failures = 0;
+
+            // Pre-fetch tables for the simulated bigger window too.
+            var big = new AppDimens.Maui.Core.ScreenMetricsSnapshot(
+                _w * 1.5, _h * 1.5, Math.Min(_w * 1.5, _h * 1.5),
+                _dpr, (int)Math.Round(160 * _dpr),
+                ScreenOrientation.Landscape, UiModeType.Normal);
+            await Engine.EnsureBucketsAsync(big);
+
+            var beforeLive = Engine.Sdp(32);
+            var beforeFrozen = Engine.Sdpi(32);
+
+            Engine.UpdateWindow(_w * 1.5, _h * 1.5, _dpr);
+
+            var afterLive = Engine.Sdp(32);
+            var afterFrozen = Engine.Sdpi(32);
+
+            void Check(string name, bool ok)
+            {
+                if (!ok) failures++;
+                _testLines.Add($"{(ok ? "PASS" : "FAIL")}  {name}");
+            }
+
+            Check("sdpi == sdp at the baseline window", Math.Abs(beforeFrozen - beforeLive) < 0.0001);
+            Check("sdp adjusts after resize", afterLive > beforeLive);
+            Check("sdpi frozen after resize", Math.Abs(afterFrozen - beforeFrozen) < 0.0001);
+            Check("hdpi/wdpi resolve positive", Engine.Hdpi(48) > 0 && Engine.Wdpi(120) > 0);
+            Check("bucket tables loaded", Engine.BucketsLoaded);
+
+            // Restore real window metrics.
+            Engine.UpdateWindow(_w, _h, _dpr);
+
+            _testResult = failures == 0 ? "ALL PASSED" : $"{failures} FAILED";
+        }
+        catch (Exception ex)
+        {
+            _testResult = "EXCEPTION";
+            _testLines.Add(ex.Message);
+        }
+    }
+
+    public void Dispose()
+    {
+        _resizeSub?.Dispose();
+        _bridge?.Dispose();
+    }
+
+    public sealed class ResizeBridge(Index page)
+    {
+        [JSInvokable]
+        public void Resized(double w, double h, double dpr)
+        {
+            page.OnWindowResized(w, h, dpr);
+            page.NotifyResized();
+        }
+    }
+
+    public void NotifyResized() => InvokeAsync(StateHasChanged);
+}

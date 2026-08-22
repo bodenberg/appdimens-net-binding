@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/benchDarkBg"
+    android:orientation="vertical">
+
+    <!-- ══ Top bar ══ -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="@color/benchSurface"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="8dp"
+        android:paddingEnd="16dp">
+
+        <Button
+            android:id="@+id/btn_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:minWidth="0dp"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:text="◀"
+            android:textColor="@color/benchTextPrimary"
+            android:textSize="18sp" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="AppDimens Benchmark"
+            android:textColor="@color/benchTextPrimary"
+            android:textSize="19sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- ══ Control panel ══ -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/card_bg_dark"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Micro Benchmark — scaled family"
+                    android:textColor="@color/benchAccentCyan"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/bench_status"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:text="Status: Idle · Warmup 10k iters → Measure 100k iters/op (sdp · hdp · wdp · sdpa · single ±AR)"
+                    android:textColor="@color/benchTextSecondary"
+                    android:textSize="13sp" />
+
+                <Button
+                    android:id="@+id/btn_run_micro"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:background="@drawable/btn_benchmark"
+                    android:text="Run Micro Benchmark (100k × 4 + single)"
+                    android:textColor="#FFFFFF"
+                    android:textStyle="bold" />
+
+                <Button
+                    android:id="@+id/btn_run_auto"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/card_bg_dark"
+                    android:text="Auto strategy family (percent / auto)"
+                    android:textColor="@color/benchAccentAmber"
+                    android:textSize="13sp" />
+            </LinearLayout>
+
+            <!-- ══ Resultados ══ -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="Results (ns/op)"
+                android:textColor="@color/benchTextSecondary"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/bench_results"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/card_bg_dark"
+                android:fontFamily="monospace"
+                android:padding="14dp"
+                android:text="Awaiting run…\n\n· sdp  (bypass): –\n· hdp  (bypass): –\n· wdp  (bypass): –\n· sdpa (cache) : –\n\nsingle no-AR : –\nsingle +AR   : –\ncombined avg : –\nchecksum     : –\nwall time    : –"
+                android:textColor="@color/benchAccentGreen"
+                android:textSize="13sp" />
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

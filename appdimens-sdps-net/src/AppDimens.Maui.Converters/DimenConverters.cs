@@ -18,19 +18,38 @@ public abstract class DimenConverterBase : IValueConverter
         => throw new NotSupportedException();
 }
 
+/// <summary>Smallest-width scaled; set <see cref="Independent"/> for a resize-frozen value.</summary>
 public sealed class SdpConverter : DimenConverterBase
 {
-    protected override double ConvertIndex(int index) => AppDimensSdps.Sdp(index);
+    /// <summary>When true, resolves against the frozen baseline (suffix <c>i</c>) instead of the live screen.</summary>
+    public bool Independent { get; set; }
+
+    protected override double ConvertIndex(int index) =>
+        Independent ? AppDimensSdps.Sdpi(index) : AppDimensSdps.Sdp(index);
 }
 
 public sealed class SspConverter : DimenConverterBase
 {
-    protected override double ConvertIndex(int index) => AppDimensSdps.Ssp(index);
+    public bool Independent { get; set; }
+
+    protected override double ConvertIndex(int index) =>
+        Independent ? AppDimensSdps.Sspi(index) : AppDimensSdps.Ssp(index);
 }
 
 public sealed class HdpConverter : DimenConverterBase
 {
-    protected override double ConvertIndex(int index) => AppDimensSdps.Hdp(index);
+    public bool Independent { get; set; }
+
+    protected override double ConvertIndex(int index) =>
+        Independent ? AppDimensSdps.Hdpi(index) : AppDimensSdps.Hdp(index);
+}
+
+public sealed class WdpConverter : DimenConverterBase
+{
+    public bool Independent { get; set; }
+
+    protected override double ConvertIndex(int index) =>
+        Independent ? AppDimensSdps.Wdpi(index) : AppDimensSdps.Wdp(index);
 }
 
 public sealed class HspConverter : DimenConverterBase
@@ -48,17 +67,13 @@ public sealed class SemConverter : DimenConverterBase
     protected override double ConvertIndex(int index) => AppDimensSdps.Sem(index);
 }
 
-public sealed class WdpConverter : DimenConverterBase
-{
-    protected override double ConvertIndex(int index) => AppDimensSdps.Wdp(index);
-}
-
 public static class DimenPhysicalUnits
 {
     public const double MmToCmFactor = 10.0;
     public const double MmToInchFactor = 25.4;
 
-    public static double MmToPx(double mm, double density) => mm * density * 160.0 / MmToInchFactor / 25.4 * 25.4;
+    /// <summary>px = mm ÷ 25.4 × dpi, where dpi = 160 × density.</summary>
+    public static double MmToPx(double mm, double density) => mm / MmToInchFactor * density * 160.0;
     public static double CmToPx(double cm, double density) => MmToPx(cm * MmToCmFactor, density);
     public static double InchToPx(double inch, double density) => inch * density * 160.0;
 

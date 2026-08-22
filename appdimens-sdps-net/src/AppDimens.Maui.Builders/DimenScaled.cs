@@ -16,11 +16,13 @@ public sealed class DimenScaled
 {
     private readonly int _baseValue;
     private readonly List<CustomDpEntry> _entries;
+    private CustomDpEntry[]? _sorted;
 
     public DimenScaled(int baseValue, IEnumerable<CustomDpEntry>? entries = null)
     {
         _baseValue = baseValue;
         _entries = entries?.ToList() ?? new List<CustomDpEntry>();
+        _sorted = null;
     }
 
     public DimenScaled Screen(UiModeType uiMode, DpQualifier qualifierType, int qualifierValue,
@@ -56,15 +58,8 @@ public sealed class DimenScaled
 
     private DimenScaled Add(CustomDpEntry entry)
     {
-        var list = new List<CustomDpEntry>(_entries) { entry };
-        list.Sort((a, b) =>
-        {
-            var p = a.Priority.CompareTo(b.Priority);
-            if (p != 0) return p;
-            var av = a.DpQualifierEntry?.Value ?? 0;
-            var bv = b.DpQualifierEntry?.Value ?? 0;
-            return bv.CompareTo(av);
-        });
+        // Entries stay unordered; priority ordering is computed once at first resolve.
+        List<CustomDpEntry> list = [.. _entries, entry];
         return new DimenScaled(_baseValue, list);
     }
 
@@ -76,8 +71,9 @@ public sealed class DimenScaled
     {
         var resolver = AppDimensResolver.Instance;
         var metrics = resolver.Metrics.Current;
+        var sorted = _sorted ??= SortEntries(_entries);
 
-        foreach (var entry in _entries)
+        foreach (var entry in sorted)
         {
             if (!MatchesOrientation(entry.Orientation, metrics)) continue;
             if (entry.UiModeType.HasValue && entry.UiModeType.Value != metrics.UiMode) continue;
@@ -93,6 +89,20 @@ public sealed class DimenScaled
         }
 
         return resolver.Resolve(_baseValue, defaultQualifier);
+    }
+
+    private static CustomDpEntry[] SortEntries(List<CustomDpEntry> entries)
+    {
+        var arr = entries.ToArray();
+        Array.Sort(arr, static (a, b) =>
+        {
+            var p = a.Priority.CompareTo(b.Priority);
+            if (p != 0) return p;
+            var av = a.DpQualifierEntry?.Value ?? 0;
+            var bv = b.DpQualifierEntry?.Value ?? 0;
+            return bv.CompareTo(av);
+        });
+        return arr;
     }
 
     private static bool MatchesOrientation(OrientationQualifier? required, ScreenMetricsSnapshot metrics)

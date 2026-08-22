@@ -160,6 +160,37 @@ public sealed class SdpPwAExtension : DimenMarkupExtensionBase
     protected override double Resolve(AppDimensResolver r, int v) => r.Sdpa(v, InverterEngine.ForSdpPw());
 }
 
+// Independent (suffix i) — frozen against the baseline; no auto-adjust on resize.
+public sealed class SdpiExtension : DimenMarkupExtensionBase
+{
+    protected override double Resolve(AppDimensResolver r, int v) => r.Sdpi(v);
+}
+
+public sealed class SdpiaExtension : DimenMarkupExtensionBase
+{
+    protected override double Resolve(AppDimensResolver r, int v) => r.Sdpia(v);
+}
+
+public sealed class HdpiExtension : DimenMarkupExtensionBase
+{
+    protected override double Resolve(AppDimensResolver r, int v) => r.Hdpi(v);
+}
+
+public sealed class HdpiaExtension : DimenMarkupExtensionBase
+{
+    protected override double Resolve(AppDimensResolver r, int v) => r.Hdpia(v);
+}
+
+public sealed class WdpiExtension : DimenMarkupExtensionBase
+{
+    protected override double Resolve(AppDimensResolver r, int v) => r.Wdpi(v);
+}
+
+public sealed class WdpiaExtension : DimenMarkupExtensionBase
+{
+    protected override double Resolve(AppDimensResolver r, int v) => r.Wdpia(v);
+}
+
 [ContentProperty(nameof(Value))]
 [AcceptEmptyServiceProvider]
 public sealed class ScaledExtension : IMarkupExtension

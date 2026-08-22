@@ -51,6 +51,8 @@ public static class ShortDimenMarkupExpander
         "hspLwA", "hspPwA", "wspLhA", "wspPhA",
         "semaPh", "semaLw", "semaLh", "semaPw",
         "hemaLw", "hemaPw", "wemaLh", "wemaPh",
+        "sdpia", "hdpia", "wdpia", "sspia",
+        "sdpi", "hdpi", "wdpi", "sspi", "semi",
         "sdpPh", "sdpLw", "sdpLh", "sdpPw",
         "hdpLw", "hdpPw", "wdpLh", "wdpPh",
         "sspPh", "sspLw", "sspLh", "sspPw",

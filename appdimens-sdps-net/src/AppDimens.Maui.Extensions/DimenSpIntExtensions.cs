@@ -73,6 +73,17 @@ public static class DimenSpIntExtensions
     public static double WemaLh(this int value) => R.Wema(value, InverterEngine.ForWdpLh());
     public static double WemaPh(this int value) => R.Wema(value, InverterEngine.ForWdpPh());
 
+    // Independent variants (suffix i) — frozen against the baseline snapshot;
+    // they do NOT change when the screen or window is resized. *ia adds aspect ratio.
+    public static double Sspi(this int value) => R.Sspi(value);
+    public static double Sspia(this int value) => R.Sspia(value);
+    public static double Hspi(this int value) => R.Hspi(value);
+    public static double Wspi(this int value) => R.Wspi(value);
+    public static double Semi(this int value) => R.Semi(value);
+    public static double Semia(this int value) => R.Semia(value);
+    public static double Hemi(this int value) => R.Hemi(value);
+    public static double Wemi(this int value) => R.Wemi(value);
+
     // Convert scaled values to device pixels
     public static double HspPx(this int value) => R.Hsp(value) * R.Metrics.Current.Density;
     public static double WspPx(this int value) => R.Wsp(value) * R.Metrics.Current.Density;

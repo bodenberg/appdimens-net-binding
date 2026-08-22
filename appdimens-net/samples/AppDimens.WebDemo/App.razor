@@ -1,0 +1,148 @@
+@page "/"
+@using AppDimens.Net
+@using AppDimens.Net.Code.Scaled
+@using AppDimens.Net.Code.Fluid
+@using AppDimens.Net.Code.Auto
+@using AppDimens.Net.Code.Percent
+@using AppDimens.Net.Code.Density
+@using AppDimens.Net.Code.Diagonal
+@using AppDimens.Net.Code.Resize
+@using AppDimens.Net.Core
+@using AppDimens.Net.Testing
+@using Microsoft.JSInterop
+@inject IJSRuntime JS
+
+<h1 style="color:#6750A4">AppDimens .NET — Browser Self-Tests</h1>
+<p>Running the parity/invariant suite inside WebAssembly…</p>
+<table>
+    <thead><tr><th>Test</th><th>Result</th><th>Detail</th></tr></thead>
+    <tbody>
+        @foreach (var r in _results)
+        {
+            <tr>
+                <td>@r.Name</td>
+                <td style="color:@(r.Pass ? "#2E7D32" : "#C62828");font-weight:bold">@(@r.Pass ? "PASS" : "FAIL")</td>
+                <td>@r.Detail</td>
+            </tr>
+        }
+    </tbody>
+</table>
+<h2>@_passed/@_total passed @_finished</h2>
+
+@code {
+    private readonly List<(string Name, bool Pass, string Detail)> _results = new();
+    private int _passed, _total;
+    private string _finished = "";
+    private bool _started;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender || _started) return;
+        _started = true;
+
+        RunAll();
+
+        try
+        {
+            var ua = await JS.InvokeAsync<string>("eval", "window.navigator.userAgent");
+            _results.Add(("browser-user-agent", true, ua));
+            await JS.InvokeVoidAsync("eval", "document.title='APPDIMENS_TESTS_DONE'");
+        }
+        catch { /* interop optional */ }
+
+        StateHasChanged();
+    }
+
+    private void Check(string name, Func<bool> test, string detail = "")
+    {
+        _total++;
+        try
+        {
+            var ok = test();
+            if (ok) _passed++;
+            _results.Add((name, ok, ok ? detail : detail is "" ? "assertion failed" : $"{detail} — assertion failed"));
+        }
+        catch (Exception e)
+        {
+            _results.Add((name, false, e.Message));
+        }
+    }
+
+    private static FakeAppDimensContext Ctx(int w = 360, int h = 740, int dpi = 420, float fs = 1f) =>
+        new(new ScreenConfiguration(w, h, Math.Min(w, h), dpi, fs,
+            ScreenConfiguration.OrientationPortrait, 0));
+
+    private void RunAll()
+    {
+        var ctx = Ctx();
+        DimenCache.Init(ctx);
+        DimenCache.ClearAll();
+
+        // Fast lanes match the full cached path exactly (bitwise).
+        foreach (var v in new[] { 8f, 16f, 24f, 48f, 100f })
+            Check($"sdp-fast-lane==full-path({v})", () =>
+                DimenCache.ResolveSdpDp(v, ctx) == v.ToDynamicScaledDp(ctx),
+                $"sw={ctx.Configuration.SmallestScreenWidthDp}");
+
+        // scale = sw/300 (legacy order preserved).
+        Check("sdp-scale-360", () => MathF.Abs(16f.ToDynamicScaledDp(ctx) - 19.2f) < 0.001f,
+            $"got {16f.ToDynamicScaledDp(ctx):0.####}");
+        Check("hdp-height-factor", () => MathF.Abs(48.Hdp(ctx) - 48f * 740f / 300f) < 0.01f,
+            $"got {48.Hdp(ctx):0.####}");
+        Check("wdp-width-factor", () => MathF.Abs(100.Wdp(ctx) - 120f) < 0.01f);
+
+        // Multi-window suppression with suffix i.
+        var mwCtx = Ctx(); mwCtx.IsInMultiWindowMode = true;
+        Check("sdpi-multiwindow-suppressed", () => MathF.Abs(24.Sdpi(mwCtx) - 24f) < 0.0001f,
+            $"got {24.Sdpi(mwCtx):0.####}");
+        Check("sdpa-normal-ar-path", () => 24.Sdpa(ctx) > 24.Sdp(ctx));
+
+        // Event-driven watcher: config change invalidates fast slots.
+        DimenCache.Init(ctx);
+        var before = 32.ToDynamicScaledDp(ctx);
+        ctx.SetConfig(600, 1000, 420);
+        ctx.NotifyChange();
+        var after = 32.ToDynamicScaledDp(ctx);
+        Check("watcher-invalidates-on-resize", () => after > before,
+            $"{before:0.##} → {after:0.##} (sw 360→600)");
+        ctx.SetConfig(360, 740, 420);
+        ctx.NotifyChange();
+
+        // Satellites — canonical formulas at sw=360, dpi=420.
+        Check("percent-psdp", () => MathF.Abs(24.PSdp(ctx) - 28.8f) < 0.01f,
+            $"got {24.PSdp(ctx):0.####}");
+        Check("fluid-fsdp", () => MathF.Abs(28.ToFluidDp(ctx) - 23.4f) < 0.05f,
+            $"got {28.ToFluidDp(ctx):0.####}");
+        Check("auto-asdp", () => MathF.Abs(28.ToAutoDp(ctx) - 33.6f) < 0.01f,
+            $"got {28.ToAutoDp(ctx):0.####}");
+        Check("density-dsdp", () => MathF.Abs(12.DSdp(ctx) - 31.5f) < 0.01f,
+            $"got {12.DSdp(ctx):0.####}");
+        var dgExpected = 18f * MathF.Sqrt(360f * 360f + 740f * 740f) / 611.6305f;
+        Check("diagonal-dgsdp", () => MathF.Abs(18.DGSdp(ctx) - dgExpected) < 0.02f,
+            $"got {18.DGSdp(ctx):0.####} exp {dgExpected:0.####}");
+
+        // Resize math (incl. px→dp single-conversion regression).
+        var steps = ResizeMath.BuildStepsPx(12f, 16f, 1f);
+        Check("resize-steps", () => steps.SequenceEqual(new[] { 12f, 13f, 14f, 15f, 16f }));
+        var range = new ResizeRangePx(12f, 28f, 1f);
+        Check("resize-binary-search", () =>
+            range.ResolveFitting(_ => true) == 28f && range.ResolveFitting(_ => false) == 0f &&
+            range.ResolveFitting(v => v <= 17.5f) == 17f);
+        var sqSide = DimenResize.AutoResizeSquarePx(400f * ctx.Density, 100f * ctx.Density,
+            16, 200, 4, ctx);
+        Check("resize-square-px-limit", () => MathF.Abs(sqSide - 100f) < 0.01f,
+            $"got {sqSide:0.##} exp 100");
+
+        // Cache partitioning survives alternating snapshots without cross-talk.
+        var a = Ctx(); var b = Ctx(800, 1280, 240);
+        DimenCache.ClearAll();
+        var okRace = true;
+        for (var i = 0; i < 500; i++)
+        {
+            var va = 16f.ToDynamicScaledDp(a);
+            var vb = 16f.ToDynamicScaledDp(b);
+            if (va != 16f.ToDynamicScaledDp(a) || vb != 16f.ToDynamicScaledDp(b)) { okRace = false; break; }
+        }
+        Check("cache-snapshot-partition", () => okRace, "500 alternating snapshots");
+    }
+}

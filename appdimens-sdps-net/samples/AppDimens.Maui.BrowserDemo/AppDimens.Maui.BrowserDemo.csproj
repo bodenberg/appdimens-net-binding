@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>AppDimens.Maui.BrowserDemo</RootNamespace>
+    <AssemblyName>AppDimens.Maui.BrowserDemo</AssemblyName>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <IsPackable>false</IsPackable>
+    <NoWarn>$(NoWarn);BL0007</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="10.0.0" PrivateAssets="all" />
+  </ItemGroup>
+
+  <!-- Engine modules only: no Microsoft.Maui dependency, runs fully client-side. -->
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\AppDimens.Maui.Core\AppDimens.Maui.Core.csproj" />
+    <ProjectReference Include="..\..\src\AppDimens.Maui.Inverters\AppDimens.Maui.Inverters.csproj" />
+    <ProjectReference Include="..\..\src\AppDimens.Maui.Responsive\AppDimens.Maui.Responsive.csproj" />
+    <ProjectReference Include="..\..\src\AppDimens.Maui.Resources\AppDimens.Maui.Resources.csproj" />
+  </ItemGroup>
+
+  <!-- Sync the generated Android-parity bucket tables into wwwroot (static assets). -->
+  <Target Name="SyncGeneratedToWwwroot" BeforeTargets="BeforeBuild">
+    <Exec Command="python3 -c &quot;import shutil, os; src = os.path.join('..', '..', 'src', 'AppDimens.Maui.Resources', 'Generated'); dst = os.path.join('wwwroot', 'Generated'); shutil.rmtree(dst, ignore_errors=True); shutil.copytree(src, dst)&quot;" />
+  </Target>
+
+</Project>

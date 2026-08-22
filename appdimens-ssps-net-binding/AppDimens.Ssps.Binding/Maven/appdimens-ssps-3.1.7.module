@@ -1,0 +1,148 @@
+{
+  "formatVersion": "1.1",
+  "component": {
+    "group": "io.github.bodenberg",
+    "module": "appdimens-ssps",
+    "version": "3.1.7",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "9.5.0"
+    }
+  },
+  "variants": [
+    {
+      "name": "releaseVariantReleaseApiPublication",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.libraryelements": "aar",
+        "org.gradle.usage": "java-api"
+      },
+      "dependencies": [
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib",
+          "version": {
+            "requires": "2.4.10"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "appdimens-ssps-3.1.7.aar",
+          "url": "appdimens-ssps-3.1.7.aar",
+          "size": 4286511,
+          "sha512": "2e2a1184ffaf4f8855f3f0fd041ec3d89db356c089b2148a20e4071f82912cf72032ceeebbea1fd2dae347bcd68a1e0cd3efc85273ae665e5d5119476e171730",
+          "sha256": "8553485f134270e241a7632e836024e600cab3f6fa6aeddec88a346f42e62063",
+          "sha1": "5fcf263badfafa7ea19e5282848bda850ea780dc",
+          "md5": "ebecf88dc512aee02644936c754adcce"
+        }
+      ]
+    },
+    {
+      "name": "releaseVariantReleaseRuntimePublication",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.libraryelements": "aar",
+        "org.gradle.usage": "java-runtime"
+      },
+      "dependencies": [
+        {
+          "group": "androidx.core",
+          "module": "core-ktx",
+          "version": {
+            "requires": "1.19.0"
+          }
+        },
+        {
+          "group": "androidx.compose",
+          "module": "compose-bom",
+          "version": {
+            "requires": "2026.06.01"
+          },
+          "attributes": {
+            "org.gradle.category": "platform"
+          }
+        },
+        {
+          "group": "androidx.compose.ui",
+          "module": "ui"
+        },
+        {
+          "group": "androidx.compose.runtime",
+          "module": "runtime"
+        },
+        {
+          "group": "androidx.window",
+          "module": "window",
+          "version": {
+            "requires": "1.5.1"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib",
+          "version": {
+            "requires": "2.4.10"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "appdimens-ssps-3.1.7.aar",
+          "url": "appdimens-ssps-3.1.7.aar",
+          "size": 4286511,
+          "sha512": "2e2a1184ffaf4f8855f3f0fd041ec3d89db356c089b2148a20e4071f82912cf72032ceeebbea1fd2dae347bcd68a1e0cd3efc85273ae665e5d5119476e171730",
+          "sha256": "8553485f134270e241a7632e836024e600cab3f6fa6aeddec88a346f42e62063",
+          "sha1": "5fcf263badfafa7ea19e5282848bda850ea780dc",
+          "md5": "ebecf88dc512aee02644936c754adcce"
+        }
+      ]
+    },
+    {
+      "name": "releaseVariantReleaseSourcePublication",
+      "attributes": {
+        "org.gradle.category": "documentation",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.docstype": "sources",
+        "org.gradle.usage": "java-runtime"
+      },
+      "files": [
+        {
+          "name": "appdimens-ssps-3.1.7-sources.jar",
+          "url": "appdimens-ssps-3.1.7-sources.jar",
+          "size": 37721,
+          "sha512": "27bf0a55db441842343acf092798cf796de4019154149e320a6a245654460e9d6e520dcc803347be23938f43878cbc7bb47ba02e2a2fa6497b5b88cf16958fab",
+          "sha256": "56cee14fb1a28752f7c56da406f02e416fdad04f3334afcdfd33ce4c8e87cca0",
+          "sha1": "078613944ef672ee0de10cf264c790049895ae1a",
+          "md5": "c0fb98186f49bc62357dad05f98a9e45"
+        }
+      ]
+    },
+    {
+      "name": "releaseVariantReleaseJavaDocPublication",
+      "attributes": {
+        "org.gradle.category": "documentation",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.docstype": "javadoc",
+        "org.gradle.usage": "java-runtime"
+      },
+      "files": [
+        {
+          "name": "appdimens-ssps-3.1.7-javadoc.jar",
+          "url": "appdimens-ssps-3.1.7-javadoc.jar",
+          "size": 560112,
+          "sha512": "d3596cd2c7a8c70acea58b917e2aaf90cc997a941ec245b27d9673081b5bbe93426631f7b9a3d4ab7fcb71f64a6730656a32beab22fbd0bb087aeb16618f934f",
+          "sha256": "0f3b75d7614d795b4211fa4b8078ad7a4a9abfcd0b3b0df45acc9f78670190b9",
+          "sha1": "e3bb696ec153ef70f4c42d50aeec03e20a1c6392",
+          "md5": "e0f1154d9ea77de46cd0291eb415ab06"
+        }
+      ]
+    }
+  ]
+}

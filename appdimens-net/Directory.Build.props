@@ -1,0 +1,14 @@
+<Project>
+  <PropertyGroup>
+    <Version>3.6.0</Version>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Authors>Jean Bodenberg</Authors>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/bodenberg/appdimens-net-binding</RepositoryUrl>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);1591;CS8600;CS8601;CS8602;CS8603;CS8613;CS8614;CS8618;CS8619;CS8620;CS8625;CS8765;CA1050</NoWarn>
+    <InvariantGlobalization>true</InvariantGlobalization>
+  </PropertyGroup>
+</Project>

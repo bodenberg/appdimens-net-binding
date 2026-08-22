@@ -1,0 +1,71 @@
+# AppDimens .NET — LLMS.txt (LLM API digest)
+
+> AppDimens for .NET MAUI 3.6.0 — scaled dimensions for Android/iOS/desktop UI.
+> Port of appdimens-kmp. Author: Jean Bodenberg. License: Apache-2.0.
+
+## Setup (MAUI)
+
+```csharp
+using AppDimens.Net.Maui.Platform;
+// in Application.CreateWindow — BEFORE creating any page:
+var window = new Window();
+AppDimensMaui.AttachWindow(window);   // initializes ambient + cache + resize watcher
+window.Page = new NavigationPage(new MainPage());
+```
+
+Parameterless extensions require the ambient scope; otherwise pass
+`IAppDimensContext` explicitly (or use `FakeAppDimensContext` in tests).
+
+## Core API (AppDimens.Net)
+
+- `float Sdp(this int v)` — scale by smallest width. `Sdpa` adds aspect-ratio.
+- `float Hdp(this int v)` / `float Wdp(this int v)` — height/width axis.
+- `Sdpi/Sdpia/Hdpi/Wdpi…` — ignore multi-window constraints.
+- `float Ssp(this int v)` — scaled text size (font-scale aware).
+- Inverters: `SdpPh`, `SdpLw`, `SdpLh`, `SdpPw`, `HdpLw`, `WdpLh` (axis swaps).
+- Facilitators: `SdpRotate(alt, orientation…)`, `SdpMode(alt, uiModeType…)`,
+  `SdpQualifier(qual, threshold, alt…)`, `SdpScreen(uiMode, qual, threshold, alt…)`
+  + `*Plain` variants (pre-scaled branches, no re-scaling).
+- Builder: `v.ScaledDp().AspectRatio(b).Screen(qualifier, threshold, value)
+  .Screen(UiModeType, value).Sdp()` — priority: qualifier+orientation >
+  mode-only > qualifier-only > orientation-only.
+- Generic kernel: `v.ToDynamicScaledDp(ctx, qualifier, inverter, imw, ar, k)`.
+- Ambient: `AppDimensAmbient.Current/Require()`; `DimenCache.Init(ctx)`,
+  `DimenCache.ClearAll()`, `DimenCache.FastMetricsForCode(ctx)`.
+
+## Satellite strategies (uniform shape)
+
+`{P}Sdp/Sdpa/Hdp/Wdp(ctx)`, `{P}Sdpi(a)`, `{P}HdpCustom(v, qual, inv, imw, ar, k)`,
+generic `To{X}Dp(v, ctx, qual, inv, imw, ar, k)`.
+
+- Percent (`AppDimens.Net.Percent`, prefix PS; also `SpaceWDp/SwDp/HDp…`)
+- Power (PW) · Auto (A) · Logarithmic (LOG) · Fluid (F) · Interpolated (I)
+- Diagonal (DGS) · Perimeter (PRS) · Fill (FL) · Fit (ToFitDp + `DimenFit`
+  builder with `.Screen(...)`, `ResolveAll(ctx)`) · Density (D)
+
+## Resize & units (AppDimens.Net.Resize)
+
+- `ResizeRangePx(minPx, maxPx, stepPx)` — ≤4096 bounded steps + binary search.
+- `DimenResize.AutoResizeTextPx(text, boxWidthPx, minSp, maxSp, stepSp, maxLines, ctx)`
+  → font size in **px** (divide by `density·fontScale` for MAUI FontSize).
+- `DimenResize.AutoResizeSquarePx(boxWpx, boxHpx, minDp, maxDp, stepDp, ctx)`
+  → side in **dp** (single px→dp conversion).
+- `DimenPhysicalUnits.ToDpFromMm/Cm, ToPxFromInch, RadiusFromDiameter`.
+
+## Contexts
+
+- `IAppDimensContext` — `Configuration` (ScreenConfiguration: w/h/sw dp, dpi,
+  fontScale, orientation), `Density`, `UiModeType`, `IsInMultiWindowMode`,
+  `RegisterConfigurationListener(Action)`.
+- `FakeAppDimensContext` — `SetConfig(w, h, dpi, orientation, fontScale)` +
+  `NotifyChange()` to drive the watcher in tests.
+
+## Guarantees
+
+- Fast lanes (`DimenCache.ResolveSdpDp/Hdp/Wdp(+Px)`) are allocation-free and
+  bitwise-equal to the full cached path.
+- Resize changes invalidate automatically via the event watcher — no manual
+  cache clearing.
+- Custom sensitivity-K values are never cached.
+- Formulas are bit-a-bit ports of appdimens-kmp (golden values in
+  DOCUMENTATION/PARITY.md).

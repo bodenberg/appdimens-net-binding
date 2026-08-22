@@ -33,6 +33,15 @@ public static class DimenMarkupResolver
             DimenMarkupKind.Sema => r.Sema(value, inverter),
             DimenMarkupKind.Hema => r.Hema(value, inverter),
             DimenMarkupKind.Wema => r.Wema(value, inverter),
+            // Independent (suffix i) — frozen against the baseline; no auto-adjust on resize.
+            DimenMarkupKind.Sdpi => r.Sdpi(value, inverter),
+            DimenMarkupKind.Sdpia => r.Sdpia(value, inverter),
+            DimenMarkupKind.Hdpi => r.Hdpi(value, inverter),
+            DimenMarkupKind.Hdpia => r.ResolveIndependent(value, DpQualifier.Height, inverter, applyAspectRatio: true),
+            DimenMarkupKind.Wdpi => r.Wdpi(value, inverter),
+            DimenMarkupKind.Wdpia => r.ResolveIndependent(value, DpQualifier.Width, inverter, applyAspectRatio: true),
+            DimenMarkupKind.Sspi => r.Sspi(value, inverter),
+            DimenMarkupKind.Sspia => r.Sspia(value, inverter),
             _ => r.Sdp(value, inverter),
         };
     }
@@ -43,6 +52,8 @@ public enum DimenMarkupKind
     Sdp, Ssp, Hdp, Wdp, Hsp, Wsp,
     Sdpa, Hdpa, Wdpa, Sspa, Hspa, Wspa,
     Sem, Hem, Wem, Sema, Hema, Wema,
+    Sdpi, Sdpia, Hdpi, Hdpia, Wdpi, Wdpia,
+    Sspi, Sspia,
 }
 
 [ContentProperty(nameof(Value))]
@@ -97,6 +108,16 @@ public sealed class WemExtension : DimenExtensionBase { protected override Dimen
 public sealed class SemaExtension : DimenExtensionBase { protected override DimenMarkupKind Kind => DimenMarkupKind.Sema; }
 public sealed class HemaExtension : DimenExtensionBase { protected override DimenMarkupKind Kind => DimenMarkupKind.Hema; }
 public sealed class WemaExtension : DimenExtensionBase { protected override DimenMarkupKind Kind => DimenMarkupKind.Wema; }
+
+// Independent (suffix i) — frozen against the baseline; no auto-adjust on resize.
+public sealed class SdpiExtension : DimenExtensionBase { protected override DimenMarkupKind Kind => DimenMarkupKind.Sdpi; }
+public sealed class SdpiaExtension : DimenExtensionBase { protected override DimenMarkupKind Kind => DimenMarkupKind.Sdpia; }
+public sealed class HdpiExtension : DimenExtensionBase { protected override DimenMarkupKind Kind => DimenMarkupKind.Hdpi; }
+public sealed class HdpiaExtension : DimenExtensionBase { protected override DimenMarkupKind Kind => DimenMarkupKind.Hdpia; }
+public sealed class WdpiExtension : DimenExtensionBase { protected override DimenMarkupKind Kind => DimenMarkupKind.Wdpi; }
+public sealed class WdpiaExtension : DimenExtensionBase { protected override DimenMarkupKind Kind => DimenMarkupKind.Wdpia; }
+public sealed class SspiExtension : DimenExtensionBase { protected override DimenMarkupKind Kind => DimenMarkupKind.Sspi; }
+public sealed class SspiaExtension : DimenExtensionBase { protected override DimenMarkupKind Kind => DimenMarkupKind.Sspia; }
 
 [ContentProperty(nameof(Value))]
 [AcceptEmptyServiceProvider]

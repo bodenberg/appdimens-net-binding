@@ -34,20 +34,24 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        module:
-          - appdimens-sdps-net-binding
-          - appdimens-ssps-net-binding
-          - appdimens-dynamic-net-binding
+        include:
+          - module: appdimens-sdps-net-binding
+            aar_version: 3.1.7
+          - module: appdimens-ssps-net-binding
+            aar_version: 3.1.7
+          - module: appdimens-dynamic-net-binding
+            aar_version: 3.1.9
     steps:
       - uses: actions/checkout@v6
       - uses: actions/setup-dotnet@v5
         with:
-          global-json-file: global.json
+          global-json-file: ${{ matrix.module }}/global.json
       - name: Install Android workload
         run: dotnet workload install android
       - name: Sync AAR from Maven
         working-directory: ${{ matrix.module }}
-        run: chmod +x scripts/sync-aar-from-maven.sh && ./scripts/sync-aar-from-maven.sh 3.1.5
-      - name: Build solution
+        run: chmod +x scripts/sync-aar-from-maven.sh && ./scripts/sync-aar-from-maven.sh ${{ matrix.aar_version }}
+      - name: Build binding (net10.0-android36.0)
         working-directory: ${{ matrix.module }}
-        run: dotnet build -c Release
+        run: |
+          dotnet build AppDimens.*.Binding/AppDimens.*.Binding.csproj -c Release -f net10.0-android36.0 /m:1 -p:GeneratePackageOnBuild=false

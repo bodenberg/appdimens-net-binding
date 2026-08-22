@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net8.0;net9.0;net10.0</TargetFrameworks>
+    <TargetFrameworks Condition="$([MSBuild]::VersionGreaterThanOrEquals('$(NETCoreSdkVersion)', '11.0'))">$(TargetFrameworks);net11.0</TargetFrameworks>
+    <RootNamespace>AppDimens.Net.Code.Power</RootNamespace>
+    <AssemblyName>AppDimens.Net.Power</AssemblyName>
+    <PackageId>AppDimens.Net.Power</PackageId>
+    <Description>AppDimens .NET — Power scaling strategy module.</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AppDimens.Net\AppDimens.Net.csproj" />
+  </ItemGroup>
+
+</Project>
