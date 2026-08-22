@@ -6,10 +6,15 @@ on:
   pull_request:
     branches: [main, master]
 
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   maui:
     name: MAUI build & test
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     defaults:
       run:
         working-directory: appdimens-sdps-net
@@ -29,11 +34,32 @@ jobs:
       - name: Security audit
         run: dotnet list tests/AppDimens.Maui.Tests/AppDimens.Maui.Tests.csproj package --vulnerable --include-transitive 2>&1 | tee ../vulnerable.txt; if grep -q 'has the following vulnerable' ../vulnerable.txt; then exit 1; fi
 
+  # Cada TFM é construído com o SDK .NET correspondente.
+  #
+  # Por que um SDK por TFM:
+  # - net8.0-android* é marcado EOL pela workload nova (36.x): ela força
+  #   TargetPlatformVersion=21.0 via Eol.targets e quebra o restore multi-TFM
+  #   com NU1202 ("Package ... not compatible with net8.0-android21.0").
+  # - A workload 36.x só publica packs de referência da API 36; net8/net9
+  #   exigem as workloads 34.x/35.x dos SDKs 8/9.
+  #
+  # Por que -p:TargetFrameworks=<tfm>: restringe restore e build a UM TFM,
+  # evitando que um TFM não suportado pelo SDK em uso derrube o job inteiro.
   bindings:
-    name: Android bindings build
+    name: Android bindings (${{ matrix.module }}, ${{ matrix.tfm }})
     runs-on: ubuntu-latest
+    timeout-minutes: 40
     strategy:
+      fail-fast: false
       matrix:
+        module:
+          - appdimens-sdps-net-binding
+          - appdimens-ssps-net-binding
+          - appdimens-dynamic-net-binding
+        tfm:
+          - net8.0-android34.0
+          - net9.0-android35.0
+          - net10.0-android36.0
         include:
           - module: appdimens-sdps-net-binding
             aar_version: 3.1.7
@@ -41,17 +67,65 @@ jobs:
             aar_version: 3.1.7
           - module: appdimens-dynamic-net-binding
             aar_version: 3.1.9
+          - tfm: net8.0-android34.0
+            api_level: 34
+            sdk_band: 8.0.100
+            dotnet_version: 8.0.x
+          - tfm: net9.0-android35.0
+            api_level: 35
+            sdk_band: 9.0.100
+            dotnet_version: 9.0.x
+          - tfm: net10.0-android36.0
+            api_level: 36
+            sdk_band: 10.0.100
+            dotnet_version: 10.0.x
     steps:
       - uses: actions/checkout@v6
       - uses: actions/setup-dotnet@v5
         with:
-          global-json-file: ${{ matrix.module }}/global.json
+          dotnet-version: ${{ matrix.dotnet_version }}
+
+      # O global.json da raiz fixa o SDK 10; para net8/net9 é preciso fixar
+      # o SDK do TFM no diretório do módulo (o mais próximo vence).
+      - name: Pin SDK for TFM
+        working-directory: ${{ matrix.module }}
+        run: printf '{"sdk":{"version":"%s","rollForward":"latestFeature"}}\n' '${{ matrix.sdk_band }}' > global.json
+
       - name: Install Android workload
+        working-directory: ${{ matrix.module }}
         run: dotnet workload install android
+
+      - name: Ensure Android platform ${{ matrix.api_level }}
+        run: |
+          SDK_DIR="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-/usr/local/lib/android/sdk}}"
+          JAR="${SDK_DIR}/platforms/android-${{ matrix.api_level }}/android.jar"
+          if [ ! -f "${JAR}" ]; then
+            MGR="$(command -v sdkmanager || true)"
+            if [ -z "${MGR}" ] && [ -x "${SDK_DIR}/cmdline-tools/latest/bin/sdkmanager" ]; then
+              MGR="${SDK_DIR}/cmdline-tools/latest/bin/sdkmanager"
+            fi
+            if [ -n "${MGR}" ] && [ -x "${MGR}" ]; then
+              yes | "${MGR}" "platforms;android-${{ matrix.api_level }}" >/dev/null
+            fi
+          fi
+          if [ ! -f "${JAR}" ]; then
+            echo "::error::Android platform android-${{ matrix.api_level }} not found at ${JAR}"
+            exit 1
+          fi
+
       - name: Sync AAR from Maven
         working-directory: ${{ matrix.module }}
         run: chmod +x scripts/sync-aar-from-maven.sh && ./scripts/sync-aar-from-maven.sh ${{ matrix.aar_version }}
-      - name: Build binding (net10.0-android36.0)
+
+      - name: Build binding (${{ matrix.tfm }})
         working-directory: ${{ matrix.module }}
         run: |
-          dotnet build AppDimens.*.Binding/AppDimens.*.Binding.csproj -c Release -f net10.0-android36.0 /m:1 -p:GeneratePackageOnBuild=false
+          dotnet build AppDimens.*.Binding/AppDimens.*.Binding.csproj -c Release /m:1 \
+            -p:GeneratePackageOnBuild=false \
+            -p:TargetFrameworks=${{ matrix.tfm }}
+
+      - name: Build smoke test app (${{ matrix.tfm }})
+        working-directory: ${{ matrix.module }}
+        run: |
+          dotnet build AppDimens.*.SmokeTest/AppDimens.*.SmokeTest.csproj -c Release /m:1 \
+            -p:TargetFrameworks=${{ matrix.tfm }}

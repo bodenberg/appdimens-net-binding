@@ -12,9 +12,14 @@ on:
           - 'false'
           - 'true'
 
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   release-maui:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     defaults:
       run:
         working-directory: appdimens-sdps-net
@@ -24,11 +29,19 @@ jobs:
         with:
           global-json-file: global.json
       - run: python3 scripts/generate-dimens.py
-      - run: dotnet test tests/AppDimens.Maui.Tests/AppDimens.Maui.Tests.csproj -c Release
+      - name: Restore
+        run: chmod +x scripts/restore-ci.sh && ./scripts/restore-ci.sh
+      - name: Test Release
+        run: dotnet test tests/AppDimens.Maui.Tests/AppDimens.Maui.Tests.csproj -c Release --no-restore
       - name: Pack
         run: ./scripts/publish-nuget.sh
       - name: Push NuGet
         if: inputs.push_nuget == 'true'
         env:
           NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
-        run: ./scripts/publish-nuget.sh --push
+        run: |
+          if [ -z "${NUGET_API_KEY}" ]; then
+            echo "::error::NUGET_API_KEY secret is not configured"
+            exit 1
+          fi
+          ./scripts/publish-nuget.sh --push
