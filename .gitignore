@@ -5,6 +5,8 @@ obj/
 .DS_Store
 TestResults/
 BenchmarkDotNet.Artifacts/
+nuget-publish-3.6.0
+nuget-publish-3.6.0/
 
 # Generated dimens (run scripts/generate-dimens.py or build AppDimens.Maui.Resources)
 src/AppDimens.Maui.Resources/Generated/
