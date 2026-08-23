@@ -10,5 +10,14 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>$(NoWarn);1591;CS8600;CS8601;CS8602;CS8603;CS8613;CS8614;CS8618;CS8619;CS8620;CS8625;CS8765;CA1050</NoWarn>
     <InvariantGlobalization>true</InvariantGlobalization>
+
+    <!-- README embutido em todos os pacotes NuGet do repo -->
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
+
+  <ItemGroup>
+    <!-- README específico do módulo; cai para o README raiz se o projeto não tiver -->
+    <None Include="README.md" Pack="true" PackagePath="\" Condition="Exists('README.md')" />
+    <None Include="$(MSBuildThisFileDirectory)README.md" Pack="true" PackagePath="\" Condition="!Exists('README.md')" />
+  </ItemGroup>
 </Project>
