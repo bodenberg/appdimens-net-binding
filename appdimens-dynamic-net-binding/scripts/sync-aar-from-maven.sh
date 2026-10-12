@@ -6,12 +6,14 @@ set -euo pipefail
 #
 # Uso:
 #   ./sync-aar-from-maven.sh           # usa versão padrão contida abaixo
-#   ./sync-aar-from-maven.sh 3.1.9    # versão explícita
-#   AAR_VERSION=3.1.9 ./sync-aar-from-maven.sh
+#   ./sync-aar-from-maven.sh 3.2.0    # versão explícita
+#   AAR_VERSION=3.2.0 ./sync-aar-from-maven.sh
+#   MAVEN_REPO=https://maven-central.storage-download.googleapis.com/maven2 ./sync-aar-from-maven.sh  # mirror (ex.: 429 no Central)
 
-AAR_VERSION="${1:-${AAR_VERSION:-3.1.9}}"
+AAR_VERSION="${1:-${AAR_VERSION:-3.2.0}}"
 GROUP_PATH="io/github/bodenberg"
-BASE_URL="https://repo1.maven.org/maven2/${GROUP_PATH}"
+MAVEN_REPO="${MAVEN_REPO:-https://repo1.maven.org/maven2}"
+BASE_URL="${MAVEN_REPO}/${GROUP_PATH}"
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 JARS_DIR="${SCRIPT_DIR}/../AppDimens.Dynamic.Binding/Jars"
@@ -42,14 +44,15 @@ echo "Syncing appdimens-dynamic* ${AAR_VERSION} from Maven Central..."
 # Remove qualquer AAR antiga antes de baixar as novas (evita AARs obsoletas no pacote)
 echo "Cleaning old appdimens-dynamic AARs in ${JARS_DIR}..."
 find "${JARS_DIR}" -maxdepth 1 -name "appdimens-dynamic-*.aar" -delete
+find "${MAVEN_DIR}" -maxdepth 1 -name "appdimens-dynamic-*" -delete
 
 for m in "${MODULES[@]}"; do
-  curl -fsSL "${BASE_URL}/${m}/${AAR_VERSION}/${m}-${AAR_VERSION}.aar" -o "${JARS_DIR}/${m}-${AAR_VERSION}.aar"
+  curl -fsSL --retry 8 --retry-delay 5 --retry-all-errors "${BASE_URL}/${m}/${AAR_VERSION}/${m}-${AAR_VERSION}.aar" -o "${JARS_DIR}/${m}-${AAR_VERSION}.aar"
   # Metadados de referência (exceto o principal, que também baixa javadoc)
-  curl -fsSL "${BASE_URL}/${m}/${AAR_VERSION}/${m}-${AAR_VERSION}.pom" -o "${MAVEN_DIR}/${m}-${AAR_VERSION}.pom"
-  curl -fsSL "${BASE_URL}/${m}/${AAR_VERSION}/${m}-${AAR_VERSION}.module" -o "${MAVEN_DIR}/${m}-${AAR_VERSION}.module"
+  curl -fsSL --retry 8 --retry-delay 5 --retry-all-errors "${BASE_URL}/${m}/${AAR_VERSION}/${m}-${AAR_VERSION}.pom" -o "${MAVEN_DIR}/${m}-${AAR_VERSION}.pom"
+  curl -fsSL --retry 8 --retry-delay 5 --retry-all-errors "${BASE_URL}/${m}/${AAR_VERSION}/${m}-${AAR_VERSION}.module" -o "${MAVEN_DIR}/${m}-${AAR_VERSION}.module"
 done
-curl -fsSL "${BASE_URL}/appdimens-dynamic/${AAR_VERSION}/appdimens-dynamic-${AAR_VERSION}-javadoc.jar" -o "${MAVEN_DIR}/appdimens-dynamic-${AAR_VERSION}-javadoc.jar"
+curl -fsSL --retry 8 --retry-delay 5 --retry-all-errors "${BASE_URL}/appdimens-dynamic/${AAR_VERSION}/appdimens-dynamic-${AAR_VERSION}-javadoc.jar" -o "${MAVEN_DIR}/appdimens-dynamic-${AAR_VERSION}-javadoc.jar"
 
 echo "Done. Files in Jars/:"
 ls -1 "${JARS_DIR}"

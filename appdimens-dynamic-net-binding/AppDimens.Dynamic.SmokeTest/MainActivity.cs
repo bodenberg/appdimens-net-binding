@@ -103,7 +103,7 @@ public class MainActivity : Activity
                 $"sdp(100) = {sdpPx}px · hdp(32) = {hdpPx}px\n" +
                 $"wdp(100) = {wdpPx}px · ssp(16) = {sspPx}px\n" +
                 $"builder(24+AR+rules) = {builderPx:F1}px\n" +
-                $"(binding OK · modular AARs 3.1.9)";
+                $"(binding OK · modular AARs 3.2.0)";
         }
     }
 

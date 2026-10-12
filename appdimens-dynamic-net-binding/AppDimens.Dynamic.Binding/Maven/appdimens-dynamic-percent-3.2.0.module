@@ -1,0 +1,124 @@
+{
+  "formatVersion": "1.1",
+  "component": {
+    "group": "io.github.bodenberg",
+    "module": "appdimens-dynamic-percent",
+    "version": "3.2.0",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "9.5.0"
+    }
+  },
+  "variants": [
+    {
+      "name": "releaseVariantReleaseApiPublication",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.libraryelements": "aar",
+        "org.gradle.usage": "java-api"
+      },
+      "dependencies": [
+        {
+          "group": "io.github.bodenberg",
+          "module": "appdimens-dynamic",
+          "version": {
+            "requires": "3.2.0"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib",
+          "version": {
+            "requires": "2.4.10"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "appdimens-dynamic-percent-3.2.0.aar",
+          "url": "appdimens-dynamic-percent-3.2.0.aar",
+          "size": 163083,
+          "sha512": "231691eea61668bd426a9e41901d622c9cdeed7f65c6674080fec388eacddc8f761c2302bb80502529dd7dd68fdf64166f80e474056982b17f7d80ac037d8788",
+          "sha256": "25b90a794ff2e16865cc8b34cd51328bb0e0a6193e863bdfd6f41c62f47a4377",
+          "sha1": "e9c1fa5e33bafb8269a9ce90e076d386383275ad",
+          "md5": "465100730dd662c52bf24a15d7009de8"
+        }
+      ]
+    },
+    {
+      "name": "releaseVariantReleaseRuntimePublication",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.libraryelements": "aar",
+        "org.gradle.usage": "java-runtime"
+      },
+      "dependencies": [
+        {
+          "group": "androidx.core",
+          "module": "core-ktx",
+          "version": {
+            "requires": "1.19.0"
+          }
+        },
+        {
+          "group": "androidx.window",
+          "module": "window",
+          "version": {
+            "requires": "1.5.1"
+          }
+        },
+        {
+          "group": "io.github.bodenberg",
+          "module": "appdimens-dynamic",
+          "version": {
+            "requires": "3.2.0"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib",
+          "version": {
+            "requires": "2.4.10"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "appdimens-dynamic-percent-3.2.0.aar",
+          "url": "appdimens-dynamic-percent-3.2.0.aar",
+          "size": 163083,
+          "sha512": "231691eea61668bd426a9e41901d622c9cdeed7f65c6674080fec388eacddc8f761c2302bb80502529dd7dd68fdf64166f80e474056982b17f7d80ac037d8788",
+          "sha256": "25b90a794ff2e16865cc8b34cd51328bb0e0a6193e863bdfd6f41c62f47a4377",
+          "sha1": "e9c1fa5e33bafb8269a9ce90e076d386383275ad",
+          "md5": "465100730dd662c52bf24a15d7009de8"
+        }
+      ]
+    },
+    {
+      "name": "releaseVariantReleaseSourcePublication",
+      "attributes": {
+        "org.gradle.category": "documentation",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.docstype": "sources",
+        "org.gradle.usage": "java-runtime"
+      },
+      "files": [
+        {
+          "name": "appdimens-dynamic-percent-3.2.0-sources.jar",
+          "url": "appdimens-dynamic-percent-3.2.0-sources.jar",
+          "size": 58794,
+          "sha512": "a0545d33f508f3b25bd128ef03acdacae77d75955f4378968c15fd0005bd4e5ba533abdd5c26832d2c8ebe3496289722f535f9d6a70d95dbf9ac1dfe4ff9e0db",
+          "sha256": "f8df588071548832478b45e4275ea8c8161bfe533aaa47e1fb09c52db007dac0",
+          "sha1": "68d45afbe4548b70611e092ee59f36347c938dc1",
+          "md5": "ff802273027abd247e0429a5403e4cd4"
+        }
+      ]
+    }
+  ]
+}

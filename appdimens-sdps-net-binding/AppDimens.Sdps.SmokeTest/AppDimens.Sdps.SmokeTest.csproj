@@ -12,7 +12,7 @@
     <AndroidMinSdkVersion>24</AndroidMinSdkVersion>
     <ApplicationId>com.appdimens.sdps.smoke</ApplicationId>
     <ApplicationVersion>1</ApplicationVersion>
-    <ApplicationDisplayVersion>3.6.0</ApplicationDisplayVersion>
+    <ApplicationDisplayVersion>3.6.1</ApplicationDisplayVersion>
   </PropertyGroup>
 
   <ItemGroup>

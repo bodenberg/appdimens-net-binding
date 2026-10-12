@@ -26,14 +26,14 @@
     <Authors>Jean Bodenberg</Authors>
     <Company />
     <Description>
-      .NET Android binding for AppDimens SDP/HDP/WDP (io.github.bodenberg:appdimens-sdps 3.1.7).
+      .NET Android binding for AppDimens SDP/HDP/WDP (io.github.bodenberg:appdimens-sdps 3.2.0).
       Targets net8.0-android through net11.0-android. Exposes Java-style APIs under Com.Appdimens.Sdps.Code
       (Kotlin @JvmStatic; foldables via AndroidX.Window) plus Com.Appdimens.Sdps.SdpsConfig for warmup /
       OnConfigurationChanged refresh. Jetpack Compose helpers are not practical from C# — see README.
     </Description>
     <Copyright>Copyright © Jean Bodenberg</Copyright>
     <PackageReleaseNotes>
-      NuGet 3.6.0: Embedded AAR Maven io.github.bodenberg:appdimens-sdps 3.1.7; multi-target
+      NuGet 3.6.1: Embedded AAR Maven io.github.bodenberg:appdimens-sdps 3.2.0; multi-target
       net8.0-android / net9.0-android / net10.0-android / net11.0-android; SdpsConfig helper for
       warmup and configuration-change dimension refresh; AndroidX/Kotlin pins aligned to AAR POM.
       Android library: https://github.com/bodenberg/appdimens-sdps · Binding: https://github.com/bodenberg/appdimens-net-binding
@@ -47,15 +47,15 @@
 
     <!-- Empacota o mesmo assembly principal (o binding) -->
     <PackageId>Bodenberg.AppDimens.Sdps</PackageId>
-    <Version>3.6.0</Version>
+    <Version>3.6.1</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
 
   <ItemGroup>
-    <!-- AAR publicada no Maven Central: appdimens-sdps-3.1.7 -->
-    <AndroidLibrary Bind="true" Include="Jars\appdimens-sdps-3.1.7.aar" />
+    <!-- AAR publicada no Maven Central: appdimens-sdps-3.2.0 -->
+    <AndroidLibrary Bind="true" Include="Jars\appdimens-sdps-3.2.0.aar" />
 
     <TransformFile Include="Transforms\Metadata.xml" />
     <TransformFile Include="Transforms\EnumFields.xml" />
@@ -63,9 +63,9 @@
 
     <None Include="..\README.md" Pack="true" PackagePath="\" />
     <!-- Metadados Maven de referência (não entram no assembly) -->
-    <None Include="Maven\appdimens-sdps-3.1.7.pom" />
-    <None Include="Maven\appdimens-sdps-3.1.7.module" />
-    <None Include="Maven\appdimens-sdps-3.1.7-javadoc.jar" />
+    <None Include="Maven\appdimens-sdps-3.2.0.pom" />
+    <None Include="Maven\appdimens-sdps-3.2.0.module" />
+    <None Include="Maven\appdimens-sdps-3.2.0-javadoc.jar" />
   </ItemGroup>
 
   <!-- net8: versões mais antigas compatíveis com net8.0-android21.0 durante restore multi-TFM -->
@@ -84,7 +84,7 @@
     <PackageReference Include="Xamarin.AndroidX.Lifecycle.Runtime" Version="2.10.0.2" />
   </ItemGroup>
 
-  <!-- net10/net11: versões alinhadas ao POM Gradle 3.1.7 -->
+  <!-- net10/net11: versões alinhadas ao POM Gradle 3.2.0 -->
   <ItemGroup Condition="$(TargetFramework.StartsWith('net10.0-android')) Or $(TargetFramework.StartsWith('net11.0-android'))">
     <PackageReference Include="Xamarin.Kotlin.StdLib" Version="2.4.0.1" />
     <PackageReference Include="Xamarin.AndroidX.Core" Version="1.19.0.1" />

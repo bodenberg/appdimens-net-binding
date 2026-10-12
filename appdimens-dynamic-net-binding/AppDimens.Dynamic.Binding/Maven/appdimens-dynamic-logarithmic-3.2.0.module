@@ -1,0 +1,124 @@
+{
+  "formatVersion": "1.1",
+  "component": {
+    "group": "io.github.bodenberg",
+    "module": "appdimens-dynamic-logarithmic",
+    "version": "3.2.0",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "9.5.0"
+    }
+  },
+  "variants": [
+    {
+      "name": "releaseVariantReleaseApiPublication",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.libraryelements": "aar",
+        "org.gradle.usage": "java-api"
+      },
+      "dependencies": [
+        {
+          "group": "io.github.bodenberg",
+          "module": "appdimens-dynamic",
+          "version": {
+            "requires": "3.2.0"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib",
+          "version": {
+            "requires": "2.4.10"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "appdimens-dynamic-logarithmic-3.2.0.aar",
+          "url": "appdimens-dynamic-logarithmic-3.2.0.aar",
+          "size": 153334,
+          "sha512": "3f3a7690ffc97a058aa958a099b2aa9f9350e01a041f1b59b0e1d965d91f73b42543c2b7089dd284a13fc68ad824ffd60c4c50760c40109b582101c3f0f880e3",
+          "sha256": "68c8950538c1f3c371b169c8fcf26a7383ccb43b6927433b7060892b39898603",
+          "sha1": "79e573a3a05c64626201c87ad7e423e12089c0be",
+          "md5": "9aef95d763992cb8df2038a5d70653b5"
+        }
+      ]
+    },
+    {
+      "name": "releaseVariantReleaseRuntimePublication",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.libraryelements": "aar",
+        "org.gradle.usage": "java-runtime"
+      },
+      "dependencies": [
+        {
+          "group": "androidx.core",
+          "module": "core-ktx",
+          "version": {
+            "requires": "1.19.0"
+          }
+        },
+        {
+          "group": "androidx.window",
+          "module": "window",
+          "version": {
+            "requires": "1.5.1"
+          }
+        },
+        {
+          "group": "io.github.bodenberg",
+          "module": "appdimens-dynamic",
+          "version": {
+            "requires": "3.2.0"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib",
+          "version": {
+            "requires": "2.4.10"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "appdimens-dynamic-logarithmic-3.2.0.aar",
+          "url": "appdimens-dynamic-logarithmic-3.2.0.aar",
+          "size": 153334,
+          "sha512": "3f3a7690ffc97a058aa958a099b2aa9f9350e01a041f1b59b0e1d965d91f73b42543c2b7089dd284a13fc68ad824ffd60c4c50760c40109b582101c3f0f880e3",
+          "sha256": "68c8950538c1f3c371b169c8fcf26a7383ccb43b6927433b7060892b39898603",
+          "sha1": "79e573a3a05c64626201c87ad7e423e12089c0be",
+          "md5": "9aef95d763992cb8df2038a5d70653b5"
+        }
+      ]
+    },
+    {
+      "name": "releaseVariantReleaseSourcePublication",
+      "attributes": {
+        "org.gradle.category": "documentation",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.docstype": "sources",
+        "org.gradle.usage": "java-runtime"
+      },
+      "files": [
+        {
+          "name": "appdimens-dynamic-logarithmic-3.2.0-sources.jar",
+          "url": "appdimens-dynamic-logarithmic-3.2.0-sources.jar",
+          "size": 57013,
+          "sha512": "5d7d44601a5b08a95916c726cb39646a78d7a658dc9f061c164e9bbfde40e0dba34d4b0560bff1d71623efa601019d8dd29a2f8dfd5cc2f3b19f69e8c54bb845",
+          "sha256": "9a2556c843ae5820858a3c2c3a5dca108ad71be9f287fad28e767dfa52f2b647",
+          "sha1": "bae5f9c2ae9b97c31e2a788fc93a37a347f1a73a",
+          "md5": "c42d591f21bda9cfb05b784974d664a8"
+        }
+      ]
+    }
+  ]
+}
