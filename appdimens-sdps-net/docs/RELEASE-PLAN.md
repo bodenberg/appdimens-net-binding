@@ -16,7 +16,7 @@
 
 1. Complete `PRODUCTION-CHECKLIST.md`
 2. Dispatch the **Release** workflow (`.github/workflows/release.yml`) with `push_nuget=false` and check the
-   `nuget-packages` artifact (27 packages)
+   `nuget-packages` artifact (26 packages)
 3. Dispatch it again with `push_nuget=true` (or run `./scripts/publish-nuget.sh --push` here and
    `appdimens-net/scripts/pack-nuget.sh --push`, plus the bindings)
 4. Tag `v3.6.1` on `main`
