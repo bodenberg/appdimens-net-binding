@@ -161,9 +161,17 @@ public sealed class WpfWindowMetricsSource : IDisplayMetricsSource, IDisposable
 
     public void Dispose()
     {
-        if (_window == null) return;
-        _window.SizeChanged -= OnChanged;
-        _window.DpiChanged -= OnChanged;
-        _window.Loaded -= OnChanged;
+        var w = _window;
+        if (w == null) return;
+        // Routed-event handlers must be removed on the window's own UI thread.
+        if (w.Dispatcher.CheckAccess()) Unhook(w);
+        else if (!w.Dispatcher.HasShutdownStarted) w.Dispatcher.BeginInvoke(() => Unhook(w));
+    }
+
+    private void Unhook(Window w)
+    {
+        w.SizeChanged -= OnChanged;
+        w.DpiChanged -= OnChanged;
+        w.Loaded -= OnChanged;
     }
 }

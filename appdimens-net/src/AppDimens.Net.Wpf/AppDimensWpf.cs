@@ -128,12 +128,20 @@ public sealed class WpfWindowDimensScope : HostDimensScope
 
     protected override void Dispose(bool disposing)
     {
-        if (_window != null)
+        var w = _window;
+        if (w != null)
         {
-            _window.SizeChanged -= OnChanged;
-            _window.DpiChanged -= OnChanged;
-            _window.Loaded -= OnChanged;
+            // Routed-event handlers must be removed on the window's own UI thread.
+            if (w.Dispatcher.CheckAccess()) Unhook(w);
+            else if (!w.Dispatcher.HasShutdownStarted) w.Dispatcher.BeginInvoke(() => Unhook(w));
         }
         base.Dispose(disposing);
+    }
+
+    private void Unhook(Window w)
+    {
+        w.SizeChanged -= OnChanged;
+        w.DpiChanged -= OnChanged;
+        w.Loaded -= OnChanged;
     }
 }

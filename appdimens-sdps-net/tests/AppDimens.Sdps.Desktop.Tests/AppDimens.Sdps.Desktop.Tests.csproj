@@ -10,6 +10,8 @@
     <RootNamespace>AppDimens.Sdps.Desktop.Tests</RootNamespace>
     <!-- System.Windows.Forms and WPF both define e.g. Application / Size. -->
     <ImplicitUsings>disable</ImplicitUsings>
+    <!-- WPF bindings need real cultures (the repo default is invariant). -->
+    <InvariantGlobalization>false</InvariantGlobalization>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />

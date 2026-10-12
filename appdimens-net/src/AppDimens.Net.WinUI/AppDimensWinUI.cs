@@ -117,10 +117,18 @@ public sealed class WinUIWindowDimensScope : HostDimensScope
 
     protected override void Dispose(bool disposing)
     {
+        var queue = _window.DispatcherQueue;
+        if (queue is null || queue.HasThreadAccess) Unhook();
+        else queue.TryEnqueue(Unhook);
+        base.Dispose(disposing);
+    }
+
+    // WinRT event handlers must be removed on the window's UI thread.
+    private void Unhook()
+    {
         _window.SizeChanged -= OnSizeChanged;
         _window.Activated -= OnActivated;
         if (_root != null) _root.Changed -= OnRootChanged;
         _root = null;
-        base.Dispose(disposing);
     }
 }

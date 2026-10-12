@@ -128,6 +128,14 @@ public sealed class WinUIWindowMetricsSource : IDisplayMetricsSource, IDisposabl
 
     public void Dispose()
     {
+        var queue = _window.DispatcherQueue;
+        if (queue is null || queue.HasThreadAccess) Unhook();
+        else queue.TryEnqueue(Unhook);
+    }
+
+    // WinRT event handlers must be removed on the window's UI thread.
+    private void Unhook()
+    {
         _window.SizeChanged -= OnSizeChanged;
         _window.Activated -= OnActivated;
         if (_root != null) _root.Changed -= OnRootChanged;
