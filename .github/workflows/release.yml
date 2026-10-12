@@ -1,7 +1,8 @@
 name: Release
 
 # Builds, tests and packs EVERY NuGet package of the repository and uploads them as the
-# "nuget-packages" artifact. With push_nuget=true the packages are also pushed to NuGet.org.
+# "nuget-packages" artifact. With push_nuget=true the packages are also pushed to NuGet.org, and with
+# commit_packages=true the .nupkg/.snupkg files are committed to nupkgs/<version>/ on the dispatched branch.
 #
 #   - Bodenberg.AppDimens.Sdps / .Ssps / .Dynamic        (Android bindings, net10.0-android36.0)
 #   - Bodenberg.AppDimens.Maui.Sdps                       (MAUI meta-package)
@@ -13,6 +14,14 @@ on:
     inputs:
       push_nuget:
         description: Push to NuGet.org
+        required: true
+        default: 'false'
+        type: choice
+        options:
+          - 'false'
+          - 'true'
+      commit_packages:
+        description: Commit the .nupkg/.snupkg files to nupkgs/<version>/ on this branch
         required: true
         default: 'false'
         type: choice
@@ -126,6 +135,8 @@ jobs:
     name: Collect (and push) packages
     needs: [native, windows, bindings]
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - uses: actions/setup-dotnet@v5
         with:
@@ -155,3 +166,23 @@ jobs:
           for pkg in nuget/*.nupkg; do
             dotnet nuget push "$pkg" --api-key "$NUGET_API_KEY" --source https://api.nuget.org/v3/index.json --skip-duplicate
           done
+
+      - uses: actions/checkout@v6
+        if: inputs.commit_packages == 'true'
+        with:
+          path: repo
+      - name: Commit packages to nupkgs/<version>/
+        if: inputs.commit_packages == 'true'
+        run: |
+          cd repo
+          VERSION="$(sed -n 's:.*<Version>\([^<]*\)</Version>.*:\1:p' appdimens-sdps-net/Directory.Build.props | head -1)"
+          DEST="nupkgs/${VERSION}"
+          rm -rf "$DEST" && mkdir -p "$DEST"
+          cp ../nuget/*.nupkg ../nuget/*.snupkg "$DEST"/
+          ls -la "$DEST"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "$DEST"
+          if git diff --cached --quiet; then echo "No package changes"; exit 0; fi
+          git commit -m "Add NuGet packages ${VERSION} (.nupkg + .snupkg) built by the Release workflow"
+          git push origin "HEAD:${GITHUB_REF_NAME}"

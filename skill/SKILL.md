@@ -67,7 +67,8 @@ Requirements: .NET 10 SDK (`global.json` per folder), runtimes 8/9 for multi-tar
 - `ci.yml` (push/PR to main + manual): SDPS tests/pack, AppDimens.Net tests/pack, Windows desktop tests + WinUI build,
   bindings matrix net8/9/10-android (verifies the versioned AARs; does not re-download them).
 - `release.yml` (manual `workflow_dispatch`, can be dispatched on any branch): packs **all 27 packages** into the
-  `nuget-packages` artifact; `push_nuget=true` pushes to NuGet.org with `NUGET_API_KEY`. Bindings are packed for
+  `nuget-packages` artifact; `push_nuget=true` pushes to NuGet.org with `NUGET_API_KEY`; `commit_packages=true` commits
+  the `.nupkg`/`.snupkg` files to `nupkgs/<version>/` on the dispatched branch (pull before pushing again). Bindings are packed for
   `net10.0-android36.0` (same as previous releases).
 
 ## Conventions
