@@ -1,87 +1,52 @@
-<div align="center">
+# AppDimens.Net.Logarithmic
 
-# 📉 AppDimens.Net.Logarithmic
+**Logarithmic scaling — fast growth on small screens, gentle growth on big ones.**
 
-**Logarithmic scaling (`LOGSdp`) — diminishing-growth dimensions for extreme screen ranges.**
+Part of **AppDimens for .NET** (C# port of appdimens-kmp) · requires `AppDimens.Net` (installed automatically).
+Works with .NET MAUI, WPF, Windows Forms, WinUI 3 and plain .NET (`net8.0` / `net9.0` / `net10.0`).
 
-Part of the **AppDimens for .NET** family · requires [AppDimens.Net](https://www.nuget.org/packages/AppDimens.Net/) (core).
+📖 **Complete guide:** [AppDimens.Net.Logarithmic documentation](https://github.com/bodenberg/appdimens-net-binding/blob/main/docs/AppDimens.Net.Logarithmic/README.md) · **API reference:** [API.md](https://github.com/bodenberg/appdimens-net-binding/blob/main/docs/AppDimens.Net.Logarithmic/API.md)
 
-[![NuGet](https://img.shields.io/nuget/v/AppDimens.Net.Logarithmic.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/AppDimens.Net.Logarithmic/)
-[![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg?style=flat-square)](https://github.com/bodenberg/appdimens-net-binding/blob/main/LICENSE)
-[![.NET](https://img.shields.io/badge/.NET-8.0%20%7C%209.0%20%7C%2010.0-8A2BE2.svg?style=flat-square)](https://dotnet.microsoft.com/)
+## What it does
 
-</div>
+The **Logarithmic** strategy grows along a log curve: small phones get real relief, while tablets and desktops grow only a little — paddings and fonts don't explode on huge screens.
 
----
+| `16` with this strategy | Phone 360×800 | Tablet 800×1280 | Desktop 1280×800 |
+|---|--:|--:|--:|
+| `16.LOGSdp()` | 17.2 | 22.3 | 22.3 |
+| `16.LOGHdp()` | 17.2 | 22.3 | 22.3 |
+| `16.LOGWdp()` | 17.2 | 22.3 | 22.3 |
+| `16.Sdp()` (core Scaled) | 19.2 | 42.7 | 42.7 |
 
-## 🎯 What is it?
-
-The **Logarithmic strategy** grows values along a **log curve**: fast on small phones,
-progressively gentler on big tablets and desktops. Perfect when small devices need real
-relief but huge screens shouldn't explode paddings and font sizes.
-
-## 📦 Installation
+## Install
 
 ```bash
 dotnet add package AppDimens.Net.Logarithmic
 ```
 
-> Depends on [AppDimens.Net](https://www.nuget.org/packages/AppDimens.Net/) (pulled automatically).
-> Attach a MAUI window first or pass an explicit `IAppDimensContext`.
+## Use
 
-## 🚀 Quick start
+1. Initialize once for your UI framework: MAUI `AppDimensMaui.AttachWindow(window)` · WPF `AppDimensWpf.Initialize(this)` ·
+   WinForms `AppDimensWinForms.Initialize(this)` · WinUI `AppDimensWinUI.Initialize(window)`.
+2. Call the extensions:
 
 ```csharp
-using AppDimens.Net.Logarithmic;
+using AppDimens.Net.Code.Logarithmic;
 
-float pad  = 16.LOGSdp();      // log-damped by smallest-width
-float gap  = 12.LOGWdp(ctx);   // width axis
-float icon = 24.LOGSdpaPx();   // px, aspect-ratio adjusted
+float padding = 16.LOGSdp();    // smaller side of the window
+float header  = 56.LOGHdp();    // height
+float sidebar = 200.LOGWdp();   // width
+float tall    = 16.LOGSdpa();   // + aspect-ratio correction
+float split   = 16.LOGSdpi();   // ignores split-screen shrinking
 ```
 
-## 🧭 API
+With an explicit context: `16.LOGSdp(ctx)`, `16.LOGSdpPx(ctx)`, `DimenLogarithmic.LOGSdp(ctx, 16)`, `24.ToLogarithmicDp(ctx, qualifier: DpQualifier.Width)`.
 
-| Extension | Result |
-|---|---|
-| `v.LOGSdp(ctx)` · `v.LOGSdpa(ctx)` | smallest-width lane (± aspect ratio) |
-| `v.LOGHdp(ctx)` · `v.LOGWdp(ctx)` | height / width axis |
-| `…i` variants (`LOGSdpi`…) | ignore multi-window |
-| `v.LOGSdpPx(ctx)` … | pixel result |
-| `v.LOGSdpCustom(qualifier, inverter, imw, ar, k)` | full control incl. sensitivity |
-| `DimenLogarithmic.LOGSdp(context, value)` | static form · `WarmupCache(ctx)` pre-heats |
-| `v.ToLogarithmicDp/Px(v, ctx, …)` | generic kernel entry |
+## Português
 
-## 💡 When to use
-
-| Scenario | Recommendation |
-|---|---|
-| Comfortable scaling from phone → desktop | ✅ Logarithmic |
-| Aggressive large-screen growth | [Power](https://www.nuget.org/packages/AppDimens.Net.Power/) |
-| Strict proportions | [Percent](https://www.nuget.org/packages/AppDimens.Net.Percent/) |
-
-## ⚡ Performance
-
-Same engine as the core: snapshot-partitioned cache, allocation-free fast lanes,
-automatic invalidation on configuration changes.
-
-## 📚 Full package family
-
-[AppDimens.Net](https://www.nuget.org/packages/AppDimens.Net/) ·
-[Percent](https://www.nuget.org/packages/AppDimens.Net.Percent/) ·
-[Power](https://www.nuget.org/packages/AppDimens.Net.Power/) ·
-[Auto](https://www.nuget.org/packages/AppDimens.Net.Auto/) ·
-[Fluid](https://www.nuget.org/packages/AppDimens.Net.Fluid/) ·
-[Interpolated](https://www.nuget.org/packages/AppDimens.Net.Interpolated/) ·
-[Diagonal](https://www.nuget.org/packages/AppDimens.Net.Diagonal/) ·
-[Perimeter](https://www.nuget.org/packages/AppDimens.Net.Perimeter/) ·
-[Fill](https://www.nuget.org/packages/AppDimens.Net.Fill/) ·
-[Fit](https://www.nuget.org/packages/AppDimens.Net.Fit/) ·
-[Density](https://www.nuget.org/packages/AppDimens.Net.Density/) ·
-[Resize](https://www.nuget.org/packages/AppDimens.Net.Resize/) ·
-[Units](https://www.nuget.org/packages/AppDimens.Net.Units/) ·
-[Maui](https://www.nuget.org/packages/AppDimens.Net.Maui/) ·
-[Sdk meta-package](https://www.nuget.org/packages/AppDimens.Net.Sdk/)
+`dotnet add package AppDimens.Net.Logarithmic` → inicialize a janela uma vez → `using AppDimens.Net.Code.Logarithmic;` → `16.LOGSdp()`, `56.LOGHdp()`, `200.LOGWdp()`.
+Guia completo: [https://github.com/bodenberg/appdimens-net-binding/blob/main/docs/AppDimens.Net.Logarithmic/README.md](https://github.com/bodenberg/appdimens-net-binding/blob/main/docs/AppDimens.Net.Logarithmic/README.md)
 
 ---
 
-Apache-2.0 — © Jean Bodenberg · [Repository](https://github.com/bodenberg/appdimens-net-binding) · Formulas are bit-a-bit ports of [appdimens-kmp](https://github.com/bodenberg/appdimens-kmp)
+Apache-2.0 — © Jean Bodenberg · [Repository](https://github.com/bodenberg/appdimens-net-binding)

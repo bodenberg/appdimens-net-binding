@@ -1,68 +1,89 @@
 # AppDimens .NET Bindings
 
 > Monorepo .NET do ecossistema AppDimens (dimensionamento responsivo) de Jean Bodenberg, Apache-2.0.
-> Contém três bindings Android (`net10.0-android` + AARs Maven embutidos), uma biblioteca MAUI nativa
-> (`Bodenberg.AppDimens.Maui.Sdps`) e o port C# completo do appdimens-kmp (`AppDimens.Net.*`).
-> Todas as versões NuGet atuais: **3.6.0**. Repo: https://github.com/bodenberg/appdimens-net-binding
+> Bibliotecas .NET nativas para **.NET MAUI, WPF, Windows Forms e WinUI 3** (família SDPS e família AppDimens.Net)
+> e três bindings Android (`net10.0-android`) com as AARs Maven **3.2.0** embutidas.
+> Todas as versões NuGet atuais: **3.6.1**. Repo: https://github.com/bodenberg/appdimens-net-binding
+> Documentação completa por pacote (guia + referência de API gerada): docs/README.md
 
 ## Pacotes
 
-- `Bodenberg.AppDimens.Sdps` 3.6.0 — layout + tipografia (SDP/HDP/WDP + SSP/HSP/WSP) via grids `@dimen` e APIs de código; AAR embutido `appdimens-sdps` **3.1.7**; pasta `appdimens-sdps-net-binding/`.
-- `Bodenberg.AppDimens.Ssps` 3.6.0 — somente tipografia (SSP/HSP/WSP), dependência menor; AAR embutido `appdimens-ssps` **3.1.7**; pasta `appdimens-ssps-net-binding/`.
-- `Bodenberg.AppDimens.Dynamic` 3.6.0 — escalonamento só em código, 15 estratégias, sem XML grids; AARs embutidos `appdimens-dynamic` (+13 satélites) **3.1.9**; pasta `appdimens-dynamic-net-binding/`.
-- `Bodenberg.AppDimens.Maui.Sdps` 3.6.0 — MAUI 100% nativo (sem JNI/AAR): `{sdp:16}`, `{sdpi:16}`, extensões C# `16.Sdp()`, builders, conversores, buckets ~358 tamanhos; pasta `appdimens-sdps-net/`; targets net8.0/net9.0/net10.0 (+net11.0 com SDK 11).
-- `AppDimens.Net.Sdk` 3.6.0 (meta-pacote) + satélites `AppDimens.Net.{Percent,Power,Auto,Logarithmic,Fluid,Interpolated,Diagonal,Perimeter,Fit,Fill,Density,Resize,Units,Maui,Testing}` — port bit-a-bit do appdimens-kmp: 12+ estratégias, fast lane sem alocação, watcher de resize por evento, `FakeAppDimensContext` para testes; pasta `appdimens-net/`.
+### Família SDPS (paridade com o SDP Android; motor sem dependência de MAUI)
+- `Bodenberg.AppDimens.Maui.Sdps` — MAUI: `builder.UseAppDimensSdps()`, XAML `{sdp:16}`, `{ssp:14}`, `{sdpi:16}` (congelado no resize),
+  `{dimen:Sdp Value=16 Inverter=SwToPh}`, C# `16.Sdp()` (`AppDimens.Maui.Extensions`), watcher `AppDimensSdpsWindow.Attach(window)`,
+  buckets ~358 tamanhos, builders, conversores; pasta `appdimens-sdps-net/`; net8/9/10 (+net11 com SDK 11).
+- `Bodenberg.AppDimens.Sdps.Wpf` — WPF: `AppDimensWpf.Initialize(this)`; XAML `xmlns:sdps="clr-namespace:AppDimens.Sdps.Wpf;assembly=AppDimens.Sdps.Wpf"`
+  → `{sdps:Sdp 16}` (binding ao vivo, converte p/ Thickness/CornerRadius/GridLength); C# `16.Sdp()`; `DimenConverter`.
+- `Bodenberg.AppDimens.Sdps.WinForms` — WinForms: `AppDimensWinForms.Initialize(this)` + `Apply(this, () => ...)`;
+  `120.SdpPx()` (pixels), `14.SspPt()` (pontos de fonte), `DimenPx.Padding(16.Sdp())`.
+- `Bodenberg.AppDimens.Sdps.WinUI` — WinUI 3: `AppDimensWinUI.Initialize(window)`; XAML `xmlns:sdps="using:AppDimens.Sdps.WinUI"` →
+  `{sdps:Sdp Value=16}` (reaplicado no resize).
+- Motor: `AppDimensResolver` / `AppDimensSdps` (namespace `AppDimens.Maui`, assembly sem MAUI); hosts próprios via
+  `AppDimensResolver.Instance.UseDisplaySource(new ManualDisplayMetricsSource(w, h, density))`; `DimenFunction` (30 funções).
+
+### Família AppDimens.Net (port bit-a-bit do appdimens-kmp, 12+ estratégias)
+- `AppDimens.Net` (núcleo + Scaled `16.Sdp()`/`Hdp`/`Wdp`/`Ssp`, inverters, facilitadores, builder `ScaledDp()`,
+  `HostDimensScope`/`AppDimensHost` p/ qualquer host, `FakeAppDimensContext`), `AppDimens.Net.Sdk` (meta-pacote).
+- Estratégias: `.Auto` (ASdp), `.Density` (DSdp), `.Diagonal` (DGSdp), `.Fill` (FLSdp), `.Fit` (`FitScaledDp()` → pixels),
+  `.Fluid` (FSdp), `.Interpolated` (ISdp), `.Logarithmic` (LOGSdp), `.Percent` (PSdp + `SpaceWDp`), `.Perimeter` (PRSdp),
+  `.Power` (PWSdp), `.Resize` (`AutoResizeTextPx` → sp, `AutoResizeSquarePx` → dp), `.Units` (mm/cm/inch).
+- Integrações: `.Maui` (`AppDimensMaui.AttachWindow`), `.Wpf` (`AppDimensWpf.Initialize`, `{ad:Sdp 16}` ao vivo, 41 funções),
+  `.WinForms` (`AppDimensWinForms.Initialize/Apply`, `DimenPx`), `.WinUI` (`AppDimensWinUI.Initialize`, `{ad:Sdp Value=16}`).
+
+### Bindings Android (net10.0-android36.0, API mínima 24)
+- `Bodenberg.AppDimens.Sdps` — AAR `appdimens-sdps` **3.2.0**: XML `@dimen/_16sdp`/`_48hdp`/`_200wdp` (layout) + código
+  `DimenSdp.Sdp(context, 16)` / `DimenSsp.Ssp(context, 14)` (retornam **pixels**), `SdpsConfig`; texto em XML requer Ssps.
+- `Bodenberg.AppDimens.Ssps` — AAR `appdimens-ssps` **3.2.0**: XML `@dimen/_14ssp`/`_32hsp`/`_24wsp` + `DimenSsp`, `SspsConfig`.
+- `Bodenberg.AppDimens.Dynamic` — AARs `appdimens-dynamic` + 13 módulos **3.2.0**: só código, 15 estratégias, `DynamicConfig`.
+- Jetpack Compose das AARs não é utilizável em C#.
 
 ## Escolha rápida
 
-- XML `@dimen/_16sdp` no Android com binding → Sdps
-- Só texto/sp com binding → Ssps
-- Estratégias em runtime sem grids XML (binding) → Dynamic
-- MAUI multiplataforma com XAML markup → Maui.Sdps
-- Paridade KMP em C# puro, multiplataforma, testável → AppDimens.Net.Sdk
+- MAUI multiplataforma com XAML `{sdp:16}` → Maui.Sdps · MAUI com estratégias KMP → AppDimens.Net.Maui (+ Sdk)
+- WPF → Sdps.Wpf ou AppDimens.Net.Wpf · WinForms → Sdps.WinForms ou AppDimens.Net.WinForms · WinUI 3 → Sdps.WinUI ou AppDimens.Net.WinUI
+- Android nativo com `@dimen/_16sdp` → Sdps · só texto → Ssps · só código/estratégias → Dynamic
+- Console/Avalonia/Uno/testes → AppDimens.Net (`HostDimensScope`)
 
 ## Estrutura
 
 ```
 appdimens-net-binding/
-├── appdimens-net/                     # Port C# do appdimens-kmp (src/ samples/ benchlab/ tests/ DOCUMENTATION/)
-├── appdimens-sdps-net/                # MAUI SDP nativo (src/ samples/ tests/ docs/ scripts/generate-dimens.py)
-├── appdimens-{sdps,ssps,dynamic}-net-binding/   # Bindings: <X>.Binding/ (csproj+Jars+Transforms+Additions), <X>.SmokeTest/, scripts/sync-aar-from-maven.sh
-├── build-bindings.sh                  # Builda os 3 bindings (Release, net10.0-android36.0)
+├── docs/                              # Guia + API.md por pacote (scripts/generate-docs.sh)
+├── appdimens-sdps-net/                # Família SDPS: src/ (Maui*, Maui.Hosting, Sdps.Wpf/WinForms/WinUI), tests/, samples/, scripts/
+├── appdimens-net/                     # Família AppDimens.Net: src/ (core, estratégias, Maui, Wpf, WinForms, WinUI), tests/, DOCUMENTATION/
+├── appdimens-{sdps,ssps,dynamic}-net-binding/   # Bindings: <X>.Binding/ (csproj+Jars+Maven+Transforms+Additions), <X>.SmokeTest/, scripts/sync-aar-from-maven.sh
+├── tools/                             # ApiDocGen, aar-api-doc.py, sync-guides.py
+├── scripts/generate-docs.sh           # Regenera docs/
+├── build-bindings.sh                  # Builda os 3 bindings
 └── skill/SKILL.md                     # Guia operacional para agentes
 ```
 
-## Build & teste
+## Build, teste e pack
 
 ```bash
-./build-bindings.sh                                   # todos os bindings
-dotnet build appdimens-sdps-net-binding/AppDimens.Sdps.sln -c Release
-dotnet publish <X>.SmokeTest/<X>.SmokeTest.csproj -c Release -f net10.0-android -p:AndroidPackageFormat=apk
-
-cd appdimens-sdps-net && python3 scripts/generate-dimens.py   # obrigatório antes de build/test
-dotnet test tests/AppDimens.Maui.Tests/AppDimens.Maui.Tests.csproj -c Release
-
-cd ../appdimens-net && dotnet test tests/AppDimens.Net.Tests  # paridade KMP (golden values)
+cd appdimens-sdps-net && python3 scripts/generate-dimens.py && ./scripts/publish-nuget.sh   # testes + pack MAUI + adaptadores desktop
+cd appdimens-net && ./scripts/pack-nuget.sh                                                 # testes + pack de todos os AppDimens.Net.*
+dotnet test appdimens-sdps-net/tests/AppDimens.Sdps.Desktop.Tests                           # só Windows (WPF/WinForms)
+dotnet test appdimens-net/tests/AppDimens.Net.Desktop.Tests                                 # só Windows
+./build-bindings.sh                                                                         # bindings (workload android + SDK 36)
+./scripts/generate-docs.sh                                                                  # docs/*/API.md + guias espelhados
 ```
 
-Requisitos: .NET 10 SDK (global.json por pasta), workload android, JDK 17/21, Android SDK platform 36+, API mínima 24.
+Requisitos: .NET 10 SDK (global.json por pasta); bindings: workload android, JDK 17/21, Android SDK platform 36+.
+Libs desktop compilam em qualquer SO (`EnableWindowsTargeting`); testes desktop rodam no Windows.
 
-## API essencial
+## CI / Release
 
-Bindings Android (namespaces `Com.Appdimens.*`): `DimenSdp.Sdp(context, 16)` / `DimenSsp.Ssp(...)` retornam **pixels**; facilitadores `SdpRotate/SdpQualifier/SdpMode/SdpScreen`; inverters (`SdpPh`, `HdpLw`, …); builders `DimenScaled`/`ScaledSp`; unidades físicas `DimenPhysicalUnits`.
-
-Maui.Sdps: init `builder.UseAppDimensSdps(...)`; XAML `{sdp:16}`, `{ssp:18}`, `{sdpi:16}` (independente de resize), normal `{dimen:Sdp Value=16 Inverter=SwToPh}`; C# `16.Sdp()`, `48.Hdp()`, `18.Ssp()`, `PaddingSdp()`, `FontSsp()`; watcher `AppDimensSdpsWindow.Attach(window)`; baseline `AppDimensSdps.CaptureBaseline()`; modos `ScalingMode.Hybrid` (default)/Continuous/Bucket.
-
-AppDimens.Net (port KMP): bootstrap `AppDimensMaui.AttachWindow(window)` ANTES de criar páginas; extensões ambient `16.Sdp()/48.Hdp()/16.Ssp()`; satélites com forma uniforme `{P}Sdp(ctx)`; builder `v.ScaledDp().AspectRatio(b).Screen(qualifier, threshold, value).Sdp()`; resize `DimenResize.AutoResizeTextPx(...)` retorna px; contextos `IAppDimensContext`, `FakeAppDimensContext.SetConfig(w,h,dpi,...).NotifyChange()`; cache `DimenCache.Init/ClearAll/FastMetricsForCode`.
+- `.github/workflows/ci.yml`: SDPS (testes + pack), AppDimens.Net (testes + pack), testes desktop em windows-latest,
+  bindings net8/9/10-android.
+- `.github/workflows/release.yml` (manual): builda/testa/empacota **todos** os pacotes → artefato `nuget-packages`;
+  `push_nuget=true` publica no NuGet.org (secret `NUGET_API_KEY`).
 
 ## Documentação
 
-- README raiz: README.md
-- Sdps binding: appdimens-sdps-net-binding/README.md
-- Ssps binding: appdimens-ssps-net-binding/README.md
-- Dynamic binding: appdimens-dynamic-net-binding/README.md
-- MAUI nativo: appdimens-sdps-net/README.md (+ docs/AUDIT-REPORT-3.6.0.md)
-- Port KMP: appdimens-net/README.md, appdimens-net/DOCUMENTATION/{MODULES,PARITY,PERFORMANCE,TRIMMING-AOT,GUIDE-FOR-BEGINNERS}.md, appdimens-net/LLMS.txt
+- Índice: docs/README.md (guia + API.md de cada um dos 27 pacotes)
+- README raiz: README.md · Port KMP: appdimens-net/README.md, appdimens-net/DOCUMENTATION/, appdimens-net/LLMS.txt
+- MAUI SDPS: appdimens-sdps-net/README.md · Bindings: appdimens-*-net-binding/README.md
 - Skill do projeto: skill/SKILL.md
 
 ## Links
@@ -71,6 +92,5 @@ AppDimens.Net (port KMP): bootstrap `AppDimensMaui.AttachWindow(window)` ANTES d
 - Upstream Android: https://github.com/bodenberg/appdimens-sdps · https://github.com/bodenberg/appdimens-ssps · https://github.com/bodenberg/appdimens-dynamic
 - Referência KMP: https://github.com/bodenberg/appdimens-kmp
 - Este repositório: https://github.com/bodenberg/appdimens-net-binding
-- CI: .github/workflows/ci.yml · Release/NuGet push manual: .github/workflows/release.yml
 
 Licença: Apache-2.0 © Jean Bodenberg

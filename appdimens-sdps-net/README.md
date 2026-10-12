@@ -1,9 +1,23 @@
 # Bodenberg.AppDimens.Maui.Sdps
 
-**Fully native .NET MAUI** responsive sizing library with architectural, functional, and ergonomic parity with [AppDimens SDP Android](https://github.com/bodenberg/appdimens-sdps) v3.1.7.
+📖 **Documentation:** [Bodenberg.AppDimens.Maui.Sdps guide](https://github.com/bodenberg/appdimens-net-binding/blob/main/docs/Bodenberg.AppDimens.Maui.Sdps/README.md) · [complete API reference](https://github.com/bodenberg/appdimens-net-binding/blob/main/docs/Bodenberg.AppDimens.Maui.Sdps/API.md) · [all AppDimens .NET packages](https://github.com/bodenberg/appdimens-net-binding/blob/main/docs/README.md)
+
+**Fully native .NET MAUI** responsive sizing library with architectural, functional, and ergonomic parity with [AppDimens SDP Android](https://github.com/bodenberg/appdimens-sdps) v3.2.0 (public API unchanged since 3.1.7). The same engine also ships for **WPF**, **Windows Forms** and **WinUI 3** — see [Other UI frameworks](#other-ui-frameworks-wpf-windows-forms-winui-3-custom-hosts).
 
 It brings the Android experience of `@dimen/_16sdp`, orientation inverters, discrete buckets, aspect ratio, and conditional builders to MAUI — **with no JNI bindings, AARs, or embedded Android code**.
 
+> **New in 3.6.1**
+> - **WPF, Windows Forms and WinUI 3**: the same engine now ships as
+>   [`Bodenberg.AppDimens.Sdps.Wpf`](https://www.nuget.org/packages/Bodenberg.AppDimens.Sdps.Wpf),
+>   [`Bodenberg.AppDimens.Sdps.WinForms`](https://www.nuget.org/packages/Bodenberg.AppDimens.Sdps.WinForms) and
+>   [`Bodenberg.AppDimens.Sdps.WinUI`](https://www.nuget.org/packages/Bodenberg.AppDimens.Sdps.WinUI) — see
+>   [Other UI frameworks](#other-ui-frameworks-wpf-windows-forms-winui-3-custom-hosts).
+> - **Host-agnostic resolver**: `AppDimensResolver.UseDisplaySource(IDisplayMetricsSource)` lets any host feed the
+>   window size (`ManualDisplayMetricsSource` for custom loops/tests). MAUI keeps working with zero changes.
+> - `AppDimens.Maui` (resolver) no longer depends on MAUI; `UseAppDimensSdps`, `AppDimensSdpsWindow` and the
+>   `DeviceDisplay` source moved to the new `AppDimens.Maui.Hosting` assembly (same namespace, same package).
+> - `DimenFunction` enum: every SDP/SSP function as a value (`DimenFunction.Sdp.Evaluate(16)`).
+>
 > **New in 3.6.0**
 > - **Independent values — the `i` suffix**: every family now ships resize-invariant variants
 >   (`16.Sdpi()`, `48.Hdpi()`, `120.Wdpi()`, `14.Sspi()`, plus aspect-ratio forms `Sdpia/Hdpia/Wdpia/Sspia`).
@@ -26,6 +40,7 @@ It brings the Android experience of `@dimen/_16sdp`, orientation inverters, disc
 - [What the library does](#what-the-library-does)
 - [Requirements](#requirements)
 - [Installation](#installation)
+- [Start here: your first responsive page in 5 minutes](#start-here-your-first-responsive-page-in-5-minutes)
 - [Quick start](#quick-start)
 - [Screen rotation and resize](#screen-rotation-and-resize)
 - [How it works](#how-it-works)
@@ -45,6 +60,7 @@ It brings the Android experience of `@dimen/_16sdp`, orientation inverters, disc
 - [Performance and caching](#performance-and-caching)
 - [Known limitations](#known-limitations)
 - [Frequently asked questions](#frequently-asked-questions)
+- [Other UI frameworks (WPF, Windows Forms, WinUI 3, custom hosts)](#other-ui-frameworks-wpf-windows-forms-winui-3-custom-hosts)
 - [Package contents](#package-contents)
 - [License](#license)
 
@@ -74,21 +90,150 @@ It brings the Android experience of `@dimen/_16sdp`, orientation inverters, disc
 | .NET | **8**, **9**, **10**, or **11** |
 | .NET MAUI | 8.0+ / 9.0+ / 10.0+ (per SDK) |
 | Platforms | Android, iOS, macOS, Windows (via MAUI) |
-| NuGet version | **3.6.0** |
+| NuGet version | **3.6.1** |
 
 ---
 
 ## Installation
 
 ```bash
-dotnet add package Bodenberg.AppDimens.Maui.Sdps --version 3.6.0
+dotnet add package Bodenberg.AppDimens.Maui.Sdps --version 3.6.1
 ```
+
+Or in Visual Studio: right-click the project → **Manage NuGet Packages…** → search **Bodenberg.AppDimens.Maui.Sdps** → **Install**.
 
 Project reference (local development):
 
 ```xml
 <ProjectReference Include="path/to/AppDimens.Maui.Sdk/AppDimens.Maui.Sdk.csproj" />
 ```
+
+---
+
+## Start here: your first responsive page in 5 minutes
+
+> New to AppDimens? Follow these five steps exactly. You will end with a page whose margins, buttons and text
+> scale with the screen on Android, iOS, Windows and macOS.
+
+**The idea in one sentence:** keep writing the numbers you already know (`16` for padding, `14` for text), but write
+them as `{sdp:16}` / `{ssp:14}` — AppDimens treats them as sizes on a **300 dp-wide reference phone** and scales
+them to the real screen (≈19 on a 360 dp phone, ≈32 on a 600 dp tablet).
+
+### Step 1 — Install the package
+
+```bash
+dotnet add package Bodenberg.AppDimens.Maui.Sdps
+```
+
+### Step 2 — Turn it on in `MauiProgram.cs`
+
+```csharp
+using AppDimens.Maui;            // ← add
+
+public static class MauiProgram
+{
+    public static MauiApp CreateMauiApp()
+    {
+        var builder = MauiApp.CreateBuilder();
+        builder
+            .UseMauiApp<App>()
+            .UseAppDimensSdps();     // ← add (one line)
+        return builder.Build();
+    }
+}
+```
+
+### Step 3 — Follow the window size (recommended for desktop & tablets)
+
+In `App.xaml.cs`:
+
+```csharp
+using AppDimens.Maui;
+
+public partial class App : Application
+{
+    public App() => InitializeComponent();
+
+    protected override Window CreateWindow(IActivationState? activationState)
+    {
+        var window = new Window(new AppShell());
+        AppDimensSdpsWindow.Attach(window);   // ← values follow window resizes
+        return window;
+    }
+}
+```
+
+### Step 4 — Use it in XAML
+
+Add two lines to the root of your page, then replace numbers:
+
+```xml
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:sdp="clr-namespace:AppDimens.Maui.Markup;assembly=AppDimens.Maui.Markup"
+             xmlns:ssp="clr-namespace:AppDimens.Maui.Markup;assembly=AppDimens.Maui.Markup"
+             x:Class="MyApp.MainPage">
+
+    <VerticalStackLayout Padding="{sdp:16}" Spacing="{sdp:12}">
+
+        <Label Text="Welcome!" FontSize="{ssp:24}" FontAttributes="Bold" />
+        <Label Text="Everything on this page scales with the screen."
+               FontSize="{ssp:14}" />
+
+        <Border Padding="{sdp:16}" StrokeShape="RoundRectangle 12">
+            <Label Text="A card" FontSize="{ssp:16}" />
+        </Border>
+
+        <Button Text="Continue"
+                HeightRequest="{sdp:48}"
+                FontSize="{ssp:16}"
+                CornerRadius="12" />
+
+        <Image Source="dotnet_bot.png"
+               WidthRequest="{sdp:120}" HeightRequest="{sdp:120}" />
+    </VerticalStackLayout>
+</ContentPage>
+```
+
+### Step 5 — Use it in C# (optional)
+
+```csharp
+using AppDimens.Maui.Extensions;   // 16.Sdp(), 14.Ssp(), PaddingSdp(), FontSsp()
+
+titleLabel.FontSize = 24.Ssp();
+card.Padding        = new Thickness(16.Sdp());
+myLayout.PaddingSdp(16);           // shortcut
+myLabel.FontSsp(14);               // shortcut
+```
+
+**Done!** Run the app on a phone and on a tablet/desktop window and compare.
+
+### Which one do I use?
+
+| I want to size… | XAML | C# |
+|-----------------|------|----|
+| Padding, margins, spacing, icons, buttons — **most cases** | `{sdp:16}` | `16.Sdp()` |
+| Something that follows the screen **height** (headers, bars) | `{hdp:56}` | `56.Hdp()` |
+| Something that follows the screen **width** (banners, side panels) | `{wdp:200}` | `200.Wdp()` |
+| **Text** (respects the user's font-size setting) | `{ssp:14}` | `14.Ssp()` |
+| Text that **ignores** the user's font-size setting | `{sem:12}` | `12.Sem()` |
+| Slightly bigger on very wide/tall screens | `{sdpa:16}`, `{sspa:14}` | `16.Sdpa()` |
+| A value that must **not** change when the window is resized | `{sdpi:16}`, `{sspi:14}` | `16.Sdpi()` |
+| Different value in landscape | `{sdpRotate:16, Rotation=24, Orientation=Landscape}` | `16.SdpRotate(24)` (`using AppDimens.Maui.Helpers;`) |
+
+> Each short prefix (`hdp`, `wdp`, `sem`, `sdpi`…) needs its own `xmlns:` line, exactly like `sdp`/`ssp` in Step 4
+> (XML namespaces are per file). Prefer a single namespace? Use the normal syntax with one
+> `xmlns:dimen="clr-namespace:AppDimens.Maui.Xaml;assembly=AppDimens.Maui.Xaml"` and write `{dimen:Hdp Value=56}`,
+> `{dimen:Sspi Value=14}`, …
+
+### Common mistakes
+
+| Symptom | Cause / fix |
+|---------|-------------|
+| Every size looks too small / wrong | `UseAppDimensSdps()` was not called in `MauiProgram`. |
+| `{sdp:16}` → *"Type sdp not found"* | The `xmlns:sdp="…"` line is missing on that page (or merge the [imports dictionary](#xaml-namespaces)). |
+| Sizes don't change when resizing a desktop window | Add `AppDimensSdpsWindow.Attach(window)` (Step 3). XAML values are computed when the page loads — re-navigate or set them in C# inside `SizeChanged` for live updates. |
+| Text is huge on tablets | Use `Ssp` for text and `Sdp` for layout; if a value should stay constant, use the `i` suffix (`{sspi:14}`). |
 
 ---
 
@@ -460,7 +605,8 @@ Useful in tests or when generated files live outside the default location.
 `ssp` applies the configured font scale. To reflect the user’s accessibility preference:
 
 ```csharp
-AppDimensResolver.Instance.SetFontScale(/* system value */);
+// e.g. 1.0 = default, 1.3 = "large text" accessibility setting
+AppDimensResolver.Instance.SetFontScale(1.3f);
 ```
 
 ---
@@ -811,6 +957,16 @@ Markups resolve to **pixels at page load** (like a one-shot `{StaticResource}`).
 ---
 
 ## C# usage — complete reference
+
+> All C# samples in this README assume these `using` directives (add them at the top of your file):
+>
+> ```csharp
+> using AppDimens.Maui;             // AppDimensSdps, AppDimensResolver, UseAppDimensSdps, AppDimensSdpsWindow
+> using AppDimens.Maui.Core;        // AppDimensOptions, ScalingMode, DpQualifier, InverterType, UiModeType
+> using AppDimens.Maui.Extensions;  // 16.Sdp(), 14.Ssp(), inverters (16.SdpPh()), PaddingSdp(), FontSsp()
+> using AppDimens.Maui.Helpers;     // SdpRotate, SdpQualifier, SdpMode, SdpScreen
+> using AppDimens.Maui.Builders;    // Responsive builders
+> ```
 
 ### `int` extensions — base dimensions
 
@@ -1345,10 +1501,47 @@ Yes — `16.Sdp()` and `AppDimensSdps.Sdp(16)` are the primary path.
 Call `AppDimensResolver.Instance.SetFontScale(...)` when system preference changes.
 
 **Does it work on Windows/macOS?**  
-Yes — it uses MAUI Essentials `DeviceDisplay` on all supported platforms.
+Yes — in MAUI it uses `DeviceDisplay` on all supported platforms. For **WPF, Windows Forms or WinUI 3 without MAUI**,
+use the desktop packages listed in [Other UI frameworks](#other-ui-frameworks-wpf-windows-forms-winui-3-custom-hosts).
 
 **Release build crashes with `MarkupExtension not found for sdp:…`?**  
 That was IL trimming removing XAML-only types. **Fixed in the package:** `AppDimens.Maui.Markup`, `AppDimens.Maui.Xaml`, and `AppDimens.Maui.Converters` ship trimmer roots automatically (NuGet `buildTransitive` + embedded `ILLink.Descriptors.xml`). Update to a version that includes this fix; no extra linker XML is required in your app.
+
+---
+
+## Other UI frameworks (WPF, Windows Forms, WinUI 3, custom hosts)
+
+The scaling engine (`AppDimensResolver`) does not depend on MAUI. Pick the package for your UI framework — the
+functions, numbers and results are the same:
+
+| Framework | Package | Setup | Usage |
+|-----------|---------|-------|-------|
+| **.NET MAUI** | `Bodenberg.AppDimens.Maui.Sdps` (this package) | `builder.UseAppDimensSdps()` | `{sdp:16}`, `16.Sdp()` |
+| **WPF** | [`Bodenberg.AppDimens.Sdps.Wpf`](https://www.nuget.org/packages/Bodenberg.AppDimens.Sdps.Wpf) | `AppDimensWpf.Initialize(this)` | `{sdps:Sdp 16}` (live), `16.Sdp()` |
+| **Windows Forms** | [`Bodenberg.AppDimens.Sdps.WinForms`](https://www.nuget.org/packages/Bodenberg.AppDimens.Sdps.WinForms) | `AppDimensWinForms.Initialize(this)` | `120.SdpPx()`, `14.SspPt()` inside `AppDimensWinForms.Apply(...)` |
+| **WinUI 3** | [`Bodenberg.AppDimens.Sdps.WinUI`](https://www.nuget.org/packages/Bodenberg.AppDimens.Sdps.WinUI) | `AppDimensWinUI.Initialize(window)` | `{sdps:Sdp Value=16}` (re-applied on resize), `16.Sdp()` |
+
+The desktop packages embed the engine and the bucket tables, and **do not** reference any `Microsoft.Maui.*` package.
+
+### Custom hosts (Avalonia, Uno, game loops, tests…)
+
+Feed the window size yourself with `ManualDisplayMetricsSource`:
+
+```csharp
+using AppDimens.Maui;
+using AppDimens.Maui.Core;
+
+var source = new ManualDisplayMetricsSource(widthDp: 1280, heightDp: 720, density: 1.5);
+AppDimensResolver.Instance.UseDisplaySource(source);   // before Initialize
+AppDimensSdps.Initialize();
+
+double padding = AppDimensSdps.Sdp(16);
+
+// in your resize handler (values in dp + density):
+source.Update(1600, 900, 1.5);
+```
+
+Or implement `IDisplayMetricsSource` (`TryGetMetrics` + `Changed` event) for your framework.
 
 ---
 
@@ -1358,7 +1551,8 @@ That was IL trimming removing XAML-only types. **Fixed in the package:** `AppDim
 
 | Assembly | Role |
 |----------|------|
-| `AppDimens.Maui` | `AppDimensResolver`, `UseAppDimensSdps()` |
+| `AppDimens.Maui` | `AppDimensResolver`, `AppDimensSdps`, `DimenFunction` (MAUI-free engine) |
+| `AppDimens.Maui.Hosting` | `UseAppDimensSdps()`, `AppDimensSdpsWindow`, MAUI `DeviceDisplay` source |
 | `AppDimens.Maui.Core` | Formulas, enums, cache, metrics |
 | `AppDimens.Maui.Responsive` | Buckets, qualifiers, merge |
 | `AppDimens.Maui.Inverters` | Axis inversion engine |

@@ -1,87 +1,52 @@
-<div align="center">
+# AppDimens.Net.Perimeter
 
-# 🔲 AppDimens.Net.Perimeter
+**Perimeter scaling — balances width and height in a single number.**
 
-**Perimeter scaling (`PRSdp`) — dimensions proportional to the total screen perimeter.**
+Part of **AppDimens for .NET** (C# port of appdimens-kmp) · requires `AppDimens.Net` (installed automatically).
+Works with .NET MAUI, WPF, Windows Forms, WinUI 3 and plain .NET (`net8.0` / `net9.0` / `net10.0`).
 
-Part of the **AppDimens for .NET** family · requires [AppDimens.Net](https://www.nuget.org/packages/AppDimens.Net/) (core).
+📖 **Complete guide:** [AppDimens.Net.Perimeter documentation](https://github.com/bodenberg/appdimens-net-binding/blob/main/docs/AppDimens.Net.Perimeter/README.md) · **API reference:** [API.md](https://github.com/bodenberg/appdimens-net-binding/blob/main/docs/AppDimens.Net.Perimeter/API.md)
 
-[![NuGet](https://img.shields.io/nuget/v/AppDimens.Net.Perimeter.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/AppDimens.Net.Perimeter/)
-[![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg?style=flat-square)](https://github.com/bodenberg/appdimens-net-binding/blob/main/LICENSE)
-[![.NET](https://img.shields.io/badge/.NET-8.0%20%7C%209.0%20%7C%2010.0-8A2BE2.svg?style=flat-square)](https://dotnet.microsoft.com/)
+## What it does
 
-</div>
+The **Perimeter** strategy derives the scale from the sum of both screen axes, balancing width *and* height contributions. It gives stable results for edge-anchored UI: gutters, rails, borders, safe areas. All axes give the same result.
 
----
+| `16` with this strategy | Phone 360×800 | Tablet 800×1280 | Desktop 1280×800 |
+|---|--:|--:|--:|
+| `16.PRSdp()` | 22.3 | 40 | 40 |
+| `16.PRHdp()` | 22.3 | 40 | 40 |
+| `16.PRWdp()` | 22.3 | 40 | 40 |
+| `16.Sdp()` (core Scaled) | 19.2 | 42.7 | 42.7 |
 
-## 🎯 What is it?
-
-The **Perimeter strategy** derives scale from the **sum of both screen axes**
-(perimeter-like measure). It balances width *and* height contributions in one number,
-giving stable results for edge-anchored UI: gutters, rails, borders, safe areas.
-
-## 📦 Installation
+## Install
 
 ```bash
 dotnet add package AppDimens.Net.Perimeter
 ```
 
-> Depends on [AppDimens.Net](https://www.nuget.org/packages/AppDimens.Net/) (pulled automatically).
-> Attach a MAUI window first or pass an explicit `IAppDimensContext`.
+## Use
 
-## 🚀 Quick start
+1. Initialize once for your UI framework: MAUI `AppDimensMaui.AttachWindow(window)` · WPF `AppDimensWpf.Initialize(this)` ·
+   WinForms `AppDimensWinForms.Initialize(this)` · WinUI `AppDimensWinUI.Initialize(window)`.
+2. Call the extensions:
 
 ```csharp
-using AppDimens.Net.Perimeter;
+using AppDimens.Net.Code.Perimeter;
 
-float rail   = 56.PRSdp();     // perimeter-scaled nav rail
-float border = 12.PRHdp(ctx);  // height variant
-float badge  = 20.PRSdpaPx();  // px, aspect-ratio adjusted
+float padding = 16.PRSdp();    // smaller side of the window
+float header  = 56.PRHdp();    // height
+float sidebar = 200.PRWdp();   // width
+float tall    = 16.PRSdpa();   // + aspect-ratio correction
+float split   = 16.PRSdpi();   // ignores split-screen shrinking
 ```
 
-## 🧭 API
+With an explicit context: `16.PRSdp(ctx)`, `16.PRSdpPx(ctx)`, `DimenPerimeter.PRSdp(ctx, 16)`, `24.ToPerimeterDp(ctx, qualifier: DpQualifier.Width)`.
 
-| Extension | Result |
-|---|---|
-| `v.PRSdp(ctx)` · `v.PRSdpa(ctx)` | perimeter lane (± aspect ratio) |
-| `v.PRHdp(ctx)` · `v.PRWdp(ctx)` | height / width variants |
-| `…i` variants (`PRSdpi`…) | ignore multi-window |
-| `v.PRSdpPx(ctx)` … | pixel result |
-| `v.PRSdpCustom(qualifier, inverter, imw, ar, k)` | full control incl. sensitivity |
-| `DimenPerimeter.PRSdp(context, value)` | static form · `WarmupCache(ctx)` pre-heats |
-| `v.ToPerimeterDp/Px(v, ctx, …)` | generic kernel entry |
+## Português
 
-## 💡 When to use
-
-| Scenario | Recommendation |
-|---|---|
-| Edge/gutter systems | ✅ Perimeter |
-| Orientation-invariant sizing | [Diagonal](https://www.nuget.org/packages/AppDimens.Net.Diagonal/) |
-| Content-area fractions | [Percent](https://www.nuget.org/packages/AppDimens.Net.Percent/) |
-
-## ⚡ Performance
-
-Same engine as the core: snapshot-partitioned cache, allocation-free fast lanes,
-automatic invalidation on configuration changes.
-
-## 📚 Full package family
-
-[AppDimens.Net](https://www.nuget.org/packages/AppDimens.Net/) ·
-[Percent](https://www.nuget.org/packages/AppDimens.Net.Percent/) ·
-[Power](https://www.nuget.org/packages/AppDimens.Net.Power/) ·
-[Auto](https://www.nuget.org/packages/AppDimens.Net.Auto/) ·
-[Logarithmic](https://www.nuget.org/packages/AppDimens.Net.Logarithmic/) ·
-[Fluid](https://www.nuget.org/packages/AppDimens.Net.Fluid/) ·
-[Interpolated](https://www.nuget.org/packages/AppDimens.Net.Interpolated/) ·
-[Diagonal](https://www.nuget.org/packages/AppDimens.Net.Diagonal/) ·
-[Fill](https://www.nuget.org/packages/AppDimens.Net.Fill/) ·
-[Fit](https://www.nuget.org/packages/AppDimens.Net.Fit/) ·
-[Density](https://www.nuget.org/packages/AppDimens.Net.Density/) ·
-[Resize](https://www.nuget.org/packages/AppDimens.Net.Resize/) ·
-[Units](https://www.nuget.org/packages/AppDimens.Net.Units/) ·
-[Maui](https://www.nuget.org/packages/AppDimens.Net.Maui/) ·
-[Sdk meta-package](https://www.nuget.org/packages/AppDimens.Net.Sdk/)
+`dotnet add package AppDimens.Net.Perimeter` → inicialize a janela uma vez → `using AppDimens.Net.Code.Perimeter;` → `16.PRSdp()`, `56.PRHdp()`, `200.PRWdp()`.
+Guia completo: [https://github.com/bodenberg/appdimens-net-binding/blob/main/docs/AppDimens.Net.Perimeter/README.md](https://github.com/bodenberg/appdimens-net-binding/blob/main/docs/AppDimens.Net.Perimeter/README.md)
 
 ---
 
-Apache-2.0 — © Jean Bodenberg · [Repository](https://github.com/bodenberg/appdimens-net-binding) · Formulas are bit-a-bit ports of [appdimens-kmp](https://github.com/bodenberg/appdimens-kmp)
+Apache-2.0 — © Jean Bodenberg · [Repository](https://github.com/bodenberg/appdimens-net-binding)

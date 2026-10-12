@@ -1,87 +1,52 @@
-<div align="center">
+# AppDimens.Net.Fluid
 
-# 🌊 AppDimens.Net.Fluid
+**Fluid scaling — smooth, clamped growth between a phone and a tablet reference (0.8× → 1.2×).**
 
-**Fluid scaling (`FSdp`) — smooth interpolation between phone and tablet reference sizes.**
+Part of **AppDimens for .NET** (C# port of appdimens-kmp) · requires `AppDimens.Net` (installed automatically).
+Works with .NET MAUI, WPF, Windows Forms, WinUI 3 and plain .NET (`net8.0` / `net9.0` / `net10.0`).
 
-Part of the **AppDimens for .NET** family · requires [AppDimens.Net](https://www.nuget.org/packages/AppDimens.Net/) (core).
+📖 **Complete guide:** [AppDimens.Net.Fluid documentation](https://github.com/bodenberg/appdimens-net-binding/blob/main/docs/AppDimens.Net.Fluid/README.md) · **API reference:** [API.md](https://github.com/bodenberg/appdimens-net-binding/blob/main/docs/AppDimens.Net.Fluid/API.md)
 
-[![NuGet](https://img.shields.io/nuget/v/AppDimens.Net.Fluid.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/AppDimens.Net.Fluid/)
-[![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg?style=flat-square)](https://github.com/bodenberg/appdimens-net-binding/blob/main/LICENSE)
-[![.NET](https://img.shields.io/badge/.NET-8.0%20%7C%209.0%20%7C%2010.0-8A2BE2.svg?style=flat-square)](https://dotnet.microsoft.com/)
+## What it does
 
-</div>
+The **Fluid** strategy interpolates smoothly between a minimum (0.8×) on small screens and a maximum (1.2×) on large ones, so values **never explode** on big monitors and never collapse on tiny phones. Great for resizable desktop windows, split view and foldables. `16.FSdp()` gives 12.8 at ≤ 300 dp, 13.4 at 360 dp, 16.8 at 600 dp and 19.2 from 800 dp up.
 
----
+| `16` with this strategy | Phone 360×800 | Tablet 800×1280 | Desktop 1280×800 |
+|---|--:|--:|--:|
+| `16.FSdp()` | 13.4 | 19.2 | 19.2 |
+| `16.FHdp()` | 19.2 | 19.2 | 19.2 |
+| `16.FWdp()` | 13.4 | 19.2 | 19.2 |
+| `16.Sdp()` (core Scaled) | 19.2 | 42.7 | 42.7 |
 
-## 🎯 What is it?
-
-The **Fluid strategy** interpolates your base value continuously between device classes,
-avoiding jumps at breakpoints. Dimensions "flow" as the window resizes — great for
-split-view apps, foldables mid-fold, and desktop windows being dragged around.
-
-## 📦 Installation
+## Install
 
 ```bash
 dotnet add package AppDimens.Net.Fluid
 ```
 
-> Depends on [AppDimens.Net](https://www.nuget.org/packages/AppDimens.Net/) (pulled automatically).
-> Attach a MAUI window first or pass an explicit `IAppDimensContext`.
+## Use
 
-## 🚀 Quick start
+1. Initialize once for your UI framework: MAUI `AppDimensMaui.AttachWindow(window)` · WPF `AppDimensWpf.Initialize(this)` ·
+   WinForms `AppDimensWinForms.Initialize(this)` · WinUI `AppDimensWinUI.Initialize(window)`.
+2. Call the extensions:
 
 ```csharp
-using AppDimens.Net.Fluid;
+using AppDimens.Net.Code.Fluid;
 
-float card = 20.FSdp();        // fluid by smallest-width
-float side = 240.FLHdp(ctx);   // height axis
-float bar  = 8.FSdpaPx();      // px, aspect-ratio adjusted
+float padding = 16.FSdp();    // smaller side of the window
+float header  = 56.FHdp();    // height
+float sidebar = 200.FWdp();   // width
+float tall    = 16.FSdpa();   // + aspect-ratio correction
+float split   = 16.FSdpi();   // ignores split-screen shrinking
 ```
 
-## 🧭 API
+With an explicit context: `16.FSdp(ctx)`, `16.FSdpPx(ctx)`, `DimenFluid.FSdp(ctx, 16)`, `24.ToFluidDp(ctx, qualifier: DpQualifier.Width)`.
 
-| Extension | Result |
-|---|---|
-| `v.FSdp(ctx)` · `v.FSdpa(ctx)` | smallest-width lane (± aspect ratio) |
-| `v.FHdp(ctx)` · `v.FWdp(ctx)` | height / width axis |
-| `…i` variants (`FSdpi`…) | ignore multi-window |
-| `v.FSdpPx(ctx)` … | pixel result |
-| `v.FSdpCustom(qualifier, inverter, imw, ar, k)` | full control incl. sensitivity |
-| `DimenFluid.FSdp(context, value)` | static form · `WarmupCache(ctx)` pre-heats |
-| `v.ToFluidDp/Px(v, ctx, …)` | generic kernel entry |
+## Português
 
-## 💡 When to use
-
-| Scenario | Recommendation |
-|---|---|
-| Foldables / resizable desktop windows | ✅ Fluid |
-| Discrete breakpoint behavior | [Fit](https://www.nuget.org/packages/AppDimens.Net.Fit/) |
-| Strict proportions | [Percent](https://www.nuget.org/packages/AppDimens.Net.Percent/) |
-
-## ⚡ Performance
-
-Same engine as the core: snapshot-partitioned cache, allocation-free fast lanes,
-automatic invalidation on configuration changes.
-
-## 📚 Full package family
-
-[AppDimens.Net](https://www.nuget.org/packages/AppDimens.Net/) ·
-[Percent](https://www.nuget.org/packages/AppDimens.Net.Percent/) ·
-[Power](https://www.nuget.org/packages/AppDimens.Net.Power/) ·
-[Auto](https://www.nuget.org/packages/AppDimens.Net.Auto/) ·
-[Logarithmic](https://www.nuget.org/packages/AppDimens.Net.Logarithmic/) ·
-[Interpolated](https://www.nuget.org/packages/AppDimens.Net.Interpolated/) ·
-[Diagonal](https://www.nuget.org/packages/AppDimens.Net.Diagonal/) ·
-[Perimeter](https://www.nuget.org/packages/AppDimens.Net.Perimeter/) ·
-[Fill](https://www.nuget.org/packages/AppDimens.Net.Fill/) ·
-[Fit](https://www.nuget.org/packages/AppDimens.Net.Fit/) ·
-[Density](https://www.nuget.org/packages/AppDimens.Net.Density/) ·
-[Resize](https://www.nuget.org/packages/AppDimens.Net.Resize/) ·
-[Units](https://www.nuget.org/packages/AppDimens.Net.Units/) ·
-[Maui](https://www.nuget.org/packages/AppDimens.Net.Maui/) ·
-[Sdk meta-package](https://www.nuget.org/packages/AppDimens.Net.Sdk/)
+`dotnet add package AppDimens.Net.Fluid` → inicialize a janela uma vez → `using AppDimens.Net.Code.Fluid;` → `16.FSdp()`, `56.FHdp()`, `200.FWdp()`.
+Guia completo: [https://github.com/bodenberg/appdimens-net-binding/blob/main/docs/AppDimens.Net.Fluid/README.md](https://github.com/bodenberg/appdimens-net-binding/blob/main/docs/AppDimens.Net.Fluid/README.md)
 
 ---
 
-Apache-2.0 — © Jean Bodenberg · [Repository](https://github.com/bodenberg/appdimens-net-binding) · Formulas are bit-a-bit ports of [appdimens-kmp](https://github.com/bodenberg/appdimens-kmp)
+Apache-2.0 — © Jean Bodenberg · [Repository](https://github.com/bodenberg/appdimens-net-binding)

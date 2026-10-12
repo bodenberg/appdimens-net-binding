@@ -1,109 +1,52 @@
-<div align="center">
+# AppDimens.Net.Percent
 
-# 📏 AppDimens.Net.Percent
+**Percent scaling — strictly proportional to an axis, plus Space helpers for literal percentages.**
 
-**Percentage-of-screen scaling (`PSdp`, `SpaceW`) — dimensions that grow exactly with the screen.**
+Part of **AppDimens for .NET** (C# port of appdimens-kmp) · requires `AppDimens.Net` (installed automatically).
+Works with .NET MAUI, WPF, Windows Forms, WinUI 3 and plain .NET (`net8.0` / `net9.0` / `net10.0`).
 
-Part of the **AppDimens for .NET** family · requires [AppDimens.Net](https://www.nuget.org/packages/AppDimens.Net/) (core).
+📖 **Complete guide:** [AppDimens.Net.Percent documentation](https://github.com/bodenberg/appdimens-net-binding/blob/main/docs/AppDimens.Net.Percent/README.md) · **API reference:** [API.md](https://github.com/bodenberg/appdimens-net-binding/blob/main/docs/AppDimens.Net.Percent/API.md)
 
-[![NuGet](https://img.shields.io/nuget/v/AppDimens.Net.Percent.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/AppDimens.Net.Percent/)
-[![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg?style=flat-square)](https://github.com/bodenberg/appdimens-net-binding/blob/main/LICENSE)
-[![.NET](https://img.shields.io/badge/.NET-8.0%20%7C%209.0%20%7C%2010.0-8A2BE2.svg?style=flat-square)](https://dotnet.microsoft.com/)
+## What it does
 
-</div>
+The **Percent** strategy scales **linearly** with the chosen axis (`value × axis ÷ 300`): `PSdp` follows the smaller side, `PHdp` the height and `PWdp` the width. It also ships the **Space helpers** for literal percentages of the window: `50.SpaceWDp(ctx)` = 50 % of the width, `50.SpaceHDp(ctx)` = 50 % of the height, `25.SpaceSwDp(ctx)` = 25 % of the smaller side.
 
----
+| `16` with this strategy | Phone 360×800 | Tablet 800×1280 | Desktop 1280×800 |
+|---|--:|--:|--:|
+| `16.PSdp()` | 19.2 | 42.7 | 42.7 |
+| `16.PHdp()` | 42.7 | 68.3 | 42.7 |
+| `16.PWdp()` | 19.2 | 42.7 | 68.3 |
+| `16.Sdp()` (core Scaled) | 19.2 | 42.7 | 42.7 |
 
-## 🎯 What is it?
-
-The **Percent strategy** treats your base value as a **percentage of a screen dimension**
-(smallest-width, height or width). `24.PSdp()` renders as 24% of the smallest-width axis,
-so proportions stay identical on a 5" phone and a 13" tablet — ideal for hero cards,
-charts, split layouts and anything that must occupy a *relative* area.
-
-Also ships the **Space helpers** (`SpaceW`, `SpaceH`, `SpaceSw`) for computing
-free space and gaps directly.
-
-## 📦 Installation
+## Install
 
 ```bash
 dotnet add package AppDimens.Net.Percent
 ```
 
-> Depends on [AppDimens.Net](https://www.nuget.org/packages/AppDimens.Net/) (pulled automatically).
-> Attach a MAUI window first (`AppDimensMaui.AttachWindow`) or pass an explicit
-> `IAppDimensContext` — see the [core README](https://www.nuget.org/packages/AppDimens.Net/).
+## Use
 
-## 🚀 Quick start
+1. Initialize once for your UI framework: MAUI `AppDimensMaui.AttachWindow(window)` · WPF `AppDimensWpf.Initialize(this)` ·
+   WinForms `AppDimensWinForms.Initialize(this)` · WinUI `AppDimensWinUI.Initialize(window)`.
+2. Call the extensions:
 
 ```csharp
-using AppDimens.Net.Percent;
+using AppDimens.Net.Code.Percent;
 
-// 30% of the smallest-width axis
-float cardWidth = 30.PSdp();
-
-// 25% of the height axis, aspect-ratio adjusted
-float heroHeight = 25.PHdpa();
-
-// free space between two fixed elements (in %)
-float gap = 5.SpaceW(ctx);
+float padding = 16.PSdp();    // smaller side of the window
+float header  = 56.PHdp();    // height
+float sidebar = 200.PWdp();   // width
+float tall    = 16.PSdpa();   // + aspect-ratio correction
+float split   = 16.PSdpi();   // ignores split-screen shrinking
 ```
 
-## 🧭 API
+With an explicit context: `16.PSdp(ctx)`, `16.PSdpPx(ctx)`, `DimenPercent.PSdp(ctx, 16)`, `24.ToPercentDp(ctx, qualifier: DpQualifier.Width)`.
 
-### Strategy lanes (prefix `PS`, `PH`, `PW`)
+## Português
 
-| Extension | Result |
-|---|---|
-| `v.PSdp(ctx)` · `v.PSdpa(ctx)` | % of smallest-width (± aspect ratio) |
-| `v.PHdp(ctx)` · `v.PWdp(ctx)` | % of height / width axis |
-| `…i` variants (`PSdpi`…) | ignore multi-window constraints |
-| `v.PSdpPx(ctx)` … | pixel result |
-| `v.PSdpCustom(qualifier, inverter, imw, ar, k)` | full control |
-| `DimenPercent.PSdp(context, value)` | static form |
-| `v.ToPercentDp(v, ctx, …)` | generic kernel entry |
-
-### Space helpers
-
-| Extension | Meaning |
-|---|---|
-| `v.SpaceW(ctx)` · `v.SpaceH(ctx)` · `v.SpaceSw(ctx)` | `v` as % of width / height / smallest-width |
-| `v.SpaceWi(ctx)` … `i` variants | multi-window ignored |
-| `v.SpaceWDp(ctx)` · `v.SpaceHDp(ctx)` · `v.SpaceSwDp(ctx)` | dp-rounded forms |
-| `v.SpaceDp(v, referenceDp)` | % against an arbitrary reference |
-| `v.SpaceWSp(ctx)` | text-size (sp) variant |
-
-## 💡 When to use
-
-| Scenario | Recommendation |
-|---|---|
-| Cards/panels occupying a screen fraction | ✅ Percent |
-| Fixed paddings that scale moderately | Scaled (`AppDimens.Net` core) |
-| Text auto-fit | [Resize](https://www.nuget.org/packages/AppDimens.Net.Resize/) |
-
-## ⚡ Performance
-
-Same engine as the core: snapshot-partitioned cache, allocation-free fast lanes,
-automatic invalidation on configuration changes.
-
-## 📚 Full package family
-
-[AppDimens.Net](https://www.nuget.org/packages/AppDimens.Net/) ·
-[Auto](https://www.nuget.org/packages/AppDimens.Net.Auto/) ·
-[Logarithmic](https://www.nuget.org/packages/AppDimens.Net.Logarithmic/) ·
-[Fluid](https://www.nuget.org/packages/AppDimens.Net.Fluid/) ·
-[Interpolated](https://www.nuget.org/packages/AppDimens.Net.Interpolated/) ·
-[Diagonal](https://www.nuget.org/packages/AppDimens.Net.Diagonal/) ·
-[Perimeter](https://www.nuget.org/packages/AppDimens.Net.Perimeter/) ·
-[Power](https://www.nuget.org/packages/AppDimens.Net.Power/) ·
-[Fill](https://www.nuget.org/packages/AppDimens.Net.Fill/) ·
-[Fit](https://www.nuget.org/packages/AppDimens.Net.Fit/) ·
-[Density](https://www.nuget.org/packages/AppDimens.Net.Density/) ·
-[Resize](https://www.nuget.org/packages/AppDimens.Net.Resize/) ·
-[Units](https://www.nuget.org/packages/AppDimens.Net.Units/) ·
-[Maui](https://www.nuget.org/packages/AppDimens.Net.Maui/) ·
-[Sdk meta-package](https://www.nuget.org/packages/AppDimens.Net.Sdk/)
+`dotnet add package AppDimens.Net.Percent` → inicialize a janela uma vez → `using AppDimens.Net.Code.Percent;` → `16.PSdp()`, `56.PHdp()`, `200.PWdp()`.
+Guia completo: [https://github.com/bodenberg/appdimens-net-binding/blob/main/docs/AppDimens.Net.Percent/README.md](https://github.com/bodenberg/appdimens-net-binding/blob/main/docs/AppDimens.Net.Percent/README.md)
 
 ---
 
-Apache-2.0 — © Jean Bodenberg · [Repository](https://github.com/bodenberg/appdimens-net-binding) · Formulas are bit-a-bit ports of [appdimens-kmp](https://github.com/bodenberg/appdimens-kmp)
+Apache-2.0 — © Jean Bodenberg · [Repository](https://github.com/bodenberg/appdimens-net-binding)

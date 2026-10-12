@@ -1,5 +1,7 @@
 # Bodenberg.AppDimens.Sdps.WinForms
 
+📖 **Documentation:** [Bodenberg.AppDimens.Sdps.WinForms guide](https://github.com/bodenberg/appdimens-net-binding/blob/main/docs/Bodenberg.AppDimens.Sdps.WinForms/README.md) · [complete API reference](https://github.com/bodenberg/appdimens-net-binding/blob/main/docs/Bodenberg.AppDimens.Sdps.WinForms/API.md) · [all AppDimens .NET packages](https://github.com/bodenberg/appdimens-net-binding/blob/main/docs/README.md)
+
 **Responsive sizes for Windows Forms.** Instead of hard-coding `button1.Width = 120`, write
 `button1.Width = 120.SdpPx()` and the size adapts to the form size and to the monitor DPI —
 and is recalculated every time the user resizes the form.
@@ -75,6 +77,8 @@ Put all your AppDimens sizing inside **one** `Apply` block. It runs immediately 
 the form is resized or moved to a monitor with a different DPI:
 
 ```csharp
+using AppDimens.Sdps.WinForms;
+
 AppDimensWinForms.Apply(this, () =>
 {
     saveButton.Width  = 120.SdpPx();          // width in pixels

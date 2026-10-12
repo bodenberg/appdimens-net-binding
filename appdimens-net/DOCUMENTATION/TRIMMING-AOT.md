@@ -31,3 +31,10 @@ Notes for full trimming:
 
 Builds and runs under .NET WASM out of the box; the self-test suite executes in
 browser and reports 21/21 (see `DOCUMENTATION/PARITY.md`).
+
+## Desktop adapters (WPF / Windows Forms / WinUI 3)
+
+`AppDimens.Net.Wpf`, `.WinForms` and `.WinUI` add no reflection on the hot path. The WinUI markup extensions look up
+the target `XxxProperty` dependency-property field once per XAML assignment (public static fields of WinUI controls,
+never trimmed; the call is annotated with `UnconditionalSuppressMessage`). WPF itself is not trim-compatible, so WPF
+apps are normally published untrimmed.

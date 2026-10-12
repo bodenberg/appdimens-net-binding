@@ -1,5 +1,7 @@
 # Bodenberg.AppDimens.Sdps.Wpf
 
+📖 **Documentation:** [Bodenberg.AppDimens.Sdps.Wpf guide](https://github.com/bodenberg/appdimens-net-binding/blob/main/docs/Bodenberg.AppDimens.Sdps.Wpf/README.md) · [complete API reference](https://github.com/bodenberg/appdimens-net-binding/blob/main/docs/Bodenberg.AppDimens.Sdps.Wpf/API.md) · [all AppDimens .NET packages](https://github.com/bodenberg/appdimens-net-binding/blob/main/docs/README.md)
+
 **Responsive sizes for WPF.** Write `{sdps:Sdp 16}` instead of `16` and your margins, buttons and
 text grow on big windows and shrink on small ones — automatically, while the user resizes the
 window or drags it to another monitor.
@@ -120,6 +122,8 @@ myTitle.FontSize  = 20.Ssp();
 Values set from code are **not** updated automatically. Re-apply them when the window changes:
 
 ```csharp
+using AppDimens.Sdps.Wpf;
+
 AppDimensWpf.Changed += (_, _) => ApplySizes();
 
 void ApplySizes()

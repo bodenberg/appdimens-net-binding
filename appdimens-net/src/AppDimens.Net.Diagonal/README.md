@@ -1,88 +1,52 @@
-<div align="center">
+# AppDimens.Net.Diagonal
 
-# 📐 AppDimens.Net.Diagonal
+**Diagonal scaling — derived from the screen diagonal, identical in portrait and landscape.**
 
-**Diagonal scaling (`DGSdp`) — dimensions derived from the screen diagonal. Orientation-stable by design.**
+Part of **AppDimens for .NET** (C# port of appdimens-kmp) · requires `AppDimens.Net` (installed automatically).
+Works with .NET MAUI, WPF, Windows Forms, WinUI 3 and plain .NET (`net8.0` / `net9.0` / `net10.0`).
 
-Part of the **AppDimens for .NET** family · requires [AppDimens.Net](https://www.nuget.org/packages/AppDimens.Net/) (core).
+📖 **Complete guide:** [AppDimens.Net.Diagonal documentation](https://github.com/bodenberg/appdimens-net-binding/blob/main/docs/AppDimens.Net.Diagonal/README.md) · **API reference:** [API.md](https://github.com/bodenberg/appdimens-net-binding/blob/main/docs/AppDimens.Net.Diagonal/API.md)
 
-[![NuGet](https://img.shields.io/nuget/v/AppDimens.Net.Diagonal.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/AppDimens.Net.Diagonal/)
-[![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg?style=flat-square)](https://github.com/bodenberg/appdimens-net-binding/blob/main/LICENSE)
-[![.NET](https://img.shields.io/badge/.NET-8.0%20%7C%209.0%20%7C%2010.0-8A2BE2.svg?style=flat-square)](https://dotnet.microsoft.com/)
+## What it does
 
-</div>
+The **Diagonal** strategy computes the scale from the screen diagonal (√(w² + h²)), like physical screen sizes ("6.7-inch display"). Rotation swaps width and height but keeps the diagonal, so values **do not jump when the device rotates** — ideal for floating buttons, overlays and app chrome. `DGSdp`, `DGHdp` and `DGWdp` give the same result.
 
----
+| `16` with this strategy | Phone 360×800 | Tablet 800×1280 | Desktop 1280×800 |
+|---|--:|--:|--:|
+| `16.DGSdp()` | 22.9 | 39.5 | 39.5 |
+| `16.DGHdp()` | 22.9 | 39.5 | 39.5 |
+| `16.DGWdp()` | 22.9 | 39.5 | 39.5 |
+| `16.Sdp()` (core Scaled) | 19.2 | 42.7 | 42.7 |
 
-## 🎯 What is it?
-
-The **Diagonal strategy** computes scale from the screen's **diagonal** (√(w²+h²)),
-exactly like physical screen sizes ("6.7-inch display"). Because rotation swaps w/h but
-preserves the diagonal, values stay **stable between portrait and landscape** — ideal for
-floating buttons, overlays and chrome that shouldn't jump on rotate.
-
-## 📦 Installation
+## Install
 
 ```bash
 dotnet add package AppDimens.Net.Diagonal
 ```
 
-> Depends on [AppDimens.Net](https://www.nuget.org/packages/AppDimens.Net/) (pulled automatically).
-> Attach a MAUI window first or pass an explicit `IAppDimensContext`.
+## Use
 
-## 🚀 Quick start
+1. Initialize once for your UI framework: MAUI `AppDimensMaui.AttachWindow(window)` · WPF `AppDimensWpf.Initialize(this)` ·
+   WinForms `AppDimensWinForms.Initialize(this)` · WinUI `AppDimensWinUI.Initialize(window)`.
+2. Call the extensions:
 
 ```csharp
-using AppDimens.Net.Diagonal;
+using AppDimens.Net.Code.Diagonal;
 
-float fab   = 56.DGSdp();      // rotation-stable FAB
-float sheet = 320.DGWdp(ctx);  // width variant
-float ring  = 40.DGSdpaPx();   // px, aspect-ratio adjusted
+float padding = 16.DGSdp();    // smaller side of the window
+float header  = 56.DGHdp();    // height
+float sidebar = 200.DGWdp();   // width
+float tall    = 16.DGSdpa();   // + aspect-ratio correction
+float split   = 16.DGSdpi();   // ignores split-screen shrinking
 ```
 
-## 🧭 API
+With an explicit context: `16.DGSdp(ctx)`, `16.DGSdpPx(ctx)`, `DimenDiagonal.DGSdp(ctx, 16)`, `24.ToDiagonalDp(ctx, qualifier: DpQualifier.Width)`.
 
-| Extension | Result |
-|---|---|
-| `v.DGSdp(ctx)` · `v.DGSdpa(ctx)` | diagonal lane (± aspect ratio) |
-| `v.DGHdp(ctx)` · `v.DGWdp(ctx)` | height / width variants |
-| `…i` variants (`DGSdpi`…) | ignore multi-window |
-| `v.DGSdpPx(ctx)` … | pixel result |
-| `v.DGSdpCustom(qualifier, inverter, imw, ar, k)` | full control incl. sensitivity |
-| `DimenDiagonal.DGSdp(context, value)` | static form · `WarmupCache(ctx)` pre-heats |
-| `v.ToDiagonalDp/Px(v, ctx, …)` | generic kernel entry |
+## Português
 
-## 💡 When to use
-
-| Scenario | Recommendation |
-|---|---|
-| Rotation-invariant chrome | ✅ Diagonal |
-| Edge/gutter systems | [Perimeter](https://www.nuget.org/packages/AppDimens.Net.Perimeter/) |
-| Axis-specific behavior | core Scaled (`Sdp`/`Hdp`/`Wdp`) |
-
-## ⚡ Performance
-
-Same engine as the core: snapshot-partitioned cache, allocation-free fast lanes,
-automatic invalidation on configuration changes.
-
-## 📚 Full package family
-
-[AppDimens.Net](https://www.nuget.org/packages/AppDimens.Net/) ·
-[Percent](https://www.nuget.org/packages/AppDimens.Net.Percent/) ·
-[Power](https://www.nuget.org/packages/AppDimens.Net.Power/) ·
-[Auto](https://www.nuget.org/packages/AppDimens.Net.Auto/) ·
-[Logarithmic](https://www.nuget.org/packages/AppDimens.Net.Logarithmic/) ·
-[Fluid](https://www.nuget.org/packages/AppDimens.Net.Fluid/) ·
-[Interpolated](https://www.nuget.org/packages/AppDimens.Net.Interpolated/) ·
-[Perimeter](https://www.nuget.org/packages/AppDimens.Net.Perimeter/) ·
-[Fill](https://www.nuget.org/packages/AppDimens.Net.Fill/) ·
-[Fit](https://www.nuget.org/packages/AppDimens.Net.Fit/) ·
-[Density](https://www.nuget.org/packages/AppDimens.Net.Density/) ·
-[Resize](https://www.nuget.org/packages/AppDimens.Net.Resize/) ·
-[Units](https://www.nuget.org/packages/AppDimens.Net.Units/) ·
-[Maui](https://www.nuget.org/packages/AppDimens.Net.Maui/) ·
-[Sdk meta-package](https://www.nuget.org/packages/AppDimens.Net.Sdk/)
+`dotnet add package AppDimens.Net.Diagonal` → inicialize a janela uma vez → `using AppDimens.Net.Code.Diagonal;` → `16.DGSdp()`, `56.DGHdp()`, `200.DGWdp()`.
+Guia completo: [https://github.com/bodenberg/appdimens-net-binding/blob/main/docs/AppDimens.Net.Diagonal/README.md](https://github.com/bodenberg/appdimens-net-binding/blob/main/docs/AppDimens.Net.Diagonal/README.md)
 
 ---
 
-Apache-2.0 — © Jean Bodenberg · [Repository](https://github.com/bodenberg/appdimens-net-binding) · Formulas are bit-a-bit ports of [appdimens-kmp](https://github.com/bodenberg/appdimens-kmp)
+Apache-2.0 — © Jean Bodenberg · [Repository](https://github.com/bodenberg/appdimens-net-binding)

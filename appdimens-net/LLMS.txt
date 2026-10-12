@@ -1,71 +1,105 @@
 # AppDimens .NET — LLMS.txt (LLM API digest)
 
-> AppDimens for .NET MAUI 3.6.0 — scaled dimensions for Android/iOS/desktop UI.
-> Port of appdimens-kmp. Author: Jean Bodenberg. License: Apache-2.0.
+> AppDimens for .NET 3.6.1 — responsive dp/sp for .NET MAUI, WPF, Windows Forms, WinUI 3 and any .NET host.
+> Bit-for-bit port of appdimens-kmp. Author: Jean Bodenberg. License: Apache-2.0.
+> Full guides + generated API references: ../docs/AppDimens.Net*/ (README.md + API.md per package).
 
-## Setup (MAUI)
+## Mental model
+
+- Numbers are sizes on a 300 dp-wide reference screen: `16.Sdp()` = 16 × axis / 300 (19.2 on 360 dp, 42.7 on 800 dp).
+- Results are dp (device-independent: 1/160 in Android, 1/96 in DIP on Windows) unless the name ends in `Px`.
+- Parameterless calls use the ambient context (`AppDimensAmbient`); every call also has an `IAppDimensContext` overload.
+
+## Setup (one call per UI framework)
 
 ```csharp
+// .NET MAUI — AppDimens.Net.Maui (in App.CreateWindow, BEFORE creating pages)
 using AppDimens.Net.Maui.Platform;
-// in Application.CreateWindow — BEFORE creating any page:
 var window = new Window();
-AppDimensMaui.AttachWindow(window);   // initializes ambient + cache + resize watcher
-window.Page = new NavigationPage(new MainPage());
+AppDimensMaui.AttachWindow(window);                 // ambient + cache + resize watcher
+
+// WPF — AppDimens.Net.Wpf (MainWindow ctor, before InitializeComponent)
+AppDimens.Net.Wpf.AppDimensWpf.Initialize(this);    // XAML {ad:Sdp 16} is LIVE (binding)
+
+// Windows Forms — AppDimens.Net.WinForms
+AppDimens.Net.WinForms.AppDimensWinForms.Initialize(this);
+AppDimens.Net.WinForms.AppDimensWinForms.Apply(this, () => button1.Width = DimenPx.ToPx(120.Sdp()));
+
+// WinUI 3 — AppDimens.Net.WinUI (App.OnLaunched)
+AppDimens.Net.WinUI.AppDimensWinUI.Initialize(m_window);   // XAML {ad:Sdp Value=16}, re-applied on resize
+
+// Any other host — AppDimens.Net
+using AppDimens.Net.Core;
+var scope = AppDimensHost.Activate(new HostDimensScope());
+scope.Update(widthDp: 1280, heightDp: 720, density: 1.5);   // from your resize handler
 ```
 
-Parameterless extensions require the ambient scope; otherwise pass
-`IAppDimensContext` explicitly (or use `FakeAppDimensContext` in tests).
+## Core API (AppDimens.Net, namespace AppDimens.Net.Code.Scaled)
 
-## Core API (AppDimens.Net)
+- `float Sdp(this int v)` smallest width · `Hdp` height · `Wdp` width; suffix `a` aspect ratio, `i` ignore multi-window,
+  `ia` both, `Px` pixels (`SdpPx`, `HdpaPx(ctx)`…). Doubles: `12.5.Sdp()`.
+- Text: `Ssp`, `Sspa`, `Sspi`, `Sspia`, `Hsp`, `Hspa`, `Wsp`, `Wspa` (font-scale aware); `Sem`, `Hem`, `Wem` (ignore font scale).
+- Inverters (need ctx): `SdpPh`, `SdpLw`, `SdpLh`, `SdpPw`, `HdpLw(a/i/ia)`, `WdpLh(a/i/ia)`; options `ar`, `imw`, `k`.
+- Facilitators (need ctx): `SdpRotate(ctx, value, orientation)`, `SdpRotateRaw`, `SdpMode(ctx, value, UiModeType)`,
+  `SdpModeRaw`, `SdpQualifier(ctx, DpQualifier, threshold, alternate)`, `SdpQualifierRaw`,
+  `SdpScreen(ctx, uiMode, qualifier, threshold, orientation, value)`; `HdpRotate/HdpMode`, `WdpRotate/WdpMode`.
+- Builder: `16.ScaledDp().Screen(DpQualifier.SmallWidth, 600, 24).Screen(UiModeType.Television, 40)
+  .Screen(Orientation.Landscape, 20).AspectRatio().IgnoreMultiWindows().Sdp()` (also `Hdp()`, `Wdp()`, `Px()`,
+  `Resolve(ctx)`, `CustomSensitivity(k)`; `ScaledSp()` for text). Returns dp.
+- Full control: `SdpCustom(ctx, qualifier, inverter, ignoreMultiWindows, applyAspectRatio, k)`, `SdpCustomPx`,
+  `v.ToDynamicScaledDp(ctx, qualifier, inverter, imw, ar, k)` / `ToDynamicScaledPx`.
+- Contexts: `IAppDimensContext` (Configuration, Density, Xdpi, UiModeType, IsInMultiWindowMode,
+  RegisterConfigurationListener), `HostDimensScope` (Update(w,h,density) → bool, FontScale), `AppDimensHost.Activate`,
+  `AppDimensAmbient.Current/Require/Set`, `FakeAppDimensContext` (SetConfig, NotifyChange, UiModeType, IsInMultiWindowMode).
+- Cache: `DimenCache.CacheEnabled`, `DiagnosticsEnabled`, `HitCount/MissCount`, `ClearAll()` (automatic on resize).
+- Enums (AppDimens.Net.Common): DpQualifier {SmallWidth, Height, Width}; Inverter {Default, PhToLw, PwToLh, LhToPw,
+  LwToPh, SwToLh, SwToLw, SwToPh, SwToPw}; Orientation {Portrait, Landscape, Default}; UiModeType {Undefined, Normal,
+  Television, Car, Watch, Desk, Appliance, VrHeadset, FoldOpen, FoldClosed, FlipOpen, FlipClosed, FoldHalfOpened,
+  FlipHalfOpened}; UnitType {Mm, Cm, Inch}.
 
-- `float Sdp(this int v)` — scale by smallest width. `Sdpa` adds aspect-ratio.
-- `float Hdp(this int v)` / `float Wdp(this int v)` — height/width axis.
-- `Sdpi/Sdpia/Hdpi/Wdpi…` — ignore multi-window constraints.
-- `float Ssp(this int v)` — scaled text size (font-scale aware).
-- Inverters: `SdpPh`, `SdpLw`, `SdpLh`, `SdpPw`, `HdpLw`, `WdpLh` (axis swaps).
-- Facilitators: `SdpRotate(alt, orientation…)`, `SdpMode(alt, uiModeType…)`,
-  `SdpQualifier(qual, threshold, alt…)`, `SdpScreen(uiMode, qual, threshold, alt…)`
-  + `*Plain` variants (pre-scaled branches, no re-scaling).
-- Builder: `v.ScaledDp().AspectRatio(b).Screen(qualifier, threshold, value)
-  .Screen(UiModeType, value).Sdp()` — priority: qualifier+orientation >
-  mode-only > qualifier-only > orientation-only.
-- Generic kernel: `v.ToDynamicScaledDp(ctx, qualifier, inverter, imw, ar, k)`.
-- Ambient: `AppDimensAmbient.Current/Require()`; `DimenCache.Init(ctx)`,
-  `DimenCache.ClearAll()`, `DimenCache.FastMetricsForCode(ctx)`.
+## Strategy packages (uniform shape, namespace AppDimens.Net.Code.<Name>)
 
-## Satellite strategies (uniform shape)
+`{P}Sdp/Sdpa/Sdpi/Sdpia`, `{P}Hdp…`, `{P}Wdp…` (ambient or ctx), `{P}SdpPx(ctx)…`,
+`{P}SdpCustom(qualifier, inverter, imw, ar, k)`, `{P}SdpRotateRaw(ctx, raw, orientation)`, static `Dimen<Name>.{P}Sdp(ctx, v)`,
+`Dimen<Name>.WarmupCache(ctx)`, kernel `v.To<Name>Dp(ctx, qualifier, inverter, imw, ar, k)` / `To<Name>Px`.
 
-`{P}Sdp/Sdpa/Hdp/Wdp(ctx)`, `{P}Sdpi(a)`, `{P}HdpCustom(v, qual, inv, imw, ar, k)`,
-generic `To{X}Dp(v, ctx, qual, inv, imw, ar, k)`.
+| Package | Prefix | 16 @ 360×800 / 800×1280 |
+|---|---|---|
+| Auto | A | 19.2 / 30.2 |
+| Density | D | follows dpi/160 (16 @160dpi, 32 @320dpi) |
+| Diagonal | DG | 22.9 / 39.5 (rotation-stable) |
+| Fill | FL | 24 / 42.7 |
+| Fluid | F | 13.4 / 19.2 (clamped 0.8×–1.2×) |
+| Interpolated | I | 17.6 / 29.3 |
+| Logarithmic | LOG | 17.2 / 22.3 |
+| Percent | P | 19.2 / 42.7 (+ literal %: `50.SpaceWDp(ctx)`, `SpaceHDp`, `SpaceSwDp`, `SpaceDp(ref)`) |
+| Perimeter | PR | 22.3 / 40 |
+| Power | PW | 18.3 / 33.4 (tunable k) |
 
-- Percent (`AppDimens.Net.Percent`, prefix PS; also `SpaceWDp/SwDp/HDp…`)
-- Power (PW) · Auto (A) · Logarithmic (LOG) · Fluid (F) · Interpolated (I)
-- Diagonal (DGS) · Perimeter (PRS) · Fill (FL) · Fit (ToFitDp + `DimenFit`
-  builder with `.Screen(...)`, `ResolveAll(ctx)`) · Density (D)
+- Fit (AppDimens.Net.Code.Fit): `16.FitScaledDp().Screen(UiModeType, v).Screen(DpQualifier, threshold, v)
+  .Screen(Orientation, v).Ftsdp()` — returns PIXELS (dp × density); priority: UI-mode rules > qualifier rules >
+  orientation rules, first declared match wins; `Fthdp`, `Ftwdp`, `ResolveAll(ctx)`.
+- Resize (AppDimens.Net.Code.Resize): `DimenResize.AutoResizeTextPx(text, boxWidthPx, minSp, maxSp, stepSp, maxLines, ctx)`
+  returns the chosen size in **sp** (unit of the range); `AutoResizeSquarePx(boxWpx, boxHpx, minDp, maxDp, stepDp, ctx)`
+  returns **dp**; `InnerMaxDimensionsPx`, `ResizeRangePx(min,max,step).ResolveFitting(fits)` (≤4096 steps, binary search).
+- Units (AppDimens.Net.Code.Units): `DimenPhysicalUnits.ToDpFromMm/Cm/Inch`, `ToPxFrom*`, `ToSpFrom*`, `RadiusFromDiameter(d, UnitType)`.
 
-## Resize & units (AppDimens.Net.Resize)
+## UI integrations
 
-- `ResizeRangePx(minPx, maxPx, stepPx)` — ≤4096 bounded steps + binary search.
-- `DimenResize.AutoResizeTextPx(text, boxWidthPx, minSp, maxSp, stepSp, maxLines, ctx)`
-  → font size in **px** (divide by `density·fontScale` for MAUI FontSize).
-- `DimenResize.AutoResizeSquarePx(boxWpx, boxHpx, minDp, maxDp, stepDp, ctx)`
-  → side in **dp** (single px→dp conversion).
-- `DimenPhysicalUnits.ToDpFromMm/Cm, ToPxFromInch, RadiusFromDiameter`.
-
-## Contexts
-
-- `IAppDimensContext` — `Configuration` (ScreenConfiguration: w/h/sw dp, dpi,
-  fontScale, orientation), `Density`, `UiModeType`, `IsInMultiWindowMode`,
-  `RegisterConfigurationListener(Action)`.
-- `FakeAppDimensContext` — `SetConfig(w, h, dpi, orientation, fontScale)` +
-  `NotifyChange()` to drive the watcher in tests.
+- MAUI (AppDimens.Net.Maui): `AppDimensMaui.AttachWindow/Detach/Init/Primary`, `WindowDimensScope` (Update,
+  FontScaleOverride, RegisterConfigurationListener); XAML `xmlns:ad="clr-namespace:AppDimens.Net.Maui.Xaml;assembly=AppDimens.Net.Maui"`
+  → `{ad:Sdp 16}`, `Sdpa`, `Hdp`, `Wdp`, `Ssp`, `Fsdp`, `Psdpx` (evaluated at load); `SdpConverter`, `SspConverter`.
+- WPF (AppDimens.Net.Wpf): `AppDimensWpf.Initialize/EnsureInitialized/Detach/Scope/Changed`, `WpfWindowDimensScope`;
+  41 markup extensions `{ad:Name 16}` (Scaled, Fluid F*, Percent P*, SpaceW/SpaceH) as live bindings
+  (`DimenLiveSource`), options `Live`, `As` (Double/Thickness/CornerRadius/GridLength); `DimenConverter`; `DimenFunction`.
+- WinForms (AppDimens.Net.WinForms): `AppDimensWinForms.Initialize/Apply(control, layout)/Detach/Scope/Changed`,
+  `FormDimensScope`, `DimenPx.ToPx/ToPt/Padding/Size/Of(DimenFunction, v)`.
+- WinUI 3 (AppDimens.Net.WinUI): `AppDimensWinUI.Initialize/Detach/Scope/Changed`, `WinUIWindowDimensScope`,
+  `{ad:Name Value=16}` re-applied on resize (weak registry), `DimenConverter`, `DimenFunction`.
 
 ## Guarantees
 
-- Fast lanes (`DimenCache.ResolveSdpDp/Hdp/Wdp(+Px)`) are allocation-free and
-  bitwise-equal to the full cached path.
-- Resize changes invalidate automatically via the event watcher — no manual
-  cache clearing.
+- Fast lanes (`DimenCache.ResolveSdpDp/Hdp/Wdp(+Px)`) are allocation-free and bitwise-equal to the full cached path.
+- Resize changes invalidate automatically via the event watcher — no manual cache clearing.
 - Custom sensitivity-K values are never cached.
-- Formulas are bit-a-bit ports of appdimens-kmp (golden values in
-  DOCUMENTATION/PARITY.md).
+- Formulas are bit-for-bit ports of appdimens-kmp (golden values in DOCUMENTATION/PARITY.md).
