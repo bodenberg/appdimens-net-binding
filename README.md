@@ -112,6 +112,7 @@ AppDimensWinUI.Initialize(m_window);           // App.OnLaunched
 ```
 appdimens-net-binding/
 ├── docs/                              # Per-package guides + generated API references
+├── nupkgs/<version>/                  # Ready-to-publish .nupkg + .snupkg of each release (committed by CI)
 ├── appdimens-sdps-net/                # SDPS native: MAUI + WPF/WinForms/WinUI adapters (src/ tests/ samples/ scripts/)
 ├── appdimens-net/                     # AppDimens.Net (KMP port): core, strategies, MAUI/WPF/WinForms/WinUI
 ├── appdimens-sdps-net-binding/        # Android binding (Binding/, SmokeTest/, scripts/sync-aar-from-maven.sh)
@@ -155,7 +156,8 @@ cd appdimens-sdps-net-binding && ./scripts/sync-aar-from-maven.sh 3.2.0   # refr
 ./scripts/generate-docs.sh
 ```
 
-Packages land in `*/artifacts/nuget/` (ignored by git).
+Local builds land in `*/artifacts/nuget/` (ignored by git). The official packages of each release are committed by the
+Release workflow to [`nupkgs/<version>/`](nupkgs/).
 
 ## CI / Release
 
