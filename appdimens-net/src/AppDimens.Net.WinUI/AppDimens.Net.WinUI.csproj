@@ -16,11 +16,11 @@
   <Import Project="..\AppDimens.Net.Desktop.props" />
 
   <ItemGroup>
-    <!-- Lowest supported Windows App SDK so apps on any 1.6+ version can consume the package.
-         Its MSBuild targets (PRI/AppX) only run on Windows; elsewhere compile against references only. -->
-    <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.6.250602001" />
-    <PackageReference Update="Microsoft.WindowsAppSDK" ExcludeAssets="build;buildTransitive"
-                      Condition="!$([MSBuild]::IsOSPlatform('Windows'))" />
+    <!-- Lowest supported Windows App SDK, so apps on any 1.6+ version can consume the package.
+         Only its reference assemblies are needed: its MSBuild targets (PRI / AppX packaging) need
+         Visual Studio's MSBuild and are irrelevant for a library without XAML pages. Every WinUI 3
+         app references Microsoft.WindowsAppSDK directly, so consumers keep the full tooling. -->
+    <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.6.250602001" ExcludeAssets="build;buildTransitive" />
   </ItemGroup>
 
 </Project>

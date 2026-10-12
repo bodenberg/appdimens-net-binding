@@ -60,7 +60,7 @@ jobs:
           path: out/
 
   windows:
-    name: Windows desktop (tests + WinUI pack)
+    name: Windows desktop tests (WPF + WinForms)
     runs-on: windows-latest
     timeout-minutes: 40
     steps:
@@ -75,16 +75,10 @@ jobs:
         run: dotnet test appdimens-sdps-net/tests/AppDimens.Sdps.Desktop.Tests/AppDimens.Sdps.Desktop.Tests.csproj -c Release
       - name: Desktop tests (AppDimens.Net adapters)
         run: dotnet test appdimens-net/tests/AppDimens.Net.Desktop.Tests/AppDimens.Net.Desktop.Tests.csproj -c Release
-      # WinUI 3 packages are packed on Windows so the Windows App SDK build targets are
-      # active (on Linux only its reference assemblies are used).
-      - name: Pack WinUI adapters
+      - name: Build WinUI 3 adapters
         run: |
-          dotnet pack appdimens-sdps-net/src/AppDimens.Sdps.WinUI/AppDimens.Sdps.WinUI.csproj -c Release -o out
-          dotnet pack appdimens-net/src/AppDimens.Net.WinUI/AppDimens.Net.WinUI.csproj -c Release -o out -p:IncludeSymbols=true -p:SymbolPackageFormat=snupkg
-      - uses: actions/upload-artifact@v4
-        with:
-          name: pkg-winui
-          path: out/
+          dotnet build appdimens-sdps-net/src/AppDimens.Sdps.WinUI/AppDimens.Sdps.WinUI.csproj -c Release
+          dotnet build appdimens-net/src/AppDimens.Net.WinUI/AppDimens.Net.WinUI.csproj -c Release
 
   bindings:
     name: Android binding (${{ matrix.module }})
@@ -140,12 +134,10 @@ jobs:
         with:
           pattern: pkg-*
           path: dl
-      - name: Merge (Windows-built WinUI packages win)
+      - name: Merge
         run: |
           mkdir -p nuget
-          for d in dl/pkg-native dl/pkg-appdimens-*-net-binding dl/pkg-winui; do
-            [ -d "$d" ] && cp -f "$d"/* nuget/
-          done
+          cp -f dl/pkg-*/* nuget/
           ls -la nuget
       - uses: actions/upload-artifact@v4
         with:

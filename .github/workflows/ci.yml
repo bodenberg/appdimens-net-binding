@@ -53,8 +53,7 @@ jobs:
       - name: Test + pack (core, strategies, MAUI, WPF, WinForms, WinUI)
         run: chmod +x scripts/pack-nuget.sh && ./scripts/pack-nuget.sh
 
-  # WPF / Windows Forms need a real Windows desktop session to run; WinUI 3 is built with the
-  # full Windows App SDK tooling here (Linux jobs only compile against its reference assemblies).
+  # WPF / Windows Forms need a real Windows desktop session to run.
   desktop-windows:
     name: Desktop adapters (Windows)
     runs-on: windows-latest
