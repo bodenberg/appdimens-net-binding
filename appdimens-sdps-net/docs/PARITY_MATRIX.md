@@ -1,4 +1,7 @@
-# AppDimens SDP — Parity Matrix (Android v3.1.7 → MAUI 3.6.0)
+# AppDimens SDP — Parity Matrix (Android v3.2.0 → MAUI 3.6.1)
+
+> Android `appdimens-sdps` 3.2.0 has the same public API as 3.1.7 (verified with a `javap -public` diff), so this matrix
+> applies unchanged. Since 3.6.1 the same engine also powers the WPF / Windows Forms / WinUI 3 adapters.
 
 ## Generated resources (MAUI layout v2)
 

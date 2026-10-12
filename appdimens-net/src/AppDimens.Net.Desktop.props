@@ -1,0 +1,13 @@
+<Project>
+  <!-- Shared settings for the WPF / Windows Forms / WinUI 3 adapters of AppDimens.Net. -->
+  <PropertyGroup>
+    <!-- Windows-only UI frameworks can be compiled (not run) on Linux/macOS CI. -->
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="$(MSBuildThisFileDirectory)AppDimens.Net\AppDimens.Net.csproj" />
+    <ProjectReference Include="$(MSBuildThisFileDirectory)AppDimens.Net.Fluid\AppDimens.Net.Fluid.csproj" />
+    <ProjectReference Include="$(MSBuildThisFileDirectory)AppDimens.Net.Percent\AppDimens.Net.Percent.csproj" />
+  </ItemGroup>
+</Project>

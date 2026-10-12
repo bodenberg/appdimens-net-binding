@@ -24,7 +24,7 @@
     <Authors>Jean Bodenberg</Authors>
     <Company />
     <Description>
-      .NET Android binding for AppDimens Dynamic (io.github.bodenberg:appdimens-dynamic 3.1.9, modular).
+      .NET Android binding for AppDimens Dynamic (io.github.bodenberg:appdimens-dynamic 3.2.0, modular).
       Targets net8.0-android through net11.0-android. Exposes the core + scaled strategy
       (DimenSdp / DimenSsp / DimenScaled) under Com.Appdimens.Dynamic.Code, plus every optional
       scaling module (fluid, fill, power, diagonal, density, fit, resize, units, perimeter,
@@ -34,7 +34,7 @@
     </Description>
     <Copyright>Copyright © Jean Bodenberg</Copyright>
     <PackageReleaseNotes>
-      NuGet 3.6.0: Embedded modular AARs Maven io.github.bodenberg:appdimens-dynamic* 3.1.9
+      NuGet 3.6.1: Embedded modular AARs Maven io.github.bodenberg:appdimens-dynamic* 3.2.0
       (core+scaled + 13 strategy modules); multi-target net8.0-android / net9.0-android /
       net10.0-android / net11.0-android; DynamicConfig helper for warmup and configuration-change
       dimension refresh; AndroidX/Kotlin pins aligned to AAR POM.
@@ -49,28 +49,28 @@
 
     <!-- Empacota o mesmo assembly principal (o binding) -->
     <PackageId>Bodenberg.AppDimens.Dynamic</PackageId>
-    <Version>3.6.0</Version>
+    <Version>3.6.1</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
 
   <ItemGroup>
-    <!-- AARs modulares 3.1.9: core+scaled (appdimens-dynamic) + 13 módulos de estratégia -->
-    <AndroidLibrary Bind="true" Include="Jars\appdimens-dynamic-3.1.9.aar" />
-    <AndroidLibrary Bind="true" Include="Jars\appdimens-dynamic-logarithmic-3.1.9.aar" />
-    <AndroidLibrary Bind="true" Include="Jars\appdimens-dynamic-fluid-3.1.9.aar" />
-    <AndroidLibrary Bind="true" Include="Jars\appdimens-dynamic-fill-3.1.9.aar" />
-    <AndroidLibrary Bind="true" Include="Jars\appdimens-dynamic-diagonal-3.1.9.aar" />
-    <AndroidLibrary Bind="true" Include="Jars\appdimens-dynamic-power-3.1.9.aar" />
-    <AndroidLibrary Bind="true" Include="Jars\appdimens-dynamic-density-3.1.9.aar" />
-    <AndroidLibrary Bind="true" Include="Jars\appdimens-dynamic-fit-3.1.9.aar" />
-    <AndroidLibrary Bind="true" Include="Jars\appdimens-dynamic-resize-3.1.9.aar" />
-    <AndroidLibrary Bind="true" Include="Jars\appdimens-dynamic-units-3.1.9.aar" />
-    <AndroidLibrary Bind="true" Include="Jars\appdimens-dynamic-perimeter-3.1.9.aar" />
-    <AndroidLibrary Bind="true" Include="Jars\appdimens-dynamic-interpolated-3.1.9.aar" />
-    <AndroidLibrary Bind="true" Include="Jars\appdimens-dynamic-percent-3.1.9.aar" />
-    <AndroidLibrary Bind="true" Include="Jars\appdimens-dynamic-auto-3.1.9.aar" />
+    <!-- AARs modulares 3.2.0: core+scaled (appdimens-dynamic) + 13 módulos de estratégia -->
+    <AndroidLibrary Bind="true" Include="Jars\appdimens-dynamic-3.2.0.aar" />
+    <AndroidLibrary Bind="true" Include="Jars\appdimens-dynamic-logarithmic-3.2.0.aar" />
+    <AndroidLibrary Bind="true" Include="Jars\appdimens-dynamic-fluid-3.2.0.aar" />
+    <AndroidLibrary Bind="true" Include="Jars\appdimens-dynamic-fill-3.2.0.aar" />
+    <AndroidLibrary Bind="true" Include="Jars\appdimens-dynamic-diagonal-3.2.0.aar" />
+    <AndroidLibrary Bind="true" Include="Jars\appdimens-dynamic-power-3.2.0.aar" />
+    <AndroidLibrary Bind="true" Include="Jars\appdimens-dynamic-density-3.2.0.aar" />
+    <AndroidLibrary Bind="true" Include="Jars\appdimens-dynamic-fit-3.2.0.aar" />
+    <AndroidLibrary Bind="true" Include="Jars\appdimens-dynamic-resize-3.2.0.aar" />
+    <AndroidLibrary Bind="true" Include="Jars\appdimens-dynamic-units-3.2.0.aar" />
+    <AndroidLibrary Bind="true" Include="Jars\appdimens-dynamic-perimeter-3.2.0.aar" />
+    <AndroidLibrary Bind="true" Include="Jars\appdimens-dynamic-interpolated-3.2.0.aar" />
+    <AndroidLibrary Bind="true" Include="Jars\appdimens-dynamic-percent-3.2.0.aar" />
+    <AndroidLibrary Bind="true" Include="Jars\appdimens-dynamic-auto-3.2.0.aar" />
 
     <TransformFile Include="Transforms\Metadata.xml" />
     <TransformFile Include="Transforms\EnumFields.xml" />
@@ -97,7 +97,7 @@
     <PackageReference Include="Xamarin.AndroidX.Lifecycle.Runtime" Version="2.10.0.2" />
   </ItemGroup>
 
-  <!-- net10/net11: versões alinhadas ao POM Gradle 3.1.9 -->
+  <!-- net10/net11: versões alinhadas ao POM Gradle 3.2.0 -->
   <ItemGroup Condition="$(TargetFramework.StartsWith('net10.0-android')) Or $(TargetFramework.StartsWith('net11.0-android'))">
     <PackageReference Include="Xamarin.Kotlin.StdLib" Version="2.4.0.1" />
     <PackageReference Include="Xamarin.AndroidX.Core" Version="1.19.0.1" />

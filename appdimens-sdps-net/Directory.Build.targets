@@ -1,4 +1,7 @@
 <Project>
+  <!-- Imported here (not in Directory.Build.props) so per-project flags such as
+       AppDimensEmbedReferences are already evaluated. -->
+  <Import Project="$(MSBuildThisFileDirectory)Directory.Pack.targets" Condition="Exists('$(MSBuildThisFileDirectory)Directory.Pack.targets')" />
   <!-- MAUI apps only (ProjectReference workflow). -->
   <Import Project="$(MSBuildThisFileDirectory)src/build/AppDimens.Maui.Trimming.targets"
           Condition="'$(UseMaui)' == 'true' AND '$(DisableAppDimensMauiTrimming)' != 'true' AND Exists('$(MSBuildThisFileDirectory)src/build/AppDimens.Maui.Trimming.targets')" />

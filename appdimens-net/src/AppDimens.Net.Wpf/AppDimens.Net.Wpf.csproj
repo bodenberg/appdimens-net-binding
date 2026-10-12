@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net8.0-windows;net9.0-windows;net10.0-windows</TargetFrameworks>
+    <TargetFrameworks Condition="$([MSBuild]::VersionGreaterThanOrEquals('$(NETCoreSdkVersion)', '11.0'))">$(TargetFrameworks);net11.0-windows</TargetFrameworks>
+    <UseWPF>true</UseWPF>
+    <RootNamespace>AppDimens.Net.Wpf</RootNamespace>
+    <AssemblyName>AppDimens.Net.Wpf</AssemblyName>
+    <PackageId>AppDimens.Net.Wpf</PackageId>
+    <Description>AppDimens .NET — WPF integration: window scope that follows size and per-monitor DPI, live {ad:Sdp 16} XAML markup extensions (scaled, fluid, percent) and value converters.</Description>
+    <PackageTags>appdimens;wpf;sdp;ssp;responsive;adaptive;dimension;dpi;xaml;windows</PackageTags>
+  </PropertyGroup>
+
+  <Import Project="..\AppDimens.Net.Desktop.props" />
+
+</Project>

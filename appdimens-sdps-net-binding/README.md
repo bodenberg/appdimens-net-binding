@@ -1,22 +1,136 @@
 # Bodenberg.AppDimens.Sdps
 
+📖 **Documentation:** [Bodenberg.AppDimens.Sdps guide](https://github.com/bodenberg/appdimens-net-binding/blob/main/docs/Bodenberg.AppDimens.Sdps/README.md) · [complete API reference](https://github.com/bodenberg/appdimens-net-binding/blob/main/docs/Bodenberg.AppDimens.Sdps/API.md) · [all AppDimens .NET packages](https://github.com/bodenberg/appdimens-net-binding/blob/main/docs/README.md)
+
 **.NET 10 binding for Android** (`net10.0-android`) that wraps **[AppDimens SDPS](https://github.com/bodenberg/appdimens-sdps)** — responsive **layout** (`SDP` / `HDP` / `WDP`) and **typography** (`SSP` / `HSP` / `WSP`) in one library, backed by thousands of pre-generated **`@dimen`** resources, plus imperative APIs, **conditional facilitators**, **aspect-ratio** variants, **accessibility** text modes, and **foldable-aware** overloads.
 
 Kotlin/Java sources, XML naming, and Android-focused guides live upstream:
 
 **→ [bodenberg/appdimens-sdps](https://github.com/bodenberg/appdimens-sdps)**
 
-Maven artifact embedded in this package: **`io.github.bodenberg:appdimens-sdps`** [`3.1.7`](https://central.sonatype.com/artifact/io.github.bodenberg/appdimens-sdps/3.1.7).
+Maven artifact embedded in this package: **`io.github.bodenberg:appdimens-sdps`** [`3.2.0`](https://central.sonatype.com/artifact/io.github.bodenberg/appdimens-sdps/3.2.0).
 
 ---
 
 ## Install
 
 ```bash
-dotnet add package Bodenberg.AppDimens.Sdps --version 3.6.0
+dotnet add package Bodenberg.AppDimens.Sdps --version 3.6.1
 ```
 
 Pin a version explicitly when you rely on a specific package revision (see **Package version vs embedded AAR** below).
+
+---
+
+## Getting started (step by step)
+
+New to AppDimens? Follow these steps in order — each one is copy-and-paste.
+
+### Step 1 — Is this the right package?
+
+| Your app | Use |
+|----------|-----|
+| .NET for Android (`net10.0-android`) or **.NET MAUI targeting Android** | ✅ **Bodenberg.AppDimens.Sdps** (this package) |
+| .NET MAUI on **iOS / Windows / macOS** too | [`Bodenberg.AppDimens.Maui.Sdps`](https://www.nuget.org/packages/Bodenberg.AppDimens.Maui.Sdps) or [`AppDimens.Net.Sdk`](https://www.nuget.org/packages/AppDimens.Net.Sdk) (pure C#, all platforms) |
+| **WPF**, **Windows Forms** or **WinUI 3** | [`Bodenberg.AppDimens.Sdps.Wpf`](https://www.nuget.org/packages/Bodenberg.AppDimens.Sdps.Wpf) / [`.WinForms`](https://www.nuget.org/packages/Bodenberg.AppDimens.Sdps.WinForms) / [`.WinUI`](https://www.nuget.org/packages/Bodenberg.AppDimens.Sdps.WinUI), or [`AppDimens.Net.Wpf`](https://www.nuget.org/packages/AppDimens.Net.Wpf) / [`.WinForms`](https://www.nuget.org/packages/AppDimens.Net.WinForms) / [`.WinUI`](https://www.nuget.org/packages/AppDimens.Net.WinUI) |
+
+This package wraps a native **Android** library, so it only runs on Android.
+
+### Step 2 — Install
+
+**Visual Studio:** right-click the project → *Manage NuGet Packages…* → search **Bodenberg.AppDimens.Sdps** → *Install*.
+
+**Command line:**
+
+```bash
+dotnet add package Bodenberg.AppDimens.Sdps --version 3.6.1
+```
+
+In a MAUI app the package only affects the Android target — wrap Android-only code in `#if ANDROID`.
+
+### Step 3 — Use it in Android XML layouts (easiest)
+
+The package ships ready-made `@dimen` resources. Just replace fixed `dp` / `sp` values:
+
+```xml
+<!-- BEFORE: fixed sizes, too small on tablets, too big on small phones -->
+<ImageView android:layout_width="48dp" android:layout_height="48dp" android:layout_margin="16dp" />
+
+<!-- AFTER: sizes scale with the screen -->
+<ImageView
+    android:layout_width="@dimen/_48sdp"
+    android:layout_height="@dimen/_48sdp"
+    android:layout_margin="@dimen/_16sdp" />
+```
+
+Name pattern: `@dimen/_<number><unit>` — `_16sdp` (smallest width), `_120hdp` (height), `_200wdp` (width). Numbers go from **1 to 600**.
+
+> 📝 The XML resources in this package are for **layout** (`sdp` / `hdp` / `wdp`). For **text**, use `DimenSsp` from C# (Step 4), or add [`Bodenberg.AppDimens.Ssps`](https://www.nuget.org/packages/Bodenberg.AppDimens.Ssps) to get `@dimen/_14ssp` resources in XML.
+
+### Step 4 — Use it from C#
+
+All `Dimen*` methods return **pixels** (`float`). Android views expect pixels, so you can apply them directly:
+
+```csharp
+using Android.Util;          // ComplexUnitType
+using Com.Appdimens.Sdps.Code;
+
+// In an Activity (this = Context)
+SdpsConfig.Warmup(this);   // optional, makes the first calls faster
+
+int padding = (int)DimenSdp.Sdp(this, 16);
+myCard.SetPadding(padding, padding, padding, padding);
+
+// Text: tell Android the value is already in pixels
+myTitle.SetTextSize(ComplexUnitType.Px, DimenSsp.Ssp(this, 18));
+```
+
+> ⚠️ **Common mistake:** `myTitle.TextSize = value;` interprets the number as **sp** and scales it a second time. Always use `SetTextSize(ComplexUnitType.Px, value)` with AppDimens values.
+
+### Step 5 — Use it in a .NET MAUI app (Android)
+
+MAUI sizes are device-independent units, so divide the pixel value by the screen density:
+
+```csharp
+#if ANDROID
+using Com.Appdimens.Sdps.Code;
+using Microsoft.Maui.Devices;
+
+var context = Platform.CurrentActivity ?? Android.App.Application.Context;
+var density = DeviceDisplay.MainDisplayInfo.Density;
+
+titleLabel.FontSize = DimenSsp.Ssp(context, 18) / density;
+card.Padding = new Thickness(DimenSdp.Sdp(context, 16) / density);
+#endif
+```
+
+### Step 6 — Keep sizes right after rotation / fold / resize
+
+```csharp
+using Com.Appdimens.Sdps;
+
+public override void OnConfigurationChanged(Android.Content.Res.Configuration newConfig)
+{
+    base.OnConfigurationChanged(newConfig);
+    SdpsConfig.OnConfigurationChanged(this, newConfig);   // recalculates factors
+}
+
+// Anywhere (e.g. OnCreate): re-apply sizes when they change
+SdpsConfig.DimensionsShouldRefresh += (_, _) => ApplySizes();
+```
+
+### Cheat sheet — which function do I use?
+
+| I want to size… | Use | Example |
+|-----------------|-----|---------|
+| Padding, margins, icons, cards (most cases) | **`Sdp`** — follows the *smallest* screen side | `DimenSdp.Sdp(this, 16)` |
+| Something that should follow the **height** (headers, bottom bars) | **`Hdp`** | `DimenSdp.Hdp(this, 56)` |
+| Something that should follow the **width** (banners, side panels) | **`Wdp`** | `DimenSdp.Wdp(this, 200)` |
+| Text | **`Ssp`** (respects the user's font-size setting) | `DimenSsp.Ssp(this, 14)` |
+| Text that must **ignore** the user's font-size setting | **`Sem`** | `DimenSsp.Sem(this, 14)` |
+| Same as above but slightly bigger on very wide/tall screens | add **`a`**: `Sdpa`, `Sspa` | `DimenSdp.Sdpa(this, 16)` |
+
+**Rule of thumb:** write the same numbers you would normally use in `dp`/`sp`. AppDimens treats them as sizes on a **300 dp-wide reference phone** and scales them proportionally: `16` becomes ~19 dp on a 360 dp phone and ~32 dp on a 600 dp tablet.
 
 ---
 
@@ -31,7 +145,7 @@ Pin a version explicitly when you rely on a specific package revision (see **Pac
 
 Use **Android SDK platform 36+** (or MSBuild `InstallAndroidDependencies`) when building bindings locally on **.NET 10**.
 
-The AAR bundles **`values-sw*`** / **`values-w*`** / **`values-h*`** dimen XML (sizes **1–600**) for both **dp** and **sp** buckets.
+The AAR bundles **`values-sw*`** / **`values-w*`** / **`values-h*`** dimen XML (sizes **1–600**) for the **dp** layout buckets (`_Nsdp`, `_Nhdp`, `_Nwdp`). Text sizes are computed in code by `DimenSsp`; XML `_Nssp` resources ship in [Bodenberg.AppDimens.Ssps](https://www.nuget.org/packages/Bodenberg.AppDimens.Ssps).
 
 ---
 
@@ -42,7 +156,7 @@ The AAR bundles **`values-sw*`** / **`values-w*`** / **`values-h*`** dimen XML (
 | **SDP / HDP / WDP** | Scale **margins, padding, sizes** by smallest width, height, or width |
 | **SSP / HSP / WSP** | Scale **text** on the same three axes |
 | **SEM / HEM / WEM** | Typography curves that **ignore system font scale** |
-| **XML `@dimen`** | e.g. `@dimen/_16sdp`, `@dimen/_32hsp` — zero-config in layouts |
+| **XML `@dimen`** | e.g. `@dimen/_16sdp`, `@dimen/_48hdp` — zero-config in layouts (text XML dimens: Ssps package) |
 | **Code API** | **`DimenSdp`** / **`DimenSsp`** → pixel values for Views, custom drawing, MAUI |
 | **Aspect ratio** | **`Sdpa`**, **`Sspa`**, … — geometry multiplier on top of the XML bucket |
 | **Multi-window** | **`Sdpi`**, **`Sspia`**, … — parity with Dynamic “ignore scaling” paths |
@@ -187,7 +301,7 @@ Explore generated **`Screen(...)`** overloads on **`DimenScaled`** for qualifier
 
 ## Typography (`DimenSsp`)
 
-Same conceptual model as layout, but for **sp** buckets (`_16ssp`, `_32hsp`, …).
+Same conceptual model as layout, but for **text** (sp), computed in code. (XML `_16ssp` / `_32hsp` resources live in the companion **Bodenberg.AppDimens.Ssps** package.)
 
 ### Primary axes
 
@@ -246,12 +360,11 @@ Use dimens directly in Android XML / MAUI Android layouts:
     <TextView
         android:layout_width="@dimen/_200wdp"
         android:layout_height="@dimen/_48hdp"
-        android:textSize="@dimen/_18ssp"
-        android:lineSpacingExtra="@dimen/_4ssp" />
+        android:layout_marginTop="@dimen/_8sdp" />
 </LinearLayout>
 ```
 
-Naming pattern: **`_<n>sdp`**, **`_<n>hdp`**, **`_<n>wdp`**, **`_<n>ssp`**, **`_<n>hsp`**, **`_<n>wsp`** (and **`sem`** / **`hem`** / **`wem`** variants where generated). Values **1–600** are pre-calculated per qualifier bucket inside the AAR.
+Naming pattern: **`_<n>sdp`**, **`_<n>hdp`**, **`_<n>wdp`**. Values **1–600** are pre-calculated per qualifier bucket inside the AAR. For XML text sizes (`_<n>ssp`, `_<n>hsp`, `_<n>wsp`) add **Bodenberg.AppDimens.Ssps**; both packages can be installed together.
 
 ---
 
@@ -313,7 +426,7 @@ The AAR includes Compose extensions (`16.sdp`, `18.ssp`, `scaledSp()`, facilitat
 **Recommended for .NET:**
 
 - **`Com.Appdimens.Sdps.Code`** — Activities, Fragments, custom views, MAUI Android handlers  
-- **XML `@dimen/_Nsdp`** / **`_@dimen/_Nssp`** in layout resources  
+- **XML `@dimen/_Nsdp`** in layout resources (and `@dimen/_Nssp` with Bodenberg.AppDimens.Ssps)  
 - **`DimenScaled`** / **`DimenSsp.Scaled`** builders from C#  
 
 ---
@@ -333,8 +446,8 @@ The AAR includes Compose extensions (`16.sdp`, `18.ssp`, `scaledSp()`, facilitat
 
 | Layer | Version |
 |-------|---------|
-| **Maven / embedded `.aar`** | **`appdimens-sdps` 3.1.7** |
-| **NuGet** | **`3.6.0`** — `net10.0-android` and updated Xamarin AndroidX; Android binary **3.1.7** |
+| **Maven / embedded `.aar`** | **`appdimens-sdps` 3.2.0** |
+| **NuGet** | **`3.6.1`** — `net10.0-android` and updated Xamarin AndroidX; Android binary **3.2.0** |
 
 When Maven publishes a new version, run `./scripts/sync-aar-from-maven.sh <maven-version>` and bump the NuGet version accordingly.
 
@@ -356,7 +469,7 @@ dotnet publish AppDimens.Sdps.SmokeTest/AppDimens.Sdps.SmokeTest.csproj -c Relea
 Sync the upstream AAR:
 
 ```bash
-./scripts/sync-aar-from-maven.sh 3.1.7
+./scripts/sync-aar-from-maven.sh 3.2.0
 ```
 
 ---
@@ -367,6 +480,9 @@ Sync the upstream AAR:
 |---------|--------|
 | **[Bodenberg.AppDimens.Ssps](https://www.nuget.org/packages/Bodenberg.AppDimens.Ssps)** | **Typography only** (SSP/HSP/WSP) — smaller dependency if you do not need sdp/hdp/wdp XML |
 | **[Bodenberg.AppDimens.Dynamic](https://www.nuget.org/packages/Bodenberg.AppDimens.Dynamic)** | **Code-only** scaling — 15 strategies, no pre-built `@dimen` grids |
+| **[Bodenberg.AppDimens.Maui.Sdps](https://www.nuget.org/packages/Bodenberg.AppDimens.Maui.Sdps)** | **.NET MAUI on every platform** (Android, iOS, Windows, macOS) — same SDP math, native C# |
+| **[Bodenberg.AppDimens.Sdps.Wpf](https://www.nuget.org/packages/Bodenberg.AppDimens.Sdps.Wpf)** · **[.WinForms](https://www.nuget.org/packages/Bodenberg.AppDimens.Sdps.WinForms)** · **[.WinUI](https://www.nuget.org/packages/Bodenberg.AppDimens.Sdps.WinUI)** | **Windows desktop** — WPF, Windows Forms, WinUI 3 |
+| **[AppDimens.Net.Sdk](https://www.nuget.org/packages/AppDimens.Net.Sdk)** | C# port of AppDimens KMP — 12+ strategies, MAUI / WPF / WinForms / WinUI integrations |
 
 ---
 

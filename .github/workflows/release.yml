@@ -1,5 +1,13 @@
 name: Release
 
+# Builds, tests and packs EVERY NuGet package of the repository and uploads them as the
+# "nuget-packages" artifact. With push_nuget=true the packages are also pushed to NuGet.org.
+#
+#   - Bodenberg.AppDimens.Sdps / .Ssps / .Dynamic        (Android bindings, net10.0-android36.0)
+#   - Bodenberg.AppDimens.Maui.Sdps                       (MAUI meta-package)
+#   - Bodenberg.AppDimens.Sdps.Wpf / .WinForms / .WinUI   (desktop adapters, same engine)
+#   - AppDimens.Net.*                                     (KMP port: core, strategies, MAUI, WPF, WinForms, WinUI)
+
 on:
   workflow_dispatch:
     inputs:
@@ -17,24 +25,124 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  release-maui:
+  native:
+    name: Native libraries (test + pack)
     runs-on: ubuntu-latest
-    timeout-minutes: 30
-    defaults:
-      run:
-        working-directory: appdimens-sdps-net
+    timeout-minutes: 40
     steps:
       - uses: actions/checkout@v6
       - uses: actions/setup-dotnet@v5
         with:
-          global-json-file: global.json
-      - run: python3 scripts/generate-dimens.py
-      - name: Restore
-        run: chmod +x scripts/restore-ci.sh && ./scripts/restore-ci.sh
-      - name: Test Release
-        run: dotnet test tests/AppDimens.Maui.Tests/AppDimens.Maui.Tests.csproj -c Release --no-restore
-      - name: Pack
-        run: ./scripts/publish-nuget.sh
+          dotnet-version: |
+            8.0.x
+            9.0.x
+            10.0.x
+      - name: Bodenberg.AppDimens.Maui.Sdps + desktop adapters
+        working-directory: appdimens-sdps-net
+        run: |
+          python3 scripts/generate-dimens.py
+          chmod +x scripts/*.sh
+          ./scripts/publish-nuget.sh
+      - name: AppDimens.Net.*
+        working-directory: appdimens-net
+        run: |
+          chmod +x scripts/pack-nuget.sh
+          ./scripts/pack-nuget.sh
+      - name: Collect packages
+        run: |
+          mkdir -p out
+          cp appdimens-sdps-net/artifacts/nuget/*.nupkg appdimens-sdps-net/artifacts/nuget/*.snupkg out/ 2>/dev/null || true
+          cp appdimens-net/artifacts/nuget/*.nupkg appdimens-net/artifacts/nuget/*.snupkg out/ 2>/dev/null || true
+          ls -la out
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pkg-native
+          path: out/
+
+  windows:
+    name: Windows desktop tests (WPF + WinForms)
+    runs-on: windows-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 10.0.x
+      - name: Generate dimens
+        working-directory: appdimens-sdps-net
+        run: python scripts/generate-dimens.py
+      - name: Desktop tests (SDPS adapters)
+        run: dotnet test appdimens-sdps-net/tests/AppDimens.Sdps.Desktop.Tests/AppDimens.Sdps.Desktop.Tests.csproj -c Release
+      - name: Desktop tests (AppDimens.Net adapters)
+        run: dotnet test appdimens-net/tests/AppDimens.Net.Desktop.Tests/AppDimens.Net.Desktop.Tests.csproj -c Release
+      - name: Build WinUI 3 adapters
+        run: |
+          dotnet build appdimens-sdps-net/src/AppDimens.Sdps.WinUI/AppDimens.Sdps.WinUI.csproj -c Release
+          dotnet build appdimens-net/src/AppDimens.Net.WinUI/AppDimens.Net.WinUI.csproj -c Release
+
+  bindings:
+    name: Android binding (${{ matrix.module }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    strategy:
+      fail-fast: false
+      matrix:
+        module:
+          - appdimens-sdps-net-binding
+          - appdimens-ssps-net-binding
+          - appdimens-dynamic-net-binding
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 10.0.x
+      - name: Pin SDK band
+        working-directory: ${{ matrix.module }}
+        run: printf '{"sdk":{"version":"10.0.100","rollForward":"latestFeature"}}\n' > global.json
+      - name: Install Android workload
+        working-directory: ${{ matrix.module }}
+        run: dotnet workload install android
+      - name: Ensure Android platform 36
+        run: |
+          SDK_DIR="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-/usr/local/lib/android/sdk}}"
+          if [ ! -f "${SDK_DIR}/platforms/android-36/android.jar" ]; then
+            yes | "${SDK_DIR}/cmdline-tools/latest/bin/sdkmanager" "platforms;android-36" >/dev/null
+          fi
+      - name: Build smoke test (net10.0-android36.0)
+        working-directory: ${{ matrix.module }}
+        run: dotnet build AppDimens.*.SmokeTest/AppDimens.*.SmokeTest.csproj -c Release /m:1 -p:TargetFrameworks=net10.0-android36.0
+      - name: Pack binding (net10.0-android36.0)
+        working-directory: ${{ matrix.module }}
+        run: |
+          dotnet pack AppDimens.*.Binding/AppDimens.*.Binding.csproj -c Release /m:1 \
+            -p:TargetFrameworks=net10.0-android36.0 -o "$GITHUB_WORKSPACE/out"
+          ls -la "$GITHUB_WORKSPACE/out"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pkg-${{ matrix.module }}
+          path: out/
+
+  publish:
+    name: Collect (and push) packages
+    needs: [native, windows, bindings]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 10.0.x
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: pkg-*
+          path: dl
+      - name: Merge
+        run: |
+          mkdir -p nuget
+          cp -f dl/pkg-*/* nuget/
+          ls -la nuget
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nuget-packages
+          path: nuget/
       - name: Push NuGet
         if: inputs.push_nuget == 'true'
         env:
@@ -44,4 +152,6 @@ jobs:
             echo "::error::NUGET_API_KEY secret is not configured"
             exit 1
           fi
-          ./scripts/publish-nuget.sh --push
+          for pkg in nuget/*.nupkg; do
+            dotnet nuget push "$pkg" --api-key "$NUGET_API_KEY" --source https://api.nuget.org/v3/index.json --skip-duplicate
+          done

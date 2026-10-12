@@ -1,89 +1,157 @@
-# AppDimens .NET — Android / iOS / MAUI
+# AppDimens .NET — MAUI · WPF · Windows Forms · WinUI 3 · Android · iOS
 
-**AppDimens for .NET (MAUI)** — a complete C# port of the
+**AppDimens for .NET** — a complete C# port of the
 [AppDimens KMP/Dynamic](https://github.com/bodenberg/appdimens-kmp) scaling library.
-12 scaling strategies, bit-a-bit parity with the Kotlin/Compose formulas, an
-allocation-free fast lane, an event-driven resize watcher, and Material-3 demo +
-benchmark apps.
+12+ scaling strategies, bit-for-bit parity with the Kotlin/Compose formulas, an
+allocation-free fast lane and an event-driven resize watcher — now with first-class
+**WPF**, **Windows Forms** and **WinUI 3** integrations.
 
-> GIT: https://github.com/bodenberg/appdimens-net-binding
+> **New in 3.6.1:** `AppDimens.Net.Wpf`, `AppDimens.Net.WinForms`, `AppDimens.Net.WinUI` and the reusable
+> `HostDimensScope` for any other UI host. Repository: https://github.com/bodenberg/appdimens-net-binding
+
+---
+
+## Which package do I install?
+
+| Your app | Install | Then call (once) |
+|----------|---------|------------------|
+| **.NET MAUI** (Android, iOS, Windows, macOS) | `AppDimens.Net.Maui` (+ `AppDimens.Net.Sdk` for every strategy) | `AppDimensMaui.AttachWindow(window)` |
+| **WPF** | `AppDimens.Net.Wpf` | `AppDimensWpf.Initialize(this)` |
+| **Windows Forms** | `AppDimens.Net.WinForms` | `AppDimensWinForms.Initialize(this)` |
+| **WinUI 3** | `AppDimens.Net.WinUI` | `AppDimensWinUI.Initialize(window)` |
+| Anything else (Avalonia, Uno, console, tests, game loop) | `AppDimens.Net` | `AppDimensHost.Activate(new HostDimensScope())` + `scope.Update(w, h, density)` |
+
+After that, the same C# works everywhere:
+
+```csharp
+using AppDimens.Net.Code.Scaled;
+
+float padding = 16.Sdp();   // margins, padding, icons — most cases
+float header  = 56.Hdp();   // follows the window height
+float sidebar = 200.Wdp();  // follows the window width
+float title   = 22.Ssp();   // text size
+```
+
+📘 **New here?** Read the [Beginner's guide](DOCUMENTATION/GUIDE-FOR-BEGINNERS.md) — step by step for each framework.
+
+---
 
 ## Modules
 
-| NuGet package | Strategy | KMP counterpart |
-|---|---|---|
-| `AppDimens.Net` | Scaled (sdp/sdpa/hdp/wdp + inverters + facilitators) | `compose` / `android` core |
-| `AppDimens.Net.Percent` | Percent (`PSdp`, `SpaceWDp`…) | `compose.percent` |
-| `AppDimens.Net.Power` | Power (`PWSdp`) | `compose.power` |
-| `AppDimens.Net.Auto` | Auto (`ASdp`) | `compose.auto` |
-| `AppDimens.Net.Logarithmic` | Logarithmic (`LOGSdp`) | `compose.logarithmic` |
-| `AppDimens.Net.Fluid` | Fluid (`FSdp`, `ToFluidDp`) | `compose.fluid` |
-| `AppDimens.Net.Interpolated` | Interpolated (`ISdp`) | `compose.interpolated` |
-| `AppDimens.Net.Diagonal` | Diagonal (`DGSdp`) | `compose.diagonal` |
-| `AppDimens.Net.Perimeter` | Perimeter (`PRSdp`) | `compose.perimeter` |
-| `AppDimens.Net.Fit` | Fit (`ToFitDp`, `DimenFit` builder) | `compose.fit` |
-| `AppDimens.Net.Fill` | Fill (`ToFillDp`) | `compose.fill` |
-| `AppDimens.Net.Density` | Density (`DSdp`) | `compose.density` |
-| `AppDimens.Net.Resize` | Auto-resize math (`AutoResizeTextPx`, `AutoResizeSquarePx`) | `resize` |
-| `AppDimens.Net.Units` | Physical units (mm/cm/inch) | units module |
-| `AppDimens.Net.Maui` | MAUI bootstrap: `AppDimensMaui.AttachWindow(window)` + ambient scope | — |
-| `AppDimens.Net.Sdk` | Meta-package with all satellites | — |
-| `AppDimens.Net.Testing` | `FakeAppDimensContext` for tests/benchmarks/design-time | test fixtures |
+| NuGet package | What it gives you |
+|---|---|
+| `AppDimens.Net` | Core + **Scaled** strategy (`Sdp/Sdpa/Hdp/Wdp/Ssp`, inverters, facilitators), cache, `HostDimensScope`, `FakeAppDimensContext` |
+| `AppDimens.Net.Percent` | Percent (`PSdp`, `SpaceWDp`…) |
+| `AppDimens.Net.Power` | Power (`PWSdp`) |
+| `AppDimens.Net.Auto` | Auto (`ASdp`) |
+| `AppDimens.Net.Logarithmic` | Logarithmic (`LOGSdp`) |
+| `AppDimens.Net.Fluid` | Fluid (`FSdp`, `ToFluidDp`) |
+| `AppDimens.Net.Interpolated` | Interpolated (`ISdp`) |
+| `AppDimens.Net.Diagonal` | Diagonal (`DGSdp`) |
+| `AppDimens.Net.Perimeter` | Perimeter (`PRSdp`) |
+| `AppDimens.Net.Fit` / `.Fill` | Fit (`ToFitDp`, `DimenFit` builder) / Fill (`ToFillDp`) |
+| `AppDimens.Net.Density` | Density (`DSdp`) |
+| `AppDimens.Net.Resize` | Auto-resize math (`AutoResizeTextPx`, `AutoResizeSquarePx`) |
+| `AppDimens.Net.Units` | Physical units (mm / cm / inch) |
+| `AppDimens.Net.Sdk` | Meta-package: core + every strategy |
+| `AppDimens.Net.Maui` | .NET MAUI: window scope, `{appdimens:Sdp Value=16}` markup, converters |
+| `AppDimens.Net.Wpf` | WPF: window scope, **live** `{ad:Sdp 16}` markup (scaled/fluid/percent), converters |
+| `AppDimens.Net.WinForms` | Windows Forms: form scope, `Apply(...)` re-layout helper, `DimenPx` px/pt converters |
+| `AppDimens.Net.WinUI` | WinUI 3: window scope, `{ad:Sdp Value=16}` markup re-applied on resize, converters |
 
-## Quick start (MAUI)
+## Quick start per framework
+
+### .NET MAUI
 
 ```csharp
-// App.xaml.cs or MauiProgram window creation
+using AppDimens.Net.Maui.Platform;
+
 protected override Window CreateWindow(IActivationState? s)
 {
     var window = new Window();
-    AppDimensMaui.AttachWindow(window);      // 1. attach BEFORE creating pages
+    AppDimensMaui.AttachWindow(window);      // attach BEFORE creating pages
     window.Page = new NavigationPage(new MainPage());
     return window;
 }
-
-// Anywhere in the UI — parameterless extensions use the ambient context:
-float pad = 16.Sdp();          // scaled by smallest-width (fast lane, zero alloc)
-float h   = 48.Hdp();          // height axis
-float sp  = 16.Ssp();          // scaled text size (font-scale aware)
-float pct = 24.PSdp(ctx);      // Percent strategy (explicit context)
 ```
 
-**Important:** call `AppDimensMaui.AttachWindow(window)` **before** constructing any
-page that uses the parameterless extensions — they resolve through
-`AppDimensAmbient.Require()`.
+### WPF
+
+```csharp
+public MainWindow()
+{
+    AppDimens.Net.Wpf.AppDimensWpf.Initialize(this);
+    InitializeComponent();
+}
+```
+
+```xml
+<Window xmlns:ad="clr-namespace:AppDimens.Net.Wpf;assembly=AppDimens.Net.Wpf" ...>
+    <Button Width="{ad:Sdp 120}" Margin="{ad:Sdp 16}" FontSize="{ad:Ssp 14}" />
+</Window>
+```
+
+### Windows Forms
+
+```csharp
+using AppDimens.Net.Code.Scaled;
+using AppDimens.Net.WinForms;
+
+AppDimensWinForms.Initialize(this);
+AppDimensWinForms.Apply(this, () =>
+{
+    button1.Width = DimenPx.ToPx(120.Sdp());
+    label1.Font   = new Font(label1.Font.FontFamily, DimenPx.ToPt(14.Ssp()));
+});
+```
+
+### WinUI 3
+
+```csharp
+m_window = new MainWindow();
+AppDimens.Net.WinUI.AppDimensWinUI.Initialize(m_window);
+m_window.Activate();
+```
+
+```xml
+<Page xmlns:ad="using:AppDimens.Net.WinUI" ...>
+    <Button Width="{ad:Sdp Value=120}" Margin="{ad:Sdp Value=16}" FontSize="{ad:Ssp Value=14}" />
+</Page>
+```
+
+### Custom host
+
+```csharp
+using AppDimens.Net.Code.Scaled;
+using AppDimens.Net.Core;
+
+var scope = AppDimensHost.Activate(new HostDimensScope());
+scope.Update(widthDp: 1280, heightDp: 720, density: 1.5);   // call again from your resize handler
+float pad = 16.Sdp();
+```
 
 ## Demo & BenchLab apps
 
-* `samples/AppDimens.Sample` — full KMP-parity demo screen (strategy selector,
-  sections 1–5, live metrics, auto-resize playground).
-* `benchlab/AppDimens.BenchLab` — dark-theme benchmark dashboard (KMP BenchlabScreen
-  parity): fast lanes vs raw multiply vs cached path vs legacy XML-grid lookup,
-  chunked run with reentrancy guard.
-* `samples/AppDimens.WebDemo` — Blazor WebAssembly self-test suite that runs the
-  parity/invariant checks inside a real browser.
+* `samples/AppDimens.Sample` — full KMP-parity demo screen (MAUI).
+* `benchlab/AppDimens.BenchLab` — benchmark dashboard (MAUI).
+* `samples/AppDimens.WebDemo` — Blazor WebAssembly self-test suite.
 
-## Build & test (Linux)
+## Build, test & pack
 
 ```bash
-dotnet test tests/AppDimens.Net.Tests        # 48/48 green
-dotnet build AppDimens.Net.slnx              # solution (libs net10.0/net8.0; heads android on Linux)
-dotnet publish samples/AppDimens.Sample/AppDimens.Sample/AppDimens.Sample.csproj \
-    -c Release -f net10.0-android36.1        # APK → bin/Release/net10.0-android36.1/publish/
+dotnet test tests/AppDimens.Net.Tests                  # cross-platform tests
+dotnet test tests/AppDimens.Net.Desktop.Tests          # Windows only (WPF + WinForms)
+./scripts/pack-nuget.sh                                # every package → artifacts/nuget
 ```
 
-On Windows/macOS the heads additionally target `net8.0-android`, `net8.0-ios`,
-`net8.0-maccatalyst`, `net8.0-windows10.0.19041.0` (see csproj conditions).
+Desktop adapters compile on Linux/macOS (`EnableWindowsTargeting`) but run only on Windows.
 
 ## Documentation
 
 * [`GUIDE-FOR-BEGINNERS.md`](DOCUMENTATION/GUIDE-FOR-BEGINNERS.md)
-* [`DOCUMENTATION/MODULES.md`](DOCUMENTATION/MODULES.md) ·
-  [`DOCUMENTATION/PARITY.md`](DOCUMENTATION/PARITY.md) ·
-  [`DOCUMENTATION/PERFORMANCE.md`](DOCUMENTATION/PERFORMANCE.md) ·
-  [`DOCUMENTATION/TRIMMING-AOT.md`](DOCUMENTATION/TRIMMING-AOT.md)
+* [`MODULES.md`](DOCUMENTATION/MODULES.md) · [`PARITY.md`](DOCUMENTATION/PARITY.md) ·
+  [`PERFORMANCE.md`](DOCUMENTATION/PERFORMANCE.md) · [`TRIMMING-AOT.md`](DOCUMENTATION/TRIMMING-AOT.md)
 * [`LLMS.txt`](LLMS.txt) — LLM-friendly API digest
-* [`CHANGELOG.md`](CHANGELOG.md)
 
 ## License
 

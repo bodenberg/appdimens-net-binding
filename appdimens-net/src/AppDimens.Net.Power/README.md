@@ -1,93 +1,52 @@
-<div align="center">
+# AppDimens.Net.Power
 
-# ⚡ AppDimens.Net.Power
+**Power-law scaling — tunable growth with a sensitivity exponent `k`.**
 
-**Power-law scaling (`PWSdp`) — aggressive growth for large screens with tunable sensitivity `k`.**
+Part of **AppDimens for .NET** (C# port of appdimens-kmp) · requires `AppDimens.Net` (installed automatically).
+Works with .NET MAUI, WPF, Windows Forms, WinUI 3 and plain .NET (`net8.0` / `net9.0` / `net10.0`).
 
-Part of the **AppDimens for .NET** family · requires [AppDimens.Net](https://www.nuget.org/packages/AppDimens.Net/) (core).
+📖 **Complete guide:** [AppDimens.Net.Power documentation](https://github.com/bodenberg/appdimens-net-binding/blob/main/docs/AppDimens.Net.Power/README.md) · **API reference:** [API.md](https://github.com/bodenberg/appdimens-net-binding/blob/main/docs/AppDimens.Net.Power/API.md)
 
-[![NuGet](https://img.shields.io/nuget/v/AppDimens.Net.Power.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/AppDimens.Net.Power/)
-[![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg?style=flat-square)](https://github.com/bodenberg/appdimens-net-binding/blob/main/LICENSE)
-[![.NET](https://img.shields.io/badge/.NET-8.0%20%7C%209.0%20%7C%2010.0-8A2BE2.svg?style=flat-square)](https://dotnet.microsoft.com/)
+## What it does
 
-</div>
+The **Power** strategy applies a power-law curve to the screen-relative scale. With the default sensitivity it grows a little slower than Scaled; pass a custom `k` (`PWSdpCustom(..., k: 1.4f)`) to make big screens grow faster or `k < 1` to flatten the curve — dashboards, media grids and map canvases.
 
----
+| `16` with this strategy | Phone 360×800 | Tablet 800×1280 | Desktop 1280×800 |
+|---|--:|--:|--:|
+| `16.PWSdp()` | 18.3 | 33.4 | 33.4 |
+| `16.PWHdp()` | 18.3 | 33.4 | 33.4 |
+| `16.PWWdp()` | 18.3 | 33.4 | 33.4 |
+| `16.Sdp()` (core Scaled) | 19.2 | 42.7 | 42.7 |
 
-## 🎯 What is it?
-
-The **Power strategy** applies a **power-law curve** to screen-relative scaling: dimensions
-grow faster than linearly as screens get bigger. Use it when large displays should get
-*dramatically* more space — dashboards, media grids, map canvases.
-
-A custom sensitivity factor (`k`) lets you flatten or steepen the curve without changing code paths.
-
-## 📦 Installation
+## Install
 
 ```bash
 dotnet add package AppDimens.Net.Power
 ```
 
-> Depends on [AppDimens.Net](https://www.nuget.org/packages/AppDimens.Net/) (pulled automatically).
-> Attach a MAUI window first or pass an explicit `IAppDimensContext`.
+## Use
 
-## 🚀 Quick start
+1. Initialize once for your UI framework: MAUI `AppDimensMaui.AttachWindow(window)` · WPF `AppDimensWpf.Initialize(this)` ·
+   WinForms `AppDimensWinForms.Initialize(this)` · WinUI `AppDimensWinUI.Initialize(window)`.
+2. Call the extensions:
 
 ```csharp
-using AppDimens.Net.Power;
+using AppDimens.Net.Code.Power;
 
-float tile  = 12.PWSdp();      // power-scaled by smallest-width
-float hero  = 18.PWSdpa();     // + aspect-ratio adjustment
-float panel = 16.PWWdp(ctx);   // width-axis lane
-
-// custom sensitivity — steeper growth on tablets
-float bold = 12.PWSdpCustom(DpQualifier.SmallWidth, Inverter.Default,
-                            ignoreMultiWindows: false, applyAspectRatio: false, k: 1.4f);
+float padding = 16.PWSdp();    // smaller side of the window
+float header  = 56.PWHdp();    // height
+float sidebar = 200.PWWdp();   // width
+float tall    = 16.PWSdpa();   // + aspect-ratio correction
+float split   = 16.PWSdpi();   // ignores split-screen shrinking
 ```
 
-## 🧭 API
+With an explicit context: `16.PWSdp(ctx)`, `16.PWSdpPx(ctx)`, `DimenPower.PWSdp(ctx, 16)`, `24.ToPowerDp(ctx, qualifier: DpQualifier.Width)`.
 
-| Extension | Result |
-|---|---|
-| `v.PWSdp(ctx)` · `v.PWSdpa(ctx)` | smallest-width lane (± aspect ratio) |
-| `v.PWHdp(ctx)` · `v.PWWdp(ctx)` | height / width axis |
-| `…i` variants (`PWSdpi`…) | ignore multi-window |
-| `v.PWSdpPx(ctx)` … | pixel result |
-| `v.PWSdpCustom(qualifier, inverter, imw, ar, k)` | full control incl. sensitivity |
-| `DimenPower.PWSdp(context, value)` | static form · `WarmupCache(ctx)` pre-heats |
-| `v.ToPowerDp/Px(v, ctx, …)` | generic kernel entry |
+## Português
 
-## 💡 When to use
-
-| Scenario | Recommendation |
-|---|---|
-| Large-screen emphasis (media, dashboards) | ✅ Power |
-| Proportional-to-screen layouts | [Percent](https://www.nuget.org/packages/AppDimens.Net.Percent/) |
-| Conservative, near-linear scaling | core Scaled / [Logarithmic](https://www.nuget.org/packages/AppDimens.Net.Logarithmic/) |
-
-## ⚡ Performance
-
-Same engine as the core: snapshot-partitioned cache, allocation-free fast lanes,
-automatic invalidation on configuration changes. Custom `k` values bypass caching by design.
-
-## 📚 Full package family
-
-[AppDimens.Net](https://www.nuget.org/packages/AppDimens.Net/) ·
-[Percent](https://www.nuget.org/packages/AppDimens.Net.Percent/) ·
-[Auto](https://www.nuget.org/packages/AppDimens.Net.Auto/) ·
-[Logarithmic](https://www.nuget.org/packages/AppDimens.Net.Logarithmic/) ·
-[Fluid](https://www.nuget.org/packages/AppDimens.Net.Fluid/) ·
-[Interpolated](https://www.nuget.org/packages/AppDimens.Net.Interpolated/) ·
-[Diagonal](https://www.nuget.org/packages/AppDimens.Net.Diagonal/) ·
-[Perimeter](https://www.nuget.org/packages/AppDimens.Net.Perimeter/) ·
-[Fill](https://www.nuget.org/packages/AppDimens.Net.Fill/) ·
-[Fit](https://www.nuget.org/packages/AppDimens.Net.Fit/) ·
-[Density](https://www.nuget.org/packages/AppDimens.Net.Density/) ·
-[Resize](https://www.nuget.org/packages/AppDimens.Net.Resize/) ·
-[Units](https://www.nuget.org/packages/AppDimens.Net.Units/) ·
-[Maui](https://www.nuget.org/packages/AppDimens.Net.Maui/) ·
-[Sdk meta-package](https://www.nuget.org/packages/AppDimens.Net.Sdk/)
+`dotnet add package AppDimens.Net.Power` → inicialize a janela uma vez → `using AppDimens.Net.Code.Power;` → `16.PWSdp()`, `56.PWHdp()`, `200.PWWdp()`.
+Guia completo: [https://github.com/bodenberg/appdimens-net-binding/blob/main/docs/AppDimens.Net.Power/README.md](https://github.com/bodenberg/appdimens-net-binding/blob/main/docs/AppDimens.Net.Power/README.md)
 
 ---
 
-Apache-2.0 — © Jean Bodenberg · [Repository](https://github.com/bodenberg/appdimens-net-binding) · Formulas are bit-a-bit ports of [appdimens-kmp](https://github.com/bodenberg/appdimens-kmp)
+Apache-2.0 — © Jean Bodenberg · [Repository](https://github.com/bodenberg/appdimens-net-binding)

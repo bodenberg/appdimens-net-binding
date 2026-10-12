@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net8.0-windows10.0.19041.0;net9.0-windows10.0.19041.0;net10.0-windows10.0.19041.0</TargetFrameworks>
+    <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
+    <RootNamespace>AppDimens.Net.WinUI</RootNamespace>
+    <AssemblyName>AppDimens.Net.WinUI</AssemblyName>
+    <PackageId>AppDimens.Net.WinUI</PackageId>
+    <Description>AppDimens .NET — WinUI 3 (Windows App SDK) integration: window scope that follows size and scale, {ad:Sdp Value=16} XAML markup re-applied on resize, and value converters.</Description>
+    <PackageTags>appdimens;winui;winui3;windowsappsdk;sdp;ssp;responsive;dimension;xaml;windows</PackageTags>
+    <!-- Library without XAML pages: no PRI / MSIX tooling needed. -->
+    <EnableMsixTooling>false</EnableMsixTooling>
+    <AppxGeneratePriEnabled>false</AppxGeneratePriEnabled>
+  </PropertyGroup>
+
+  <Import Project="..\AppDimens.Net.Desktop.props" />
+
+  <ItemGroup>
+    <!-- Lowest supported Windows App SDK, so apps on any 1.6+ version can consume the package.
+         Only its reference assemblies are needed: its MSBuild targets (PRI / AppX packaging) need
+         Visual Studio's MSBuild and are irrelevant for a library without XAML pages. Every WinUI 3
+         app references Microsoft.WindowsAppSDK directly, so consumers keep the full tooling. -->
+    <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.6.250602001" ExcludeAssets="build;buildTransitive" />
+  </ItemGroup>
+
+</Project>

@@ -1,89 +1,52 @@
-<div align="center">
+# AppDimens.Net.Auto
 
-# 🤖 AppDimens.Net.Auto
+**Auto-balanced scaling — grows like the Scaled strategy on phones and slows down on tablets and desktops.**
 
-**Auto-balanced scaling (`ASdp`) — a single strategy that behaves well on every device class.**
+Part of **AppDimens for .NET** (C# port of appdimens-kmp) · requires `AppDimens.Net` (installed automatically).
+Works with .NET MAUI, WPF, Windows Forms, WinUI 3 and plain .NET (`net8.0` / `net9.0` / `net10.0`).
 
-Part of the **AppDimens for .NET** family · requires [AppDimens.Net](https://www.nuget.org/packages/AppDimens.Net/) (core).
+📖 **Complete guide:** [AppDimens.Net.Auto documentation](https://github.com/bodenberg/appdimens-net-binding/blob/main/docs/AppDimens.Net.Auto/README.md) · **API reference:** [API.md](https://github.com/bodenberg/appdimens-net-binding/blob/main/docs/AppDimens.Net.Auto/API.md)
 
-[![NuGet](https://img.shields.io/nuget/v/AppDimens.Net.Auto.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/AppDimens.Net.Auto/)
-[![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg?style=flat-square)](https://github.com/bodenberg/appdimens-net-binding/blob/main/LICENSE)
-[![.NET](https://img.shields.io/badge/.NET-8.0%20%7C%209.0%20%7C%2010.0-8A2BE2.svg?style=flat-square)](https://dotnet.microsoft.com/)
+## What it does
 
-</div>
+The **Auto** strategy follows the screen proportionally on small devices and automatically damps the growth on large ones, so a single number stays comfortable from phones to desktops without breakpoints. If you want "just scale it sensibly" with one call, start here.
 
----
+| `16` with this strategy | Phone 360×800 | Tablet 800×1280 | Desktop 1280×800 |
+|---|--:|--:|--:|
+| `16.ASdp()` | 19.2 | 30.2 | 30.2 |
+| `16.AHdp()` | 30.2 | 33.9 | 30.2 |
+| `16.AWdp()` | 19.2 | 30.2 | 33.9 |
+| `16.Sdp()` (core Scaled) | 19.2 | 42.7 | 42.7 |
 
-## 🎯 What is it?
-
-The **Auto strategy** blends screen-relative scaling with automatic compensation so that
-values stay comfortable across phones, foldables and tablets *without* per-breakpoint tuning.
-If you want "just scale it sensibly" with one extension method, this is it.
-
-## 📦 Installation
+## Install
 
 ```bash
 dotnet add package AppDimens.Net.Auto
 ```
 
-> Depends on [AppDimens.Net](https://www.nuget.org/packages/AppDimens.Net/) (pulled automatically).
-> Attach a MAUI window first or pass an explicit `IAppDimensContext`.
+## Use
 
-## 🚀 Quick start
+1. Initialize once for your UI framework: MAUI `AppDimensMaui.AttachWindow(window)` · WPF `AppDimensWpf.Initialize(this)` ·
+   WinForms `AppDimensWinForms.Initialize(this)` · WinUI `AppDimensWinUI.Initialize(window)`.
+2. Call the extensions:
 
 ```csharp
-using AppDimens.Net.Auto;
+using AppDimens.Net.Code.Auto;
 
-float pad   = 16.ASdp();      // auto-balanced by smallest-width
-float row   = 48.AHdp();      // height axis
-float gauge = 120.ASdpaPx();  // pixels, aspect-ratio adjusted
+float padding = 16.ASdp();    // smaller side of the window
+float header  = 56.AHdp();    // height
+float sidebar = 200.AWdp();   // width
+float tall    = 16.ASdpa();   // + aspect-ratio correction
+float split   = 16.ASdpi();   // ignores split-screen shrinking
 ```
 
-## 🧭 API
+With an explicit context: `16.ASdp(ctx)`, `16.ASdpPx(ctx)`, `DimenAuto.ASdp(ctx, 16)`, `24.ToAutoDp(ctx, qualifier: DpQualifier.Width)`.
 
-| Extension | Result |
-|---|---|
-| `v.ASdp(ctx)` · `v.ASdpa(ctx)` | smallest-width lane (± aspect ratio) |
-| `v.AHdp(ctx)` · `v.AWdp(ctx)` | height / width axis |
-| `…i` variants (`ASdpi`…) | ignore multi-window |
-| `v.ASdpPx(ctx)` … | pixel result |
-| `v.ASdpCustom(qualifier, inverter, imw, ar, k)` | full control incl. sensitivity |
-| `DimenAuto.ASdp(context, value)` | static form · `WarmupCache(ctx)` pre-heats |
-| `v.ToAutoDp/Px(v, ctx, …)` | generic kernel entry |
+## Português
 
-Rotation-aware helpers (`ASdpRotateRaw`, `AHdp`, `AWdp`…) follow the same conventions as the core module.
-
-## 💡 When to use
-
-| Scenario | Recommendation |
-|---|---|
-| Default choice when unsure | ✅ Auto |
-| Exact proportional layouts | [Percent](https://www.nuget.org/packages/AppDimens.Net.Percent/) |
-| Large-screen emphasis | [Power](https://www.nuget.org/packages/AppDimens.Net.Power/) |
-
-## ⚡ Performance
-
-Same engine as the core: snapshot-partitioned cache, allocation-free fast lanes,
-automatic invalidation on configuration changes.
-
-## 📚 Full package family
-
-[AppDimens.Net](https://www.nuget.org/packages/AppDimens.Net/) ·
-[Percent](https://www.nuget.org/packages/AppDimens.Net.Percent/) ·
-[Power](https://www.nuget.org/packages/AppDimens.Net.Power/) ·
-[Logarithmic](https://www.nuget.org/packages/AppDimens.Net.Logarithmic/) ·
-[Fluid](https://www.nuget.org/packages/AppDimens.Net.Fluid/) ·
-[Interpolated](https://www.nuget.org/packages/AppDimens.Net.Interpolated/) ·
-[Diagonal](https://www.nuget.org/packages/AppDimens.Net.Diagonal/) ·
-[Perimeter](https://www.nuget.org/packages/AppDimens.Net.Perimeter/) ·
-[Fill](https://www.nuget.org/packages/AppDimens.Net.Fill/) ·
-[Fit](https://www.nuget.org/packages/AppDimens.Net.Fit/) ·
-[Density](https://www.nuget.org/packages/AppDimens.Net.Density/) ·
-[Resize](https://www.nuget.org/packages/AppDimens.Net.Resize/) ·
-[Units](https://www.nuget.org/packages/AppDimens.Net.Units/) ·
-[Maui](https://www.nuget.org/packages/AppDimens.Net.Maui/) ·
-[Sdk meta-package](https://www.nuget.org/packages/AppDimens.Net.Sdk/)
+`dotnet add package AppDimens.Net.Auto` → inicialize a janela uma vez → `using AppDimens.Net.Code.Auto;` → `16.ASdp()`, `56.AHdp()`, `200.AWdp()`.
+Guia completo: [https://github.com/bodenberg/appdimens-net-binding/blob/main/docs/AppDimens.Net.Auto/README.md](https://github.com/bodenberg/appdimens-net-binding/blob/main/docs/AppDimens.Net.Auto/README.md)
 
 ---
 
-Apache-2.0 — © Jean Bodenberg · [Repository](https://github.com/bodenberg/appdimens-net-binding) · Formulas are bit-a-bit ports of [appdimens-kmp](https://github.com/bodenberg/appdimens-kmp)
+Apache-2.0 — © Jean Bodenberg · [Repository](https://github.com/bodenberg/appdimens-net-binding)

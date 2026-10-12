@@ -38,10 +38,27 @@ To{X}Dp(value, ctx, qualifier, inverter, imw, ar, k)  // generic kernel entry
   `WindowDimensScope` (event-driven resize watcher; listeners fire only on real
   config deltas), MAUI service extensions.
 
+## Desktop adapters (3.6.1)
+
+All three build on `HostDimensScope` (core): a reusable `IAppDimensContext` that publishes a new
+`ScreenConfiguration` on `Update(widthDp, heightDp, density)` and notifies listeners only on real changes.
+`AppDimensHost.Activate(scope)` wires the cache watcher and the ambient context.
+
+* `AppDimens.Net.Wpf` — `AppDimensWpf.Initialize(window)`, `WpfWindowDimensScope` (SizeChanged / DpiChanged),
+  `{ad:Xxx n}` markup extensions for 41 `DimenFunction`s (scaled, fluid, percent, `SpaceW/H`) returning **live**
+  bindings (`DimenLiveSource`), `DimenConverter`, automatic `Thickness`/`CornerRadius`/`GridLength` conversion.
+* `AppDimens.Net.WinForms` — `AppDimensWinForms.Initialize(form)`, `FormDimensScope` (client size / DeviceDpi),
+  `Apply(control, layout)` re-layout helper, `DimenPx` (dp → px / pt, `Padding`, `Size`, `Of(function, n)`).
+* `AppDimens.Net.WinUI` — `AppDimensWinUI.Initialize(window)`, `WinUIWindowDimensScope` (Bounds / XamlRoot scale),
+  `{ad:Xxx Value=n}` markup re-applied on resize through a weak registry, `DimenConverter`.
+
+Regenerate the markup/enum files with `python3 scripts/generate-desktop-api.py`.
+
 ## Testing
 
 * `FakeAppDimensContext` (in core): mutable context + `NotifyChange()` to drive
   watchers deterministically.
+* `tests/AppDimens.Net.Desktop.Tests` — WPF / Windows Forms adapter tests (Windows only).
 
 ## Apps
 

@@ -12,6 +12,7 @@
     <Project Path="src/AppDimens.Maui.Core/AppDimens.Maui.Core.csproj" />
     <Project Path="src/AppDimens.Maui.Extensions/AppDimens.Maui.Extensions.csproj" />
     <Project Path="src/AppDimens.Maui.Helpers/AppDimens.Maui.Helpers.csproj" />
+    <Project Path="src/AppDimens.Maui.Hosting/AppDimens.Maui.Hosting.csproj" />
     <Project Path="src/AppDimens.Maui.Inverters/AppDimens.Maui.Inverters.csproj" />
     <Project Path="src/AppDimens.Maui.Markup/AppDimens.Maui.Markup.csproj" />
     <Project Path="src/AppDimens.Maui.Resources/AppDimens.Maui.Resources.csproj" />
@@ -20,8 +21,12 @@
     <Project Path="src/AppDimens.Maui.Sdk/AppDimens.Maui.Sdk.csproj" />
     <Project Path="src/AppDimens.Maui.Xaml/AppDimens.Maui.Xaml.csproj" />
     <Project Path="src/AppDimens.Maui/AppDimens.Maui.csproj" />
+    <Project Path="src/AppDimens.Sdps.WinForms/AppDimens.Sdps.WinForms.csproj" />
+    <Project Path="src/AppDimens.Sdps.WinUI/AppDimens.Sdps.WinUI.csproj" />
+    <Project Path="src/AppDimens.Sdps.Wpf/AppDimens.Sdps.Wpf.csproj" />
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/AppDimens.Maui.Tests/AppDimens.Maui.Tests.csproj" />
+    <Project Path="tests/AppDimens.Sdps.Desktop.Tests/AppDimens.Sdps.Desktop.Tests.csproj" />
   </Folder>
 </Solution>

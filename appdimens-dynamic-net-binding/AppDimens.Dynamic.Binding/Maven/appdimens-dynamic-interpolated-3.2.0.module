@@ -1,0 +1,124 @@
+{
+  "formatVersion": "1.1",
+  "component": {
+    "group": "io.github.bodenberg",
+    "module": "appdimens-dynamic-interpolated",
+    "version": "3.2.0",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "9.5.0"
+    }
+  },
+  "variants": [
+    {
+      "name": "releaseVariantReleaseApiPublication",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.libraryelements": "aar",
+        "org.gradle.usage": "java-api"
+      },
+      "dependencies": [
+        {
+          "group": "io.github.bodenberg",
+          "module": "appdimens-dynamic",
+          "version": {
+            "requires": "3.2.0"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib",
+          "version": {
+            "requires": "2.4.10"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "appdimens-dynamic-interpolated-3.2.0.aar",
+          "url": "appdimens-dynamic-interpolated-3.2.0.aar",
+          "size": 152982,
+          "sha512": "d1cd9e9511c1ed85a4b1a5d0ac96cec1e2618d3816d8b0fcff5ed8fe173860ffc5e221bf6ca2e44f5beb3add7a318ae1cf66cd870e6b7418a72ed9c4c7c66c39",
+          "sha256": "00c83b385976f01a69ef9ef2e10d8bbd49ff55a87aecd3d2e4fa96944108da61",
+          "sha1": "5dedd6d8ddec5cc69fdac525361f98df1ced7d13",
+          "md5": "cdef5b0ebbb59baa0c389ce80698c6e5"
+        }
+      ]
+    },
+    {
+      "name": "releaseVariantReleaseRuntimePublication",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.libraryelements": "aar",
+        "org.gradle.usage": "java-runtime"
+      },
+      "dependencies": [
+        {
+          "group": "androidx.core",
+          "module": "core-ktx",
+          "version": {
+            "requires": "1.19.0"
+          }
+        },
+        {
+          "group": "androidx.window",
+          "module": "window",
+          "version": {
+            "requires": "1.5.1"
+          }
+        },
+        {
+          "group": "io.github.bodenberg",
+          "module": "appdimens-dynamic",
+          "version": {
+            "requires": "3.2.0"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib",
+          "version": {
+            "requires": "2.4.10"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "appdimens-dynamic-interpolated-3.2.0.aar",
+          "url": "appdimens-dynamic-interpolated-3.2.0.aar",
+          "size": 152982,
+          "sha512": "d1cd9e9511c1ed85a4b1a5d0ac96cec1e2618d3816d8b0fcff5ed8fe173860ffc5e221bf6ca2e44f5beb3add7a318ae1cf66cd870e6b7418a72ed9c4c7c66c39",
+          "sha256": "00c83b385976f01a69ef9ef2e10d8bbd49ff55a87aecd3d2e4fa96944108da61",
+          "sha1": "5dedd6d8ddec5cc69fdac525361f98df1ced7d13",
+          "md5": "cdef5b0ebbb59baa0c389ce80698c6e5"
+        }
+      ]
+    },
+    {
+      "name": "releaseVariantReleaseSourcePublication",
+      "attributes": {
+        "org.gradle.category": "documentation",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.docstype": "sources",
+        "org.gradle.usage": "java-runtime"
+      },
+      "files": [
+        {
+          "name": "appdimens-dynamic-interpolated-3.2.0-sources.jar",
+          "url": "appdimens-dynamic-interpolated-3.2.0-sources.jar",
+          "size": 56919,
+          "sha512": "c16324b57408ed319fe24669d2e0f0a2ea32b6ed027b53fc3fa97b386802e49c627fff31a541479c4f4cd418d54e9f0249d84603b4787b8e099185921f0f54bd",
+          "sha256": "bcf37f78fc301d6ec6f547184845506c994ff6698cab6f334896c17c1a85becd",
+          "sha1": "cf83b393e360edbef462f14dd6d7cb05f4cb9c27",
+          "md5": "d547f2e842922ddb99d695fcb7ff2d01"
+        }
+      ]
+    }
+  ]
+}

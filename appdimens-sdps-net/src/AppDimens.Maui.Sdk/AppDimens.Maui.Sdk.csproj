@@ -33,6 +33,7 @@
           PackageCopyToOutput="true"
           Visible="false" />
     <ProjectReference Include="..\AppDimens.Maui\AppDimens.Maui.csproj" PrivateAssets="all" />
+    <ProjectReference Include="..\AppDimens.Maui.Hosting\AppDimens.Maui.Hosting.csproj" PrivateAssets="all" />
     <ProjectReference Include="..\AppDimens.Maui.Core\AppDimens.Maui.Core.csproj" PrivateAssets="all" />
     <ProjectReference Include="..\AppDimens.Maui.Extensions\AppDimens.Maui.Extensions.csproj" PrivateAssets="all" />
     <ProjectReference Include="..\AppDimens.Maui.Markup\AppDimens.Maui.Markup.csproj" PrivateAssets="all" />

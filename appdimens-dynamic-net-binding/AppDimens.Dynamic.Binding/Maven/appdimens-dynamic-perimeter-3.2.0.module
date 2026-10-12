@@ -1,0 +1,124 @@
+{
+  "formatVersion": "1.1",
+  "component": {
+    "group": "io.github.bodenberg",
+    "module": "appdimens-dynamic-perimeter",
+    "version": "3.2.0",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "9.5.0"
+    }
+  },
+  "variants": [
+    {
+      "name": "releaseVariantReleaseApiPublication",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.libraryelements": "aar",
+        "org.gradle.usage": "java-api"
+      },
+      "dependencies": [
+        {
+          "group": "io.github.bodenberg",
+          "module": "appdimens-dynamic",
+          "version": {
+            "requires": "3.2.0"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib",
+          "version": {
+            "requires": "2.4.10"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "appdimens-dynamic-perimeter-3.2.0.aar",
+          "url": "appdimens-dynamic-perimeter-3.2.0.aar",
+          "size": 152266,
+          "sha512": "426c17570143aca8898b7f20df771aed845e81b8590ce6c44e59a4eaae402ee8fd12e464f087046e10ee1b3a968ceee14350bf1b863b920663c87d8309c838fc",
+          "sha256": "5552c118648515e3bd748cb5cce3f53ccb32ee5dbe276c69f6393e24fee2b5c5",
+          "sha1": "dee6673f4a125bff8415e5018e993d1a146d2630",
+          "md5": "8208bc8578c6898d8c66b406a2ae90f8"
+        }
+      ]
+    },
+    {
+      "name": "releaseVariantReleaseRuntimePublication",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.libraryelements": "aar",
+        "org.gradle.usage": "java-runtime"
+      },
+      "dependencies": [
+        {
+          "group": "androidx.core",
+          "module": "core-ktx",
+          "version": {
+            "requires": "1.19.0"
+          }
+        },
+        {
+          "group": "androidx.window",
+          "module": "window",
+          "version": {
+            "requires": "1.5.1"
+          }
+        },
+        {
+          "group": "io.github.bodenberg",
+          "module": "appdimens-dynamic",
+          "version": {
+            "requires": "3.2.0"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib",
+          "version": {
+            "requires": "2.4.10"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "appdimens-dynamic-perimeter-3.2.0.aar",
+          "url": "appdimens-dynamic-perimeter-3.2.0.aar",
+          "size": 152266,
+          "sha512": "426c17570143aca8898b7f20df771aed845e81b8590ce6c44e59a4eaae402ee8fd12e464f087046e10ee1b3a968ceee14350bf1b863b920663c87d8309c838fc",
+          "sha256": "5552c118648515e3bd748cb5cce3f53ccb32ee5dbe276c69f6393e24fee2b5c5",
+          "sha1": "dee6673f4a125bff8415e5018e993d1a146d2630",
+          "md5": "8208bc8578c6898d8c66b406a2ae90f8"
+        }
+      ]
+    },
+    {
+      "name": "releaseVariantReleaseSourcePublication",
+      "attributes": {
+        "org.gradle.category": "documentation",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.docstype": "sources",
+        "org.gradle.usage": "java-runtime"
+      },
+      "files": [
+        {
+          "name": "appdimens-dynamic-perimeter-3.2.0-sources.jar",
+          "url": "appdimens-dynamic-perimeter-3.2.0-sources.jar",
+          "size": 56372,
+          "sha512": "741a95ed6b827eeb7efe7dd1edac0f385314f9a231899017bff5a04da03d8895770ff7abca7fde2aad79302f8650a619914443905ad7025901117c741fae4190",
+          "sha256": "18b5d34f9b1848511fdb2a958dcd6744798e3309b51ced97a6e23581a3f0a681",
+          "sha1": "1f70279ba2a357a79631ee87970851b0bc0c61c4",
+          "md5": "107d73611f973d01fc013713d85c573e"
+        }
+      ]
+    }
+  ]
+}

@@ -1,114 +1,62 @@
-<div align="center">
+# AppDimens.Net.Maui
 
-# 🪟 AppDimens.Net.Maui
+**.NET MAUI integration for AppDimens.Net — live window scope, XAML markup extensions and converters.**
 
-**MAUI bootstrap — window attach, event-driven resize watcher, XAML markup extensions and converters.**
+Brings `AppDimens.Net`, `AppDimens.Net.Fluid` and `AppDimens.Net.Percent` · `net8.0`–`net10.0` · Android, iOS, macOS, Windows.
 
-Part of the **AppDimens for .NET** family · requires [AppDimens.Net](https://www.nuget.org/packages/AppDimens.Net/) (core).
+📖 **Complete guide:** [AppDimens.Net.Maui documentation](https://github.com/bodenberg/appdimens-net-binding/blob/main/docs/AppDimens.Net.Maui/README.md) · **API reference:** [API.md](https://github.com/bodenberg/appdimens-net-binding/blob/main/docs/AppDimens.Net.Maui/API.md)
 
-[![NuGet](https://img.shields.io/nuget/v/AppDimens.Net.Maui.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/AppDimens.Net.Maui/)
-[![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg?style=flat-square)](https://github.com/bodenberg/appdimens-net-binding/blob/main/LICENSE)
-[![.NET](https://img.shields.io/badge/.NET-8.0%20%7C%209.0%20%7C%2010.0-8A2BE2.svg?style=flat-square)](https://dotnet.microsoft.com/)
-
-</div>
-
----
-
-## 🎯 What is it?
-
-The glue between the AppDimens engine and **.NET MAUI**: one call attaches your `Window`
-and installs an ambient context with a snapshot-partitioned cache and an **event-driven
-resize watcher** (listeners fire only on real configuration deltas). Also includes XAML
-markup extensions and value converters so layouts can scale without code-behind.
-
-## 📦 Installation
+## Install
 
 ```bash
 dotnet add package AppDimens.Net.Maui
 ```
 
-> Depends on [AppDimens.Net](https://www.nuget.org/packages/AppDimens.Net/) (pulled automatically).
-
-## 🚀 Getting started
+## 1. Attach the window (App.xaml.cs)
 
 ```csharp
 using AppDimens.Net.Maui.Platform;
 
-protected override Window CreateWindow(IActivationState? state)
+public partial class App : Application
 {
-    var window = new Window();
-    AppDimensMaui.AttachWindow(window);      // BEFORE creating any page!
-    window.Page = new NavigationPage(new MainPage());
-    return window;
+    protected override Window CreateWindow(IActivationState? activationState)
+    {
+        var window = new Window();
+        AppDimensMaui.AttachWindow(window);              // BEFORE creating pages
+        window.Page = new NavigationPage(new MainPage());
+        return window;
+    }
 }
 ```
 
-> ⚠️ Parameterless scaling extensions (`16.Sdp()`) resolve through the ambient scope —
-> attach the window before constructing pages that use them.
+## 2. C#
 
-## 🧭 API
+```csharp
+using AppDimens.Net.Code.Scaled;
 
-### Bootstrap — `AppDimensMaui`
-
-| Member | Purpose |
-|---|---|
-| `AttachWindow(window, multiWindowProbe?)` | installs ambient context + watcher; returns the scope |
-| `Detach()` | removes the primary scope |
-| `Init(application)` | app-level convenience init |
-| `Primary` | current primary `WindowDimensScope` |
-
-### Context — `WindowDimensScope`
-
-| Member | Purpose |
-|---|---|
-| implements `IAppDimensContext` | density, screen dp, orientation, fontScale |
-| `RegisterConfigurationListener(Action)` | resize/config-change subscription |
-| `Update()` | manual refresh |
-| `FontScaleOverride` | force a font-scale for previews/tests |
-
-### XAML markup extensions (`AppDimens.Net.Maui.Xaml`)
-
-```xml
-xmlns:d="clr-namespace:AppDimens.Net.Maui.Xaml;assembly=AppDimens.Net.Maui"
-
-<Label Text="Hello"
-       FontSize="{d:Ssp 16}"
-       Padding="{d:Sdp 16}" />
+card.Padding        = new Thickness(16.Sdp());
+titleLabel.FontSize = 22.Ssp();
+banner.HeightRequest = 120.Hdp();
 ```
 
-Available: `SdpExtension`, `SdpaExtension`, `HdpExtension`, `WdpExtension`,
-`SspExtension`, `FsdpExtension`, `PsdpxExtension` and friends.
+## 3. XAML
 
-### Converters
+```xml
+<ContentPage xmlns:ad="clr-namespace:AppDimens.Net.Maui.Xaml;assembly=AppDimens.Net.Maui" ...>
+    <VerticalStackLayout Padding="{ad:Sdp 16}" Spacing="{ad:Sdp 8}">
+        <Label Text="Title" FontSize="{ad:Ssp 22}" />
+        <Border WidthRequest="{ad:Psdpx 50}" />   <!-- 50 % of the window width -->
+        <Button HeightRequest="{ad:Fsdp 48}" />   <!-- fluid -->
+    </VerticalStackLayout>
+</ContentPage>
+```
 
-`SdpConverter` · `SspConverter` — bind raw numbers to scaled values in MVVM layouts.
+Extensions: `Sdp`, `Sdpa`, `Hdp`, `Wdp`, `Ssp`, `Fsdp`, `Psdpx` · converters: `SdpConverter`, `SspConverter`.
 
-## 💡 When to use
+## Português
 
-| Scenario | Recommendation |
-|---|---|
-| Any MAUI app using AppDimens | ✅ this package |
-| Console/tests/headless engines | core only, explicit contexts |
-| Everything-in-one reference | [Sdk meta-package](https://www.nuget.org/packages/AppDimens.Net.Sdk/) |
-
-## 📚 Full package family
-
-[AppDimens.Net](https://www.nuget.org/packages/AppDimens.Net/) ·
-[Percent](https://www.nuget.org/packages/AppDimens.Net.Percent/) ·
-[Power](https://www.nuget.org/packages/AppDimens.Net.Power/) ·
-[Auto](https://www.nuget.org/packages/AppDimens.Net.Auto/) ·
-[Logarithmic](https://www.nuget.org/packages/AppDimens.Net.Logarithmic/) ·
-[Fluid](https://www.nuget.org/packages/AppDimens.Net.Fluid/) ·
-[Interpolated](https://www.nuget.org/packages/AppDimens.Net.Interpolated/) ·
-[Diagonal](https://www.nuget.org/packages/AppDimens.Net.Diagonal/) ·
-[Perimeter](https://www.nuget.org/packages/AppDimens.Net.Perimeter/) ·
-[Fill](https://www.nuget.org/packages/AppDimens.Net.Fill/) ·
-[Fit](https://www.nuget.org/packages/AppDimens.Net.Fit/) ·
-[Density](https://www.nuget.org/packages/AppDimens.Net.Density/) ·
-[Resize](https://www.nuget.org/packages/AppDimens.Net.Resize/) ·
-[Units](https://www.nuget.org/packages/AppDimens.Net.Units/) ·
-[Sdk meta-package](https://www.nuget.org/packages/AppDimens.Net.Sdk/)
+Em `CreateWindow`: `AppDimensMaui.AttachWindow(window)` antes de criar páginas; depois `16.Sdp()` em C# ou `{ad:Sdp 16}` no XAML.
 
 ---
 
-Apache-2.0 — © Jean Bodenberg · [Repository](https://github.com/bodenberg/appdimens-net-binding) · Formulas are bit-a-bit ports of [appdimens-kmp](https://github.com/bodenberg/appdimens-kmp)
+Apache-2.0 — © Jean Bodenberg · [Repository](https://github.com/bodenberg/appdimens-net-binding) · Formulas are bit-for-bit ports of [appdimens-kmp](https://github.com/bodenberg/appdimens-kmp)

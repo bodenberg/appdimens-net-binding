@@ -1,20 +1,115 @@
 # Bodenberg.AppDimens.Dynamic
 
+📖 **Documentation:** [Bodenberg.AppDimens.Dynamic guide](https://github.com/bodenberg/appdimens-net-binding/blob/main/docs/Bodenberg.AppDimens.Dynamic/README.md) · [complete API reference](https://github.com/bodenberg/appdimens-net-binding/blob/main/docs/Bodenberg.AppDimens.Dynamic/API.md) · [all AppDimens .NET packages](https://github.com/bodenberg/appdimens-net-binding/blob/main/docs/README.md)
+
 **.NET 10 binding for Android** (`net10.0-android`) that wraps **[AppDimens Dynamic](https://github.com/bodenberg/appdimens-dynamic)** — responsive **`dp` / `sp` / `px`** sizing in code (no XML dimen grids), with **15 scaling strategies**, conditional **facilitators**, **aspect-ratio** and **multi-window** variants, **physical units**, **auto-resize** helpers, and optional **DataStore-backed** caching.
 
 Kotlin/Java sources, strategy semantics, and Android-focused guides live upstream:
 
 **→ [bodenberg/appdimens-dynamic](https://github.com/bodenberg/appdimens-dynamic)** · [DOCUMENTATION](https://github.com/bodenberg/appdimens-dynamic/tree/main/DOCUMENTATION) · [KDoc search](https://appdimens3.web.app/)
 
-Maven artifact embedded in this package: **`io.github.bodenberg:appdimens-dynamic`** [`3.1.9`](https://repo1.maven.org/maven2/io/github/bodenberg/appdimens-dynamic/3.1.9/).
+Maven artifact embedded in this package: **`io.github.bodenberg:appdimens-dynamic`** [`3.2.0`](https://repo1.maven.org/maven2/io/github/bodenberg/appdimens-dynamic/3.2.0/).
 
 ---
 
 ## Install
 
 ```bash
-dotnet add package Bodenberg.AppDimens.Dynamic --version 3.6.0
+dotnet add package Bodenberg.AppDimens.Dynamic --version 3.6.1
 ```
+
+---
+
+## Getting started (step by step)
+
+New to AppDimens? Follow these steps in order — each one is copy-and-paste.
+
+### Step 1 — Is this the right package?
+
+| Your app | Use |
+|----------|-----|
+| .NET for Android (`net10.0-android`) or **.NET MAUI targeting Android** | ✅ **Bodenberg.AppDimens.Dynamic** (this package) |
+| .NET MAUI on **iOS / Windows / macOS** too | [`Bodenberg.AppDimens.Maui.Sdps`](https://www.nuget.org/packages/Bodenberg.AppDimens.Maui.Sdps) or [`AppDimens.Net.Sdk`](https://www.nuget.org/packages/AppDimens.Net.Sdk) (pure C#, all platforms) |
+| **WPF**, **Windows Forms** or **WinUI 3** | [`Bodenberg.AppDimens.Sdps.Wpf`](https://www.nuget.org/packages/Bodenberg.AppDimens.Sdps.Wpf) / [`.WinForms`](https://www.nuget.org/packages/Bodenberg.AppDimens.Sdps.WinForms) / [`.WinUI`](https://www.nuget.org/packages/Bodenberg.AppDimens.Sdps.WinUI), or [`AppDimens.Net.Wpf`](https://www.nuget.org/packages/AppDimens.Net.Wpf) / [`.WinForms`](https://www.nuget.org/packages/AppDimens.Net.WinForms) / [`.WinUI`](https://www.nuget.org/packages/AppDimens.Net.WinUI) |
+
+This package wraps a native **Android** library, so it only runs on Android.
+
+### Step 2 — Install
+
+**Visual Studio:** right-click the project → *Manage NuGet Packages…* → search **Bodenberg.AppDimens.Dynamic** → *Install*.
+
+**Command line:**
+
+```bash
+dotnet add package Bodenberg.AppDimens.Dynamic --version 3.6.1
+```
+
+In a MAUI app the package only affects the Android target — wrap Android-only code in `#if ANDROID`.
+
+### Step 3 — Use it from C#
+
+All `Dimen*` methods return **pixels** (`float`). Android views expect pixels, so you can apply them directly:
+
+```csharp
+using Android.Util;          // ComplexUnitType
+using Com.Appdimens.Dynamic.Code;
+
+// In an Activity (this = Context)
+DynamicConfig.Warmup(this);   // optional, warms the cache
+
+int padding = (int)DimenSdp.Sdp(this, 16);
+myCard.SetPadding(padding, padding, padding, padding);
+
+// Text: tell Android the value is already in pixels
+myTitle.SetTextSize(ComplexUnitType.Px, DimenSsp.Ssp(this, 18));
+```
+
+> ⚠️ **Common mistake:** `myTitle.TextSize = value;` interprets the number as **sp** and scales it a second time. Always use `SetTextSize(ComplexUnitType.Px, value)` with AppDimens values.
+
+### Step 4 — Use it in a .NET MAUI app (Android)
+
+MAUI sizes are device-independent units, so divide the pixel value by the screen density:
+
+```csharp
+#if ANDROID
+using Com.Appdimens.Dynamic.Code;
+using Microsoft.Maui.Devices;
+
+var context = Platform.CurrentActivity ?? Android.App.Application.Context;
+var density = DeviceDisplay.MainDisplayInfo.Density;
+
+titleLabel.FontSize = DimenSsp.Ssp(context, 18) / density;
+card.Padding = new Thickness(DimenSdp.Sdp(context, 16) / density);
+#endif
+```
+
+### Step 5 — Keep sizes right after rotation / fold / resize
+
+```csharp
+using Com.Appdimens.Dynamic;
+
+public override void OnConfigurationChanged(Android.Content.Res.Configuration newConfig)
+{
+    base.OnConfigurationChanged(newConfig);
+    DynamicConfig.OnConfigurationChanged(this, newConfig);   // recalculates factors
+}
+
+// Anywhere (e.g. OnCreate): re-apply sizes when they change
+DynamicConfig.DimensionsShouldRefresh += (_, _) => ApplySizes();
+```
+
+### Cheat sheet — which function do I use?
+
+| I want to size… | Use | Example |
+|-----------------|-----|---------|
+| Padding, margins, icons, cards (most cases) | **`Sdp`** — follows the *smallest* screen side | `DimenSdp.Sdp(this, 16)` |
+| Something that should follow the **height** (headers, bottom bars) | **`Hdp`** | `DimenSdp.Hdp(this, 56)` |
+| Something that should follow the **width** (banners, side panels) | **`Wdp`** | `DimenSdp.Wdp(this, 200)` |
+| Text | **`Ssp`** (respects the user's font-size setting) | `DimenSsp.Ssp(this, 14)` |
+| A size that must **not** shrink in split-screen / multi-window | add **`i`**: `Sdpi`, `Sspi` | `DimenSdp.Sdpi(this, 16)` |
+| Same as above but slightly bigger on very wide/tall screens | add **`a`**: `Sdpa`, `Sspa` | `DimenSdp.Sdpa(this, 16)` |
+
+**Rule of thumb:** write the same numbers you would normally use in `dp`/`sp`. AppDimens treats them as sizes on a **300 dp-wide reference phone** and scales them proportionally: `16` becomes ~19 dp on a 360 dp phone and ~32 dp on a 600 dp tablet.
 
 ---
 
@@ -251,8 +346,8 @@ Compose-first apps on .NET may need a future binding strategy or shared logic ca
 
 | Layer | Version |
 |-------|---------|
-| **Maven / embedded `.aar`** | **`appdimens-dynamic` 3.1.9** (core + 13 módulos satélite) |
-| **NuGet** | **`3.6.0`** — `net10.0-android` and updated Xamarin AndroidX/DataStore; Android binary **3.1.9** |
+| **Maven / embedded `.aar`** | **`appdimens-dynamic` 3.2.0** (core + 13 módulos satélite) |
+| **NuGet** | **`3.6.1`** — `net10.0-android` and updated Xamarin AndroidX/DataStore; Android binary **3.2.0** |
 
 When Maven publishes a new version, run `./scripts/sync-aar-from-maven.sh <maven-version>` and bump the NuGet version accordingly.
 
@@ -274,8 +369,18 @@ dotnet publish AppDimens.Dynamic.SmokeTest/AppDimens.Dynamic.SmokeTest.csproj -c
 Sync the upstream AAR:
 
 ```bash
-./scripts/sync-aar-from-maven.sh 3.1.9
+./scripts/sync-aar-from-maven.sh 3.2.0
 ```
+
+---
+
+## Related packages
+
+| Package | Focus |
+|---------|--------|
+| **[Bodenberg.AppDimens.Maui.Sdps](https://www.nuget.org/packages/Bodenberg.AppDimens.Maui.Sdps)** | **.NET MAUI on every platform** (Android, iOS, Windows, macOS) — same SDP math, native C# |
+| **[Bodenberg.AppDimens.Sdps.Wpf](https://www.nuget.org/packages/Bodenberg.AppDimens.Sdps.Wpf)** · **[.WinForms](https://www.nuget.org/packages/Bodenberg.AppDimens.Sdps.WinForms)** · **[.WinUI](https://www.nuget.org/packages/Bodenberg.AppDimens.Sdps.WinUI)** | **Windows desktop** — WPF, Windows Forms, WinUI 3 |
+| **[AppDimens.Net.Sdk](https://www.nuget.org/packages/AppDimens.Net.Sdk)** | C# port of AppDimens KMP — 12+ strategies, MAUI / WPF / WinForms / WinUI integrations |
 
 ---
 
@@ -286,7 +391,7 @@ Sync the upstream AAR:
 | AppDimens (main project — NuGet **Project website**) | https://github.com/bodenberg/appdimens |
 | Android library (NuGet **Source repository**; implementation &amp; issues) | https://github.com/bodenberg/appdimens-dynamic |
 | Strategy documentation | https://github.com/bodenberg/appdimens-dynamic/tree/main/DOCUMENTATION |
-| Maven Central | https://repo1.maven.org/maven2/io/github/bodenberg/appdimens-dynamic/3.1.9/ |
+| Maven Central | https://repo1.maven.org/maven2/io/github/bodenberg/appdimens-dynamic/3.2.0/ |
 | .NET binding monorepo | https://github.com/bodenberg/appdimens-net-binding |
 
 ---

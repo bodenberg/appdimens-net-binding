@@ -1,5 +1,4 @@
 <Project>
-  <Import Project="Directory.Pack.targets" Condition="Exists('Directory.Pack.targets')" />
 
   <PropertyGroup>
     <!-- Only the AppDimens.Maui.Sdk meta-package is published to NuGet -->
@@ -15,8 +14,10 @@
     <RepositoryUrl>https://github.com/bodenberg/appdimens-net-binding</RepositoryUrl>
     <PackageProjectUrl>https://github.com/bodenberg/appdimens</PackageProjectUrl>
     <PackageTags>maui;appdimens;sdp;ssp;hdp;wdp;responsive;dimensions;xaml</PackageTags>
-    <Version>3.6.0</Version>
+    <Version>3.6.1</Version>
     <AppDimensDesignBaseDp>300</AppDimensDesignBaseDp>
+    <!-- Minimum Windows App SDK for the WinUI 3 adapter (apps may use any newer version). -->
+    <AppDimensWindowsAppSdkVersion>1.6.250602001</AppDimensWindowsAppSdkVersion>
     <!-- Default for restore/graph when TargetFramework is not set yet -->
     <MauiVersion>10.0.20</MauiVersion>
     <MauiVersion Condition="'$(TargetFramework)' == 'net8.0'">8.0.100</MauiVersion>

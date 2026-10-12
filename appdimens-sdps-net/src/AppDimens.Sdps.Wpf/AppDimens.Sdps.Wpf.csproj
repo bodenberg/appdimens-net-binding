@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>net8.0-windows;net9.0-windows;net10.0-windows</TargetFrameworks>
+    <TargetFrameworks Condition="$([MSBuild]::VersionGreaterThanOrEquals('$(NETCoreSdkVersion)', '11.0'))">$(TargetFrameworks);net11.0-windows</TargetFrameworks>
+    <UseWPF>true</UseWPF>
+    <RootNamespace>AppDimens.Sdps.Wpf</RootNamespace>
+    <AssemblyName>AppDimens.Sdps.Wpf</AssemblyName>
+    <PackageId>Bodenberg.AppDimens.Sdps.Wpf</PackageId>
+    <Description>Responsive SDP/HDP/WDP/SSP dimensions for WPF — {sdps:Sdp 16} markup that follows the window size and DPI, plus 16.Sdp() helpers. Same engine as Bodenberg.AppDimens.Maui.Sdps, no MAUI dependency.</Description>
+    <PackageTags>wpf;appdimens;sdp;ssp;hdp;wdp;responsive;dimensions;xaml;dpi;windows</PackageTags>
+  </PropertyGroup>
+  <Import Project="..\AppDimens.Sdps.Desktop.props" />
+</Project>

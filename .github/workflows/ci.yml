@@ -5,6 +5,7 @@ on:
     branches: [main, master]
   pull_request:
     branches: [main, master]
+  workflow_dispatch:
 
 concurrency:
   group: ci-${{ github.ref }}
@@ -34,6 +35,46 @@ jobs:
       - name: Security audit
         run: dotnet list tests/AppDimens.Maui.Tests/AppDimens.Maui.Tests.csproj package --vulnerable --include-transitive 2>&1 | tee ../vulnerable.txt; if grep -q 'has the following vulnerable' ../vulnerable.txt; then exit 1; fi
 
+  appdimens-net:
+    name: AppDimens.Net build, test & pack
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: appdimens-net
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: |
+            8.0.x
+            9.0.x
+            10.0.x
+      - name: Test + pack (core, strategies, MAUI, WPF, WinForms, WinUI)
+        run: chmod +x scripts/pack-nuget.sh && ./scripts/pack-nuget.sh
+
+  # WPF / Windows Forms need a real Windows desktop session to run.
+  desktop-windows:
+    name: Desktop adapters (Windows)
+    runs-on: windows-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 10.0.x
+      - name: Generate dimens
+        working-directory: appdimens-sdps-net
+        run: python scripts/generate-dimens.py
+      - name: Test SDPS desktop adapters (WPF + WinForms)
+        run: dotnet test appdimens-sdps-net/tests/AppDimens.Sdps.Desktop.Tests/AppDimens.Sdps.Desktop.Tests.csproj -c Release
+      - name: Test AppDimens.Net desktop adapters (WPF + WinForms)
+        run: dotnet test appdimens-net/tests/AppDimens.Net.Desktop.Tests/AppDimens.Net.Desktop.Tests.csproj -c Release
+      - name: Build WinUI 3 adapters
+        run: |
+          dotnet build appdimens-sdps-net/src/AppDimens.Sdps.WinUI/AppDimens.Sdps.WinUI.csproj -c Release
+          dotnet build appdimens-net/src/AppDimens.Net.WinUI/AppDimens.Net.WinUI.csproj -c Release
+
   # Cada TFM é construído com o SDK .NET correspondente.
   #
   # Por que um SDK por TFM:
@@ -62,11 +103,11 @@ jobs:
           - net10.0-android36.0
         include:
           - module: appdimens-sdps-net-binding
-            aar_version: 3.1.7
+            aar_version: 3.2.0
           - module: appdimens-ssps-net-binding
-            aar_version: 3.1.7
+            aar_version: 3.2.0
           - module: appdimens-dynamic-net-binding
-            aar_version: 3.1.9
+            aar_version: 3.2.0
           - tfm: net8.0-android34.0
             api_level: 34
             sdk_band: 8.0.100
@@ -113,9 +154,13 @@ jobs:
             exit 1
           fi
 
-      - name: Sync AAR from Maven
+      # AARs are versioned in Jars/ (refresh with scripts/sync-aar-from-maven.sh); only verify
+      # the expected version is the one referenced by the binding project.
+      - name: Verify AAR ${{ matrix.aar_version }}
         working-directory: ${{ matrix.module }}
-        run: chmod +x scripts/sync-aar-from-maven.sh && ./scripts/sync-aar-from-maven.sh ${{ matrix.aar_version }}
+        run: |
+          ls AppDimens.*.Binding/Jars/*-${{ matrix.aar_version }}.aar
+          grep -q -- '-${{ matrix.aar_version }}.aar' AppDimens.*.Binding/AppDimens.*.Binding.csproj
 
       - name: Build binding (${{ matrix.tfm }})
         working-directory: ${{ matrix.module }}

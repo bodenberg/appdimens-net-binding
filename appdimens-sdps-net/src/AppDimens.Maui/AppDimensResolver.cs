@@ -1,7 +1,8 @@
 using AppDimens.Maui.Core;
 using AppDimens.Maui.Inverters;
 using AppDimens.Maui.Responsive;
-using Microsoft.Maui.Devices;
+using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
 
 namespace AppDimens.Maui;
 
@@ -39,6 +40,11 @@ public sealed class AppDimensResolver
     // Optional window-bounds override installed by AppDimensSdpsWindow.Attach.
     private (double Width, double Height)? _windowBounds;
 
+    // Host metrics source (MAUI DeviceDisplay by default; WPF/WinForms/WinUI adapters
+    // install their own through UseDisplaySource before Initialize).
+    private IDisplayMetricsSource? _displaySource;
+    private bool _displaySourceResolved;
+
     public IScreenMetricsProvider Metrics => _metrics;
     public AppDimensOptions Options => _options;
     public DimensionCache Cache => _cache;
@@ -64,7 +70,15 @@ public sealed class AppDimensResolver
 
         if (!_initialized)
         {
-            DeviceDisplay.MainDisplayInfoChanged += OnDisplayChanged;
+            var source = ResolveDisplaySource();
+            try
+            {
+                if (source != null) source.Changed += OnDisplayChanged;
+            }
+            catch (Exception ex)
+            {
+                AppDimensLogging.Warning($"display source subscription failed: {ex.Message}");
+            }
             // Any metrics source (window watcher, custom provider, tests) flows through
             // the same invalidation pipeline.
             _metrics.Changed += OnMetricsProviderChanged;
@@ -72,6 +86,10 @@ public sealed class AppDimensResolver
 
         if (!_testMode)
             RefreshMetricsFromDevice();
+
+        // Seed freshly created bucket/aspect managers with the current snapshot: the refresh
+        // above raises no Changed event when the host reports nothing new (or nothing yet).
+        ApplyMetricsChange();
 
         _initialized = true;
 
@@ -84,7 +102,9 @@ public sealed class AppDimensResolver
 
     public void ResetForTesting()
     {
-        DeviceDisplay.MainDisplayInfoChanged -= OnDisplayChanged;
+        if (_displaySource != null) _displaySource.Changed -= OnDisplayChanged;
+        _displaySource = null;
+        _displaySourceResolved = false;
         _metrics.Changed -= OnMetricsProviderChanged;
         _initialized = false;
         _testMode = false;
@@ -113,7 +133,70 @@ public sealed class AppDimensResolver
         return candidates.FirstOrDefault(Directory.Exists);
     }
 
-    private void OnDisplayChanged(object? sender, DisplayInfoChangedEventArgs e) => RefreshMetricsFromDevice();
+    private void OnDisplayChanged(object? sender, EventArgs e) => RefreshMetricsFromDevice();
+
+    /// <summary>The active host metrics source (null when none could be resolved).</summary>
+    public IDisplayMetricsSource? DisplaySource => _displaySource;
+
+    /// <summary>
+    /// Replaces the host metrics source. Call this <b>before</b> <see cref="Initialize"/> to run
+    /// outside .NET MAUI (WPF, Windows Forms, WinUI 3, custom hosts). Calling it after
+    /// initialization re-subscribes and refreshes the live metrics immediately.
+    /// </summary>
+    public void UseDisplaySource(IDisplayMetricsSource source)
+    {
+        ArgumentNullException.ThrowIfNull(source);
+        lock (_sync)
+        {
+            if (_initialized && _displaySource != null) _displaySource.Changed -= OnDisplayChanged;
+            _displaySource = source;
+            _displaySourceResolved = true;
+            if (_initialized) source.Changed += OnDisplayChanged;
+        }
+        if (_initialized) RefreshMetricsFromDevice();
+    }
+
+    private IDisplayMetricsSource? ResolveDisplaySource()
+    {
+        if (_displaySourceResolved) return _displaySource;
+        _displaySourceResolved = true;
+        _displaySource = TryCreateMauiDisplaySource();
+        return _displaySource;
+    }
+
+    // Non-MAUI hosts (no AppDimens.Maui.Hosting / Microsoft.Maui.Essentials deployed) end up
+    // with no source and keep the default snapshot until UseDisplaySource is called.
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private static IDisplayMetricsSource? TryCreateMauiDisplaySource()
+    {
+        try
+        {
+            var source = CreateMauiDisplaySource();
+            // Probe once: forces Microsoft.Maui.Essentials to load so a missing assembly
+            // (WPF / WinForms / console host) is detected here instead of on first use.
+            source.TryGetMetrics(out _, out _, out _);
+            return source;
+        }
+        catch (Exception ex)
+        {
+            AppDimensLogging.Warning($"MAUI DeviceDisplay unavailable ({ex.GetType().Name}); call UseDisplaySource for non-MAUI hosts.");
+            return null;
+        }
+    }
+
+    private const string MauiSourceType = "AppDimens.Maui.MauiDisplayMetricsSource";
+    private const string MauiHostingAssembly = "AppDimens.Maui.Hosting";
+
+    // The MAUI source lives in AppDimens.Maui.Hosting so this assembly stays MAUI-free
+    // (WPF / WinForms / WinUI adapters ship without it). Resolved by name at runtime.
+    [DynamicDependency(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor, MauiSourceType, MauiHostingAssembly)]
+    [UnconditionalSuppressMessage("Trimming", "IL2057", Justification = "Type preserved by DynamicDependency.")]
+    private static IDisplayMetricsSource CreateMauiDisplaySource()
+    {
+        var type = Type.GetType($"{MauiSourceType}, {MauiHostingAssembly}", throwOnError: false)
+            ?? throw new InvalidOperationException($"{MauiHostingAssembly} is not deployed (non-MAUI host).");
+        return (IDisplayMetricsSource)Activator.CreateInstance(type)!;
+    }
 
     private void OnMetricsProviderChanged(object? sender, EventArgs e) => ApplyMetricsChange();
 
@@ -130,7 +213,7 @@ public sealed class AppDimensResolver
     /// <summary>
     /// Installs window-bounds tracking so values follow the resized <b>window</b> instead of
     /// the physical display (desktop, tablets in split-screen, foldables).
-    /// Provided by <see cref="AppDimensSdpsWindow.Attach(Microsoft.Maui.Controls.Window)"/>.
+    /// Provided by <c>AppDimensSdpsWindow.Attach(Window)</c> (AppDimens.Maui.Hosting).
     /// </summary>
     public void TrackWindowBounds(double widthDp, double heightDp)
     {
@@ -155,19 +238,29 @@ public sealed class AppDimensResolver
         if (_testMode) return;
         lock (_sync)
         {
-            var info = DeviceDisplay.MainDisplayInfo;
-            var density = info.Density > 0 ? info.Density : 1.0;
-            double widthDp, heightDp;
+            double widthDp = 0, heightDp = 0, density = 1.0;
+            var source = _displaySourceResolved ? _displaySource : ResolveDisplaySource();
+            var hasSource = false;
+            try
+            {
+                hasSource = source != null && source.TryGetMetrics(out widthDp, out heightDp, out density);
+            }
+            catch (Exception ex)
+            {
+                AppDimensLogging.Warning($"display source failed: {ex.Message}");
+            }
+            if (!(density > 0)) density = 1.0;
+
             var bounds = _windowBounds;
             if (bounds.HasValue && bounds.Value.Width > 0 && bounds.Value.Height > 0)
             {
                 widthDp = bounds.Value.Width;
                 heightDp = bounds.Value.Height;
             }
-            else
+            else if (!hasSource || !(widthDp > 0) || !(heightDp > 0))
             {
-                widthDp = info.Width / density;
-                heightDp = info.Height / density;
+                // Host not ready (no window yet / reference assembly): keep the last snapshot.
+                return;
             }
 
             var dpi = (int)(160 * density);

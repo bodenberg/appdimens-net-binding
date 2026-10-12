@@ -1,87 +1,52 @@
-<div align="center">
+# AppDimens.Net.Density
 
-# 🧮 AppDimens.Net.Density
+**Density-aware scaling — multiplies by the display density (dpi ÷ 160), not by the window size.**
 
-**Density-aware scaling (`DSdp`) — physical-size fidelity across DPI buckets.**
+Part of **AppDimens for .NET** (C# port of appdimens-kmp) · requires `AppDimens.Net` (installed automatically).
+Works with .NET MAUI, WPF, Windows Forms, WinUI 3 and plain .NET (`net8.0` / `net9.0` / `net10.0`).
 
-Part of the **AppDimens for .NET** family · requires [AppDimens.Net](https://www.nuget.org/packages/AppDimens.Net/) (core).
+📖 **Complete guide:** [AppDimens.Net.Density documentation](https://github.com/bodenberg/appdimens-net-binding/blob/main/docs/AppDimens.Net.Density/README.md) · **API reference:** [API.md](https://github.com/bodenberg/appdimens-net-binding/blob/main/docs/AppDimens.Net.Density/API.md)
 
-[![NuGet](https://img.shields.io/nuget/v/AppDimens.Net.Density.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/AppDimens.Net.Density/)
-[![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg?style=flat-square)](https://github.com/bodenberg/appdimens-net-binding/blob/main/LICENSE)
-[![.NET](https://img.shields.io/badge/.NET-8.0%20%7C%209.0%20%7C%2010.0-8A2BE2.svg?style=flat-square)](https://dotnet.microsoft.com/)
+## What it does
 
-</div>
+The **Density** strategy scales the value by the display density relative to 160 dpi (Android *mdpi*): `16.DSdp()` is 16 at 160 dpi, 32 at 320 dpi and 48 at 480 dpi. It does **not** follow the window size — use it when an element should keep the same *physical* proportion across low- and high-density screens. On Windows the density is the monitor scale (100 % = 1.0, 150 % = 1.5).
 
----
+| `16` with this strategy | Phone 360×800 | Tablet 800×1280 | Desktop 1280×800 |
+|---|--:|--:|--:|
+| `16.DSdp()` | 16 | 16 | 16 |
+| `16.DHdp()` | 16 | 16 | 16 |
+| `16.DWdp()` | 16 | 16 | 16 |
+| `16.Sdp()` (core Scaled) | 19.2 | 42.7 | 42.7 |
 
-## 🎯 What is it?
-
-The **Density strategy** factors the device **pixel density** into dimension scaling,
-keeping perceived physical size more consistent between low-DPI budget phones and
-high-DPI flagships than pure dp math alone.
-
-## 📦 Installation
+## Install
 
 ```bash
 dotnet add package AppDimens.Net.Density
 ```
 
-> Depends on [AppDimens.Net](https://www.nuget.org/packages/AppDimens.Net/) (pulled automatically).
-> Attach a MAUI window first or pass an explicit `IAppDimensContext`.
+## Use
 
-## 🚀 Quick start
+1. Initialize once for your UI framework: MAUI `AppDimensMaui.AttachWindow(window)` · WPF `AppDimensWpf.Initialize(this)` ·
+   WinForms `AppDimensWinForms.Initialize(this)` · WinUI `AppDimensWinUI.Initialize(window)`.
+2. Call the extensions:
 
 ```csharp
-using AppDimens.Net.Density;
+using AppDimens.Net.Code.Density;
 
-float thumb = 72.DSdp();      // density-aware thumbnail
-float row   = 56.DHdp(ctx);   // height axis
-float dot   = 8.DSdpaPx();    // px, aspect-ratio adjusted
+float padding = 16.DSdp();    // smaller side of the window
+float header  = 56.DHdp();    // height
+float sidebar = 200.DWdp();   // width
+float tall    = 16.DSdpa();   // + aspect-ratio correction
+float split   = 16.DSdpi();   // ignores split-screen shrinking
 ```
 
-## 🧭 API
+With an explicit context: `16.DSdp(ctx)`, `16.DSdpPx(ctx)`, `DimenDensity.DSdp(ctx, 16)`, `24.ToDensityDp(ctx, qualifier: DpQualifier.Width)`.
 
-| Extension | Result |
-|---|---|
-| `v.DSdp(ctx)` · `v.DSdpa(ctx)` | smallest-width lane (± aspect ratio) |
-| `v.DHdp(ctx)` · `v.DWdp(ctx)` | height / width axis |
-| `…i` variants (`DSdpi`…) | ignore multi-window |
-| `v.DSdpPx(ctx)` … | pixel result |
-| `v.DSdpCustom(qualifier, inverter, imw, ar, k)` | full control incl. sensitivity |
-| `DimenDensity.DSdp(context, value)` | static form · `WarmupCache(ctx)` pre-heats |
-| `v.ToDensityDp/Px(v, ctx, …)` | generic kernel entry |
+## Português
 
-## 💡 When to use
-
-| Scenario | Recommendation |
-|---|---|
-| Physical-size-critical elements | ✅ Density |
-| Pure layout proportions | [Percent](https://www.nuget.org/packages/AppDimens.Net.Percent/) |
-| Real-world unit input (mm/inch) | [Units](https://www.nuget.org/packages/AppDimens.Net.Units/) |
-
-## ⚡ Performance
-
-Same engine as the core: snapshot-partitioned cache, allocation-free fast lanes,
-automatic invalidation on configuration changes.
-
-## 📚 Full package family
-
-[AppDimens.Net](https://www.nuget.org/packages/AppDimens.Net/) ·
-[Percent](https://www.nuget.org/packages/AppDimens.Net.Percent/) ·
-[Power](https://www.nuget.org/packages/AppDimens.Net.Power/) ·
-[Auto](https://www.nuget.org/packages/AppDimens.Net.Auto/) ·
-[Logarithmic](https://www.nuget.org/packages/AppDimens.Net.Logarithmic/) ·
-[Fluid](https://www.nuget.org/packages/AppDimens.Net.Fluid/) ·
-[Interpolated](https://www.nuget.org/packages/AppDimens.Net.Interpolated/) ·
-[Diagonal](https://www.nuget.org/packages/AppDimens.Net.Diagonal/) ·
-[Perimeter](https://www.nuget.org/packages/AppDimens.Net.Perimeter/) ·
-[Fill](https://www.nuget.org/packages/AppDimens.Net.Fill/) ·
-[Fit](https://www.nuget.org/packages/AppDimens.Net.Fit/) ·
-[Resize](https://www.nuget.org/packages/AppDimens.Net.Resize/) ·
-[Units](https://www.nuget.org/packages/AppDimens.Net.Units/) ·
-[Maui](https://www.nuget.org/packages/AppDimens.Net.Maui/) ·
-[Sdk meta-package](https://www.nuget.org/packages/AppDimens.Net.Sdk/)
+`dotnet add package AppDimens.Net.Density` → inicialize a janela uma vez → `using AppDimens.Net.Code.Density;` → `16.DSdp()`, `56.DHdp()`, `200.DWdp()`.
+Guia completo: [https://github.com/bodenberg/appdimens-net-binding/blob/main/docs/AppDimens.Net.Density/README.md](https://github.com/bodenberg/appdimens-net-binding/blob/main/docs/AppDimens.Net.Density/README.md)
 
 ---
 
-Apache-2.0 — © Jean Bodenberg · [Repository](https://github.com/bodenberg/appdimens-net-binding) · Formulas are bit-a-bit ports of [appdimens-kmp](https://github.com/bodenberg/appdimens-kmp)
+Apache-2.0 — © Jean Bodenberg · [Repository](https://github.com/bodenberg/appdimens-net-binding)

@@ -1,0 +1,35 @@
+<Project>
+  <!-- Shared settings for the WPF / Windows Forms / WinUI 3 adapters of AppDimens SDPS.
+       Each adapter is published as a self-contained NuGet package that embeds the
+       MAUI-free engine assemblies (no Microsoft.Maui dependency at runtime). -->
+  <PropertyGroup>
+    <!-- Windows-only UI frameworks can be compiled (not run) on Linux/macOS CI. -->
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
+    <IsPackable>true</IsPackable>
+    <AppDimensEmbedReferences>true</AppDimensEmbedReferences>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="$(MSBuildThisFileDirectory)AppDimens.Maui\AppDimens.Maui.csproj" PrivateAssets="all" />
+    <ProjectReference Include="$(MSBuildThisFileDirectory)AppDimens.Maui.Core\AppDimens.Maui.Core.csproj" PrivateAssets="all" />
+    <ProjectReference Include="$(MSBuildThisFileDirectory)AppDimens.Maui.Inverters\AppDimens.Maui.Inverters.csproj" PrivateAssets="all" />
+    <ProjectReference Include="$(MSBuildThisFileDirectory)AppDimens.Maui.Responsive\AppDimens.Maui.Responsive.csproj" PrivateAssets="all" />
+    <ProjectReference Include="$(MSBuildThisFileDirectory)AppDimens.Maui.Builders\AppDimens.Maui.Builders.csproj" PrivateAssets="all" />
+    <ProjectReference Include="$(MSBuildThisFileDirectory)AppDimens.Maui.Helpers\AppDimens.Maui.Helpers.csproj" PrivateAssets="all" />
+    <ProjectReference Include="$(MSBuildThisFileDirectory)AppDimens.Maui.Resources\AppDimens.Maui.Resources.csproj" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="\" />
+    <!-- Bucket tables (buckets.json + Dimens.*.xaml) copied next to the app at build time. -->
+    <None Include="$(MSBuildThisFileDirectory)AppDimens.Maui.Resources\Generated\**\*"
+          Pack="true"
+          PackagePath="contentFiles/any/any/Generated/%(RecursiveDir)%(Filename)%(Extension)"
+          PackageCopyToOutput="true"
+          BuildAction="None"
+          Visible="false" />
+  </ItemGroup>
+</Project>

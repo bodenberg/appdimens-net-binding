@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>net8.0-windows10.0.19041.0;net9.0-windows10.0.19041.0;net10.0-windows10.0.19041.0</TargetFrameworks>
+    <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
+    <RootNamespace>AppDimens.Sdps.WinUI</RootNamespace>
+    <AssemblyName>AppDimens.Sdps.WinUI</AssemblyName>
+    <PackageId>Bodenberg.AppDimens.Sdps.WinUI</PackageId>
+    <Description>Responsive SDP/HDP/WDP/SSP dimensions for WinUI 3 (Windows App SDK) — {sdps:Sdp Value=16} markup re-applied on window resize, plus 16.Sdp() helpers. Same engine as Bodenberg.AppDimens.Maui.Sdps, no MAUI dependency.</Description>
+    <PackageTags>winui;winui3;windowsappsdk;appdimens;sdp;ssp;responsive;dimensions;xaml;windows</PackageTags>
+    <!-- Library without XAML pages: no PRI / MSIX tooling needed. -->
+    <EnableMsixTooling>false</EnableMsixTooling>
+    <AppxGeneratePriEnabled>false</AppxGeneratePriEnabled>
+  </PropertyGroup>
+  <Import Project="..\AppDimens.Sdps.Desktop.props" />
+  <ItemGroup>
+    <!-- Lowest supported Windows App SDK, so apps on any 1.6+ version can consume the package.
+         Only its reference assemblies are needed: its MSBuild targets (PRI / AppX packaging) need
+         Visual Studio's MSBuild and are irrelevant for a library without XAML pages. Every WinUI 3
+         app references Microsoft.WindowsAppSDK directly, so consumers keep the full tooling. -->
+    <PackageReference Include="Microsoft.WindowsAppSDK" Version="$(AppDimensWindowsAppSdkVersion)" ExcludeAssets="build;buildTransitive" />
+  </ItemGroup>
+</Project>
