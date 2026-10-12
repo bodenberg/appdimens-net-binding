@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# Pack and (optionally) publish Bodenberg.AppDimens.Maui.Sdps to NuGet.org.
+# Pack and (optionally) publish Bodenberg.AppDimens.Maui.Sdps and its desktop adapters
+# (Bodenberg.AppDimens.Sdps.Wpf / .WinForms / .WinUI) to NuGet.org.
 # Usage:
 #   ./scripts/publish-nuget.sh           # pack + verification only
 #   NUGET_API_KEY=xxx ./scripts/publish-nuget.sh --push
@@ -97,6 +98,29 @@ fi
 echo "==> OK: $NUPKG"
 [[ -f "$SNUPKG" ]] && echo "==> OK: $SNUPKG"
 
+# Desktop adapters: self-contained packages embedding the MAUI-free engine.
+DESKTOP_PKGS=()
+for adapter in Wpf WinForms WinUI; do
+  proj="$ROOT/src/AppDimens.Sdps.$adapter/AppDimens.Sdps.$adapter.csproj"
+  id="Bodenberg.AppDimens.Sdps.$adapter"
+  echo "==> dotnet pack $id..."
+  dotnet pack "$proj" -c Release -o "$OUT_DIR"
+  pkg="$OUT_DIR/${id}.${VERSION}.nupkg"
+  [[ -f "$pkg" ]] || { echo "Package not found: $pkg" >&2; exit 1; }
+  for pattern in "AppDimens.Sdps.$adapter.dll" "AppDimens.Maui.dll" "AppDimens.Maui.Core.dll" "contentFiles/any/any/Generated/buckets.json" "README.md"; do
+    if ! grep -qF "$pattern" < <(unzip -Z1 "$pkg"); then
+      echo "MISSING from $id: $pattern" >&2
+      exit 1
+    fi
+  done
+  if grep -qiE 'Microsoft\.Maui' < <(unzip -Z1 "$pkg"); then
+    echo "$id must not embed Microsoft.Maui assemblies" >&2
+    exit 1
+  fi
+  echo "==> OK: $pkg"
+  DESKTOP_PKGS+=("$pkg")
+done
+
 if [[ "$PUSH" == true ]]; then
   if [[ -z "${NUGET_API_KEY:-}" ]]; then
     echo "Set NUGET_API_KEY for --push" >&2
@@ -105,6 +129,9 @@ if [[ "$PUSH" == true ]]; then
   echo "==> Pushing to NuGet.org..."
   # dotnet nuget push uploads the companion .snupkg automatically when it sits beside the .nupkg.
   dotnet nuget push "$NUPKG" --api-key "$NUGET_API_KEY" --source "$NUGET_SOURCE" --skip-duplicate
+  for pkg in "${DESKTOP_PKGS[@]}"; do
+    dotnet nuget push "$pkg" --api-key "$NUGET_API_KEY" --source "$NUGET_SOURCE" --skip-duplicate
+  done
   echo "==> Published. Wait for indexing: https://www.nuget.org/packages/${PKG_ID}"
 else
   echo "==> Pack complete (no push). To publish:"

@@ -24,9 +24,13 @@
     <Project Path="src/AppDimens.Net.Resize/AppDimens.Net.Resize.csproj" />
     <Project Path="src/AppDimens.Net.Sdk/AppDimens.Net.Sdk.csproj" />
     <Project Path="src/AppDimens.Net.Units/AppDimens.Net.Units.csproj" />
+    <Project Path="src/AppDimens.Net.WinForms/AppDimens.Net.WinForms.csproj" />
+    <Project Path="src/AppDimens.Net.WinUI/AppDimens.Net.WinUI.csproj" />
+    <Project Path="src/AppDimens.Net.Wpf/AppDimens.Net.Wpf.csproj" />
     <Project Path="src/AppDimens.Net/AppDimens.Net.csproj" />
   </Folder>
   <Folder Name="/tests/">
+    <Project Path="tests/AppDimens.Net.Desktop.Tests/AppDimens.Net.Desktop.Tests.csproj" />
     <Project Path="tests/AppDimens.Net.Tests/AppDimens.Net.Tests.csproj" />
   </Folder>
 </Solution>

@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>net8.0-windows;net9.0-windows;net10.0-windows</TargetFrameworks>
+    <TargetFrameworks Condition="$([MSBuild]::VersionGreaterThanOrEquals('$(NETCoreSdkVersion)', '11.0'))">$(TargetFrameworks);net11.0-windows</TargetFrameworks>
+    <UseWindowsForms>true</UseWindowsForms>
+    <RootNamespace>AppDimens.Sdps.WinForms</RootNamespace>
+    <AssemblyName>AppDimens.Sdps.WinForms</AssemblyName>
+    <PackageId>Bodenberg.AppDimens.Sdps.WinForms</PackageId>
+    <Description>Responsive SDP/HDP/WDP/SSP dimensions for Windows Forms — 120.SdpPx() / 14.SspPt() helpers that follow the form size and per-monitor DPI. Same engine as Bodenberg.AppDimens.Maui.Sdps, no MAUI dependency.</Description>
+    <PackageTags>winforms;windows-forms;appdimens;sdp;ssp;responsive;dimensions;dpi;windows</PackageTags>
+  </PropertyGroup>
+  <Import Project="..\AppDimens.Sdps.Desktop.props" />
+</Project>

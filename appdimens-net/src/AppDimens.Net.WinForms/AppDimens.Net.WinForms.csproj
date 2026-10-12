@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net8.0-windows;net9.0-windows;net10.0-windows</TargetFrameworks>
+    <TargetFrameworks Condition="$([MSBuild]::VersionGreaterThanOrEquals('$(NETCoreSdkVersion)', '11.0'))">$(TargetFrameworks);net11.0-windows</TargetFrameworks>
+    <UseWindowsForms>true</UseWindowsForms>
+    <RootNamespace>AppDimens.Net.WinForms</RootNamespace>
+    <AssemblyName>AppDimens.Net.WinForms</AssemblyName>
+    <PackageId>AppDimens.Net.WinForms</PackageId>
+    <Description>AppDimens .NET — Windows Forms integration: form scope that follows client size and per-monitor DPI, Apply(...) re-layout helper and dp → pixel / point converters.</Description>
+    <PackageTags>appdimens;winforms;windows-forms;sdp;ssp;responsive;dimension;dpi;windows</PackageTags>
+  </PropertyGroup>
+
+  <Import Project="..\AppDimens.Net.Desktop.props" />
+
+</Project>
