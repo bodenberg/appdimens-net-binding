@@ -82,6 +82,7 @@ MISSING=0
 for pattern in \
   "lib/net8.0/AppDimens.Maui.dll" \
   "lib/net10.0/AppDimens.Maui.dll" \
+  "lib/net10.0/AppDimens.Maui.Hosting.dll" \
   "contentFiles/any/any/Generated/buckets.json" \
   "contentFiles/any/any/Generated/Dimens.300.xaml" \
   "contentFiles/any/any/Generated/Dimens.Base.xaml"; do

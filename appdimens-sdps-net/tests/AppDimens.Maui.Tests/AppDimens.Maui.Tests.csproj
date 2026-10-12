@@ -23,6 +23,7 @@
     <ProjectReference Include="..\..\src\AppDimens.Maui.Inverters\AppDimens.Maui.Inverters.csproj" />
     <ProjectReference Include="..\..\src\AppDimens.Maui.Responsive\AppDimens.Maui.Responsive.csproj" />
     <ProjectReference Include="..\..\src\AppDimens.Maui\AppDimens.Maui.csproj" />
+    <ProjectReference Include="..\..\src\AppDimens.Maui.Hosting\AppDimens.Maui.Hosting.csproj" />
     <ProjectReference Include="..\..\src\AppDimens.Maui.Markup\AppDimens.Maui.Markup.csproj" />
     <ProjectReference Include="..\..\src\AppDimens.Maui.Xaml\AppDimens.Maui.Xaml.csproj" />
     <ProjectReference Include="..\..\src\AppDimens.Maui.Converters\AppDimens.Maui.Converters.csproj" />

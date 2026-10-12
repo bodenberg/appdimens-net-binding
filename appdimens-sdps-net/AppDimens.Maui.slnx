@@ -12,6 +12,7 @@
     <Project Path="src/AppDimens.Maui.Core/AppDimens.Maui.Core.csproj" />
     <Project Path="src/AppDimens.Maui.Extensions/AppDimens.Maui.Extensions.csproj" />
     <Project Path="src/AppDimens.Maui.Helpers/AppDimens.Maui.Helpers.csproj" />
+    <Project Path="src/AppDimens.Maui.Hosting/AppDimens.Maui.Hosting.csproj" />
     <Project Path="src/AppDimens.Maui.Inverters/AppDimens.Maui.Inverters.csproj" />
     <Project Path="src/AppDimens.Maui.Markup/AppDimens.Maui.Markup.csproj" />
     <Project Path="src/AppDimens.Maui.Resources/AppDimens.Maui.Resources.csproj" />

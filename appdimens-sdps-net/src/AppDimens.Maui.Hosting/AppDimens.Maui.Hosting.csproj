@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- .NET MAUI glue (MauiAppBuilder extension, window watcher, DeviceDisplay source).
+       Kept separate so AppDimens.Maui (the resolver) has no MAUI dependency and can be used
+       by the WPF / Windows Forms / WinUI 3 adapters. Types keep the AppDimens.Maui namespace. -->
+  <PropertyGroup>
+    <TargetFrameworks>net8.0;net9.0;net10.0</TargetFrameworks>
+    <TargetFrameworks Condition="$([MSBuild]::VersionGreaterThanOrEquals('$(NETCoreSdkVersion)', '11.0'))">$(TargetFrameworks);net11.0</TargetFrameworks>
+    <RootNamespace>AppDimens.Maui</RootNamespace>
+    <AssemblyName>AppDimens.Maui.Hosting</AssemblyName>
+    <Description>.NET MAUI hosting for AppDimens SDP: UseAppDimensSdps, window resize watcher and DeviceDisplay metrics source.</Description>
+    <IsPackable>true</IsPackable>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Maui.Essentials" Version="$(MauiVersion)" />
+    <PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AppDimens.Maui\AppDimens.Maui.csproj" />
+    <ProjectReference Include="..\AppDimens.Maui.Core\AppDimens.Maui.Core.csproj" />
+  </ItemGroup>
+</Project>

@@ -66,6 +66,17 @@ public class DisplaySourceTests
     }
 
     [Fact]
+    public void Maui_hosting_source_is_resolved_by_default()
+    {
+        var r = AppDimensResolver.Instance;
+        r.ResetForTesting();
+        r.Initialize(new AppDimensOptions { ScalingMode = ScalingMode.Continuous, WarmupAspectRatio = false }, force: true);
+
+        // AppDimens.Maui.Hosting is deployed with the MAUI meta-package: picked up by name.
+        Assert.IsType<MauiDisplayMetricsSource>(r.DisplaySource);
+    }
+
+    [Fact]
     public void Throwing_source_does_not_break_resolver()
     {
         var r = AppDimensResolver.Instance;

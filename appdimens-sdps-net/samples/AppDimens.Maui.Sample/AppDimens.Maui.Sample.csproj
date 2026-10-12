@@ -72,6 +72,7 @@
     <ProjectReference Include="..\..\src\AppDimens.Maui.Helpers\AppDimens.Maui.Helpers.csproj" />
     <ProjectReference Include="..\..\src\AppDimens.Maui.Builders\AppDimens.Maui.Builders.csproj" />
     <ProjectReference Include="..\..\src\AppDimens.Maui.Core\AppDimens.Maui.Core.csproj" />
+    <ProjectReference Include="..\..\src\AppDimens.Maui.Hosting\AppDimens.Maui.Hosting.csproj" />
   </ItemGroup>
 
   <ItemGroup>

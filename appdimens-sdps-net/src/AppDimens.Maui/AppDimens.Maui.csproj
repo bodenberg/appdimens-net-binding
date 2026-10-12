@@ -11,11 +11,6 @@
     <TrimmerRootDescriptor Include="ILLink.Descriptors.xml" />
   </ItemGroup>
   <ItemGroup>
-    <!-- PrivateAssets=all: MAUI does not flow to MAUI-free consumers (WPF / WinForms / WinUI adapters). -->
-    <PackageReference Include="Microsoft.Maui.Essentials" Version="$(MauiVersion)" PrivateAssets="all" />
-    <PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" PrivateAssets="all" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\AppDimens.Maui.Core\AppDimens.Maui.Core.csproj" />
     <ProjectReference Include="..\AppDimens.Maui.Inverters\AppDimens.Maui.Inverters.csproj" />
     <ProjectReference Include="..\AppDimens.Maui.Responsive\AppDimens.Maui.Responsive.csproj" />

@@ -1,6 +1,7 @@
 using AppDimens.Maui.Core;
 using AppDimens.Maui.Inverters;
 using AppDimens.Maui.Responsive;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 
 namespace AppDimens.Maui;
@@ -163,8 +164,8 @@ public sealed class AppDimensResolver
         return _displaySource;
     }
 
-    // Kept out-of-line so non-MAUI hosts never load Microsoft.Maui.Essentials: the JIT only
-    // resolves MauiDisplayMetricsSource (and its MAUI references) when this method runs.
+    // Non-MAUI hosts (no AppDimens.Maui.Hosting / Microsoft.Maui.Essentials deployed) end up
+    // with no source and keep the default snapshot until UseDisplaySource is called.
     [MethodImpl(MethodImplOptions.NoInlining)]
     private static IDisplayMetricsSource? TryCreateMauiDisplaySource()
     {
@@ -183,8 +184,19 @@ public sealed class AppDimensResolver
         }
     }
 
-    [MethodImpl(MethodImplOptions.NoInlining)]
-    private static IDisplayMetricsSource CreateMauiDisplaySource() => new MauiDisplayMetricsSource();
+    private const string MauiSourceType = "AppDimens.Maui.MauiDisplayMetricsSource";
+    private const string MauiHostingAssembly = "AppDimens.Maui.Hosting";
+
+    // The MAUI source lives in AppDimens.Maui.Hosting so this assembly stays MAUI-free
+    // (WPF / WinForms / WinUI adapters ship without it). Resolved by name at runtime.
+    [DynamicDependency(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor, MauiSourceType, MauiHostingAssembly)]
+    [UnconditionalSuppressMessage("Trimming", "IL2057", Justification = "Type preserved by DynamicDependency.")]
+    private static IDisplayMetricsSource CreateMauiDisplaySource()
+    {
+        var type = Type.GetType($"{MauiSourceType}, {MauiHostingAssembly}", throwOnError: false)
+            ?? throw new InvalidOperationException($"{MauiHostingAssembly} is not deployed (non-MAUI host).");
+        return (IDisplayMetricsSource)Activator.CreateInstance(type)!;
+    }
 
     private void OnMetricsProviderChanged(object? sender, EventArgs e) => ApplyMetricsChange();
 
@@ -201,7 +213,7 @@ public sealed class AppDimensResolver
     /// <summary>
     /// Installs window-bounds tracking so values follow the resized <b>window</b> instead of
     /// the physical display (desktop, tablets in split-screen, foldables).
-    /// Provided by <see cref="AppDimensSdpsWindow.Attach(Microsoft.Maui.Controls.Window)"/>.
+    /// Provided by <c>AppDimensSdpsWindow.Attach(Window)</c> (AppDimens.Maui.Hosting).
     /// </summary>
     public void TrackWindowBounds(double widthDp, double heightDp)
     {
