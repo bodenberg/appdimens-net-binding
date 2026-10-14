@@ -11,7 +11,7 @@ foldable, TV and desktop window.
   `.Ssps`, `.Dynamic`.
 
 📖 **Documentation for every package (guides + complete API reference): [docs/](docs/README.md)** ·
-🇧🇷 [Resumo em português](#resumo-em-português)
+🤖 [Agent skills](#agent-skills) · 🇧🇷 [Resumo em português](#resumo-em-português)
 
 ---
 
@@ -121,7 +121,8 @@ appdimens-net-binding/
 ├── tools/                             # ApiDocGen (.NET API docs), aar-api-doc.py, sync-guides.py
 ├── scripts/generate-docs.sh           # Regenerates docs/*/API.md and mirrored guides
 ├── build-bindings.sh                  # Builds the three bindings (Release, net10.0-android36.0)
-└── skill/SKILL.md                     # Maintainer / agent guide
+├── skills/<name>/SKILL.md             # Agent skills: how to USE each library set (one per set)
+└── MAINTAINING.md                     # Maintainer guide (build, pack, AAR sync, release, conventions)
 ```
 
 ---
@@ -165,7 +166,23 @@ Release workflow to [`nupkgs/<version>/`](nupkgs/).
   tests + pack, desktop tests on `windows-latest`, Android bindings for `net8/9/10-android`.
 * **Release** (`.github/workflows/release.yml`, manual `workflow_dispatch`): builds, tests and packs **every** package,
   uploads them as the `nuget-packages` artifact and, with `push_nuget = true`, pushes them to NuGet.org
-  (secret `NUGET_API_KEY`).
+  (secret `NUGET_API_KEY`); with `commit_packages = true` it commits the `.nupkg`/`.snupkg` files to `nupkgs/<version>/`.
+
+Full maintainer guide (layout, architecture, versioning, AAR sync, docs conventions): [MAINTAINING.md](MAINTAINING.md).
+
+---
+
+## Agent skills
+
+[`skills/`](skills/README.md) has one **Agent Skill** per library set, so AI coding agents (Claude Code and others)
+know how to install, initialize and use the libraries in *your* app. Copy the folder into `.claude/skills/`:
+
+| Skill | For |
+|-------|-----|
+| [`appdimens-sdps-net`](skills/appdimens-sdps-net/SKILL.md) | `Bodenberg.AppDimens.Maui.Sdps` + `Bodenberg.AppDimens.Sdps.Wpf` / `.WinForms` / `.WinUI` |
+| [`appdimens-net`](skills/appdimens-net/SKILL.md) | `AppDimens.Net` core, `AppDimens.Net.Sdk`, strategies, `.Maui` / `.Wpf` / `.WinForms` / `.WinUI` |
+| [`appdimens-android-sdps-ssps`](skills/appdimens-android-sdps-ssps/SKILL.md) | `Bodenberg.AppDimens.Sdps`, `Bodenberg.AppDimens.Ssps` (Android, `@dimen/_16sdp`) |
+| [`appdimens-android-dynamic`](skills/appdimens-android-dynamic/SKILL.md) | `Bodenberg.AppDimens.Dynamic` (Android, code-only strategies) |
 
 ---
 
@@ -193,6 +210,10 @@ WinUI 3 e Android**:
 Todos os pacotes estão na versão **3.6.1**. Para começar, veja a tabela [Which package do I need?](#which-package-do-i-need)
 e abra o guia do seu framework em [docs/](docs/README.md) — cada guia é passo a passo, com exemplos completos para cada
 caso, e tem a referência completa da API.
+
+Para agentes de IA, [`skills/`](skills/README.md) traz **uma skill por conjunto de bibliotecas** (SDPS nativo,
+AppDimens.Net, bindings Android Sdps/Ssps e Dynamic) — copie a pasta para `.claude/skills/` do seu projeto. O guia de
+manutenção do repositório está em [MAINTAINING.md](MAINTAINING.md).
 
 ## License
 

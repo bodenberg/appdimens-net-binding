@@ -5,6 +5,9 @@ and an **API reference** listing every public type and member.
 
 > **Not sure where to start?** Pick your UI framework in [Which package do I need?](#which-package-do-i-need), open its
 > guide and follow the steps — every code sample in these guides is compile-checked.
+>
+> **Using an AI coding agent?** Give it the skill for your library set from [`skills/`](../skills/README.md)
+> (one per set: SDPS native, AppDimens.Net, Android Sdps/Ssps, Android Dynamic).
 
 ---
 
@@ -81,9 +84,12 @@ platforms use the native packages above.
 * `API.md` files are generated — never edit them by hand.
 * Guides of `Bodenberg.*` packages mirror their package READMEs (edit the README, then regenerate).
 * Guides of `AppDimens.Net.*` live here; their short NuGet READMEs link back to them.
+* When a public API or setup call changes, update the matching agent skill in [`skills/`](../skills/README.md) too.
+  Maintainer guide: [MAINTAINING.md](../MAINTAINING.md).
 
 ## Português
 
 Cada pacote tem um **guia** (passo a passo, com exemplos completos) e uma **referência de API** completa. Comece pela
 tabela [Which package do I need?](#which-package-do-i-need): escolha seu framework (MAUI, WPF, Windows Forms, WinUI 3 ou
 Android nativo), abra o guia e siga os passos. Todos os exemplos de código dos guias são verificados por compilação.
+Para agentes de IA há uma skill por conjunto de bibliotecas em [`skills/`](../skills/README.md).

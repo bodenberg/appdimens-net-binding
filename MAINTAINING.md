@@ -1,9 +1,8 @@
----
-name: appdimens-net-binding
-description: Working on the AppDimens .NET monorepo — native responsive-dimension libraries for .NET MAUI, WPF, Windows Forms and WinUI 3 (SDPS family in appdimens-sdps-net, AppDimens.Net family in appdimens-net) and the Android AAR bindings (Sdps/Ssps/Dynamic). Use for building, testing, versioning, AAR sync, packing/publishing NuGet packages, desktop adapters and documentation (docs/ guides + generated API references).
----
+# Maintaining AppDimens .NET
 
-# AppDimens .NET — Monorepo Guide
+Maintainer guide for this monorepo: layout, architecture, build/test/pack, CI/release and conventions.
+For **using** the libraries in an app, see [docs/](docs/README.md) and the per-library agent skills in
+[skills/](skills/README.md).
 
 Responsive-dimension ecosystem for .NET. **26 NuGet packages**, all versioned in lockstep (currently **3.6.1**):
 
@@ -23,6 +22,7 @@ Responsive-dimension ecosystem for .NET. **26 NuGet packages**, all versioned in
 | `appdimens-{sdps,ssps,dynamic}-net-binding/` | `<X>.Binding/` (csproj + `Jars/*.aar` + `Maven/` pom/module/javadoc + `Transforms/` + `Additions/`), `<X>.SmokeTest/`, `scripts/sync-aar-from-maven.sh` | `Bodenberg.AppDimens.{Sdps,Ssps,Dynamic}` |
 | `docs/<PackageId>/` | `README.md` guide + generated `API.md` for every package; index `docs/README.md` | — |
 | `tools/` | `ApiDocGen` (MetadataLoadContext API docs), `aar-api-doc.py` (javap → C# names), `sync-guides.py` | — |
+| `skills/<name>/` | Agent skills for **using** each library set (`SKILL.md`, one per set) | — |
 
 ## Architecture notes
 
@@ -86,12 +86,15 @@ Requirements: .NET 10 SDK (`global.json` per folder), runtimes 8/9 for multi-tar
   guides are mirrors of the package READMEs (`tools/sync-guides.py`); every `API.md` is generated. Run
   `./scripts/generate-docs.sh` after API or README changes. C# samples must compile (verify by extracting the code blocks
   into a scratch project referencing the packages).
+- **Skills** (`skills/<name>/SKILL.md`) describe how to *use* each library set (SDPS native, AppDimens.Net, Android
+  Sdps/Ssps, Android Dynamic). Update the matching skill whenever a public API, setup call or version changes.
 - **Historical docs** (`appdimens-sdps-net/docs/AUDIT-*`, `appdimens-net/AUDIT_REPORT.md`, `appdimens-net/PLAN.md`) are dated
   snapshots — do not rewrite them; only living docs (READMEs, LLMS.txt, docs/, DOCUMENTATION/) are updated.
 
 ## Common tasks
 
-- **Bump package version**: the `<Version>` locations above + install snippets in README.md / LLMS.txt / package READMEs.
+- **Bump package version**: the `<Version>` locations above + install snippets in README.md / LLMS.txt / package READMEs /
+  `skills/*/SKILL.md`.
 - **New upstream Maven release**: see AAR sync above; rebuild + `./scripts/generate-docs.sh` (refreshes binding API.md).
 - **New public API**: XML-doc it (shows up in `API.md`), regenerate docs, add a sample to the package guide.
 - **Publish**: dispatch `release.yml` with `push_nuget=true`, or run the two pack scripts with `--push` plus the bindings

@@ -55,7 +55,8 @@ appdimens-net-binding/
 ├── tools/                             # ApiDocGen, aar-api-doc.py, sync-guides.py
 ├── scripts/generate-docs.sh           # Regenera docs/
 ├── build-bindings.sh                  # Builda os 3 bindings
-└── skill/SKILL.md                     # Guia operacional para agentes
+├── skills/<nome>/SKILL.md             # Skills de agente: como USAR cada conjunto de bibliotecas
+└── MAINTAINING.md                     # Guia de manutenção (build, pack, sync AAR, release, convenções)
 ```
 
 ## Build, teste e pack
@@ -77,14 +78,20 @@ Libs desktop compilam em qualquer SO (`EnableWindowsTargeting`); testes desktop 
 - `.github/workflows/ci.yml`: SDPS (testes + pack), AppDimens.Net (testes + pack), testes desktop em windows-latest,
   bindings net8/9/10-android.
 - `.github/workflows/release.yml` (manual): builda/testa/empacota **todos** os pacotes → artefato `nuget-packages`;
-  `push_nuget=true` publica no NuGet.org (secret `NUGET_API_KEY`).
+  `push_nuget=true` publica no NuGet.org (secret `NUGET_API_KEY`); `commit_packages=true` commita os .nupkg/.snupkg
+  em `nupkgs/<versão>/`.
 
 ## Documentação
 
 - Índice: docs/README.md (guia + API.md de cada um dos 26 pacotes)
 - README raiz: README.md · Port KMP: appdimens-net/README.md, appdimens-net/DOCUMENTATION/, appdimens-net/LLMS.txt
 - MAUI SDPS: appdimens-sdps-net/README.md · Bindings: appdimens-*-net-binding/README.md
-- Skill do projeto: skill/SKILL.md
+- Manutenção do repositório: MAINTAINING.md
+- Skills de agente (uma por conjunto, para usar as bibliotecas): skills/README.md
+  - skills/appdimens-sdps-net/SKILL.md — Maui.Sdps + Sdps.Wpf/WinForms/WinUI
+  - skills/appdimens-net/SKILL.md — AppDimens.Net (núcleo, estratégias, Maui/Wpf/WinForms/WinUI)
+  - skills/appdimens-android-sdps-ssps/SKILL.md — bindings Android Sdps e Ssps (@dimen)
+  - skills/appdimens-android-dynamic/SKILL.md — binding Android Dynamic (estratégias em código)
 
 ## Links
 
