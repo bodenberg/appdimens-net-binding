@@ -1,6 +1,6 @@
 ---
 name: appdimens-net
-description: Use the AppDimens.Net family — the pure C# port of appdimens-kmp (AppDimens.Net core, AppDimens.Net.Sdk and the Auto/Density/Diagonal/Fill/Fit/Fluid/Interpolated/Logarithmic/Percent/Perimeter/Power/Resize/Units strategies, plus the AppDimens.Net.Maui/.Wpf/.WinForms/.WinUI integrations) — for responsive sizes in .NET apps (16.Sdp(), 24.FSdp(), 50.SpaceWDp(ctx), {ad:Sdp 16}, HostDimensScope, FakeAppDimensContext). Use when an app references AppDimens.Net* packages or namespaces, or the user wants scaling strategies (fluid, percent, auto, power…) in MAUI, WPF, WinForms, WinUI, Avalonia, Uno, console or tests.
+description: Use the AppDimens.Net family — the pure C# port of appdimens-kmp (AppDimens.Net core, AppDimens.Net.Sdk and the Auto/Density/Diagonal/Fill/Fit/Fluid/Interpolated/Logarithmic/Percent/Perimeter/Power/Resize/Units strategies, AppDimens.Net.Custom (own strategies: Cdp/Csp, JSON, free-form formulas), plus the AppDimens.Net.Maui/.Wpf/.WinForms/.WinUI integrations) — for responsive sizes in .NET apps (16.Sdp(), 24.FSdp(), 50.SpaceWDp(ctx), {ad:Sdp 16}, HostDimensScope, FakeAppDimensContext). Use when an app references AppDimens.Net* packages or namespaces, or the user wants scaling strategies (fluid, percent, auto, power…) or their own custom scaling strategy/config per device type in MAUI, WPF, WinForms, WinUI, Avalonia, Uno, console or tests.
 ---
 
 # AppDimens.Net (KMP port) — core, strategies and UI integrations
@@ -96,6 +96,24 @@ Each strategy `X` lives in `AppDimens.Net.Code.X` with `{P}Sdp/{P}Hdp/{P}Wdp`, s
 | `.Density` | `DSdp` | 16 / 16 / 16 | follows DPI, not window size |
 
 Beginner rule: `Sdp` for layout, `Ssp` for text; switch an over-growing value to `FSdp` or `ASdp`.
+
+**Custom strategies** (`AppDimens.Net.Custom`, unreleased — on `main`): when no built-in passes QA, or one growth law must be shared with other platforms (same JSON format), define your own instead of call-site `if`s:
+
+```csharp
+using AppDimens.Net.Custom;
+var brand = ScalingStrategy.Define("brand", b =>
+{
+    b.SetReference(360, 640);
+    b.Curve = ScalingCurve.Power(0.8f);                 // Linear/Power/Logarithmic/Interpolated/Constant/Breakpoints
+    b.Clamp(0.85f, 1.6f);                               // factor bounds; ClampValue(min, max) bounds the dp
+    b.On(DeviceClass.Tablet, r => r.Curve = ScalingCurve.Expression("1 + 0.4 * ln(ratio)"));  // free-form formula
+    b.SetFormula("max(scaled, base)");                  // optional per-value formula (cached lane)
+});
+float pad = 16.Cdp(brand); float title = 20.Csp(brand);   // dp / sp units; CdpPx, CspDp, CspPx
+ScalingStrategies.LoadJson(json);                         // or ScalingStrategies.Default = brand / CustomDimens.Use(brand)
+```
+
+Start from a built-in or preset (`BuiltInStrategies.Power.Extend("x", …)`, `CustomPresets.TabletFriendly`/`TvSafe`/`Wearable`/`GameHud`). Formula variables: `sw width height shortSide longSide diagonal perimeter aspectRatio density fontScale`, flags `landscape portrait multiWindow phone tablet desktop tv watch car vr`, `ratio axis ref` (curves) and `base scaled factor` (formulas). Verify with `brand.ExplainCurrent()`. On desktop OSes the device class is `desktop` unless `CustomDimens.DeviceClassResolver` says otherwise. Guide: docs/AppDimens.Net.Custom/README.md.
 
 Special packages:
 

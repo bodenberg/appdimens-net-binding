@@ -26,10 +26,15 @@ public static class DimenCache
     public const float AdjustmentScale = 0.10f / 30f;     // 0.0033333334f
     public const float SensitivityDefault = 0.08f / 30f;  // 0.0026666667f
 
+    /// <summary>
+    /// Calculation types. <see cref="Custom"/> (15) is the last value the 4-bit key field can
+    /// hold: custom keys carry the strategy id in the sensitivity bits instead
+    /// (see <see cref="BuildCustomKey"/>).
+    /// </summary>
     public enum CalcType
     {
         Auto, Diagonal, Fill, Fit, Fluid, Interpolated, Logarithmic,
-        Percent, Perimeter, Power, Resize, Scaled, Unities, AspectRatio, Density,
+        Percent, Perimeter, Power, Resize, Scaled, Unities, AspectRatio, Density, Custom,
     }
 
     internal const int CtPercent = (int)CalcType.Percent;
@@ -41,6 +46,10 @@ public static class DimenCache
     internal const int CtPerimeter = (int)CalcType.Perimeter;
     internal const int CtPower = (int)CalcType.Power;
     internal const int CtLogarithmic = (int)CalcType.Logarithmic;
+    internal const int CtCustom = (int)CalcType.Custom;
+
+    /// <summary>Largest strategy id that fits the 16-bit field of <see cref="BuildCustomKey"/>.</summary>
+    public const int MaxCustomStrategyKey = 0xFFFF;
 
     public enum ValueType
     {
@@ -551,12 +560,42 @@ public static class DimenCache
         BuildKey((float)baseValue, isLandscape, ignoreMultiWindows, calcType,
             qualifier, inverter, applyAspectRatio, valueType, customSensitivityK);
 
+    /// <summary>
+    /// Packs a key for a user-defined scaling strategy (<see cref="CalcType.Custom"/>).
+    /// Same layout as <see cref="BuildKey(float, bool, bool, CalcType, DpQualifier, Inverter, bool, ValueType, float?)"/>,
+    /// except bits [23-8] hold <paramref name="strategyKey"/> (the id the custom module assigns
+    /// to each registered strategy) instead of the sensitivity fingerprint, so two strategies
+    /// never alias. Qualifier/inverter bits are zero (the axis is part of the strategy), except
+    /// bit [2], which carries <paramref name="cacheable"/>: factor-only strategies pass
+    /// <c>false</c> and resolve with one multiply; value-dependent ones (value clamps,
+    /// per-value lambdas) pass <c>true</c> and are stored in the snapshot partition.
+    /// </summary>
+    public static long BuildCustomKey(
+        float baseValue, int strategyKey, bool isLandscape, bool ignoreMultiWindows,
+        ValueType valueType, bool cacheable = true)
+    {
+        if (!float.IsFinite(baseValue)) throw new ArgumentException("baseValue must be finite", nameof(baseValue));
+        if (strategyKey is < 0 or > MaxCustomStrategyKey)
+            throw new ArgumentOutOfRangeException(nameof(strategyKey), strategyKey, "strategyKey out of range");
+        var bv = BitConverter.SingleToInt32Bits(baseValue) & 0xFFFFFFFFL;
+        var ct = (long)CtCustom & 0xFL;
+        var vt = (uint)valueType & 0x7L;
+        var id = strategyKey & 0xFFFFL;
+        var land = isLandscape ? 1L : 0L;
+        var imw = ignoreMultiWindows ? 1L : 0L;
+        var cache = cacheable ? 1L : 0L;
+        return (bv << 31) | (ct << 27) | (vt << 24) | (id << 8) | (cache << 2) | (land << 1) | imw;
+    }
+
     internal static bool HasCustomSensitivityKey(long key) =>
+        (int)((key >>> 27) & 0xFL) != CtCustom &&
         ((key >>> 8) & 0xFFFFL) != 0xFFFFL;
 
     internal static bool ShouldBypassCache(long key)
     {
         var ct = (int)((key >> 27) & 0xFL);
+        // Custom strategies declare cacheability in bit 2 (see BuildCustomKey).
+        if (ct == CtCustom) return (key & 0x4L) == 0L;
         var hasAr = (key >> 63) != 0L;
         if (HasCustomSensitivityKey(key)) return false;
 

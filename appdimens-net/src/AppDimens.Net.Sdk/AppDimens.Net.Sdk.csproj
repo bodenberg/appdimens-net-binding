@@ -24,6 +24,7 @@
     <ProjectReference Include="..\AppDimens.Net.Perimeter\AppDimens.Net.Perimeter.csproj" />
     <ProjectReference Include="..\AppDimens.Net.Resize\AppDimens.Net.Resize.csproj" />
     <ProjectReference Include="..\AppDimens.Net.Units\AppDimens.Net.Units.csproj" />
+    <ProjectReference Include="..\AppDimens.Net.Custom\AppDimens.Net.Custom.csproj" />
   </ItemGroup>
 
 </Project>

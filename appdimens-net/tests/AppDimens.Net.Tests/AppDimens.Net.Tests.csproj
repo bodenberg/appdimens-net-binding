@@ -19,4 +19,8 @@
     <ProjectReference Include="..\..\benchlab\AppDimens.BenchLab\AppDimens.BenchLab.Core\AppDimens.BenchLab.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="Fixtures\custom-strategy-fixture.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
 </Project>

@@ -61,6 +61,7 @@ Android parity (pre-computed buckets, `{sdp:16}` short markup, 30 functions incl
 | `AppDimens.Net.Power` | Power strategy (`PWSdp`) with sensitivity `k` | [guide](AppDimens.Net.Power/README.md) | [API](AppDimens.Net.Power/API.md) |
 | `AppDimens.Net.Resize` | Auto-fit text / squares in boxes | [guide](AppDimens.Net.Resize/README.md) | [API](AppDimens.Net.Resize/API.md) |
 | `AppDimens.Net.Units` | mm / cm / inch → dp / px / sp | [guide](AppDimens.Net.Units/README.md) | [API](AppDimens.Net.Units/API.md) |
+| `AppDimens.Net.Custom` *(unreleased)* | Your own strategies (`Cdp`/`Csp`): builder + JSON, rules per device/screen, free-form formulas, presets | [guide](AppDimens.Net.Custom/README.md) | [API](AppDimens.Net.Custom/API.md) |
 
 ## Android bindings
 
