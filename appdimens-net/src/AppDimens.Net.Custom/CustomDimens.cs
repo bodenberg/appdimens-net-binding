@@ -37,17 +37,17 @@ public static class CustomDimens
         ScalingStrategy.Formula(formula, id, register);
 
     /// <summary>
-    /// Strategy from a code formula, <c>(base, screen) =&gt; dp</c> (not JSON-serializable);
-    /// see <see cref="ScalingStrategy.Formula(ScalingFormula, string?, bool?)"/>.
+    /// Strategy from a typed code formula, <c>s =&gt; s.Base * s.Pow(s.Sw / 360f, 0.8f)</c> (not JSON-serializable);
+    /// see <see cref="ScalingStrategy.Formula(Func{FormulaScope, float}, string?, bool?)"/>.
     /// </summary>
-    public static ScalingStrategy Formula(ScalingFormula formula, string? id = null, bool? register = null) =>
+    public static ScalingStrategy Formula(Func<FormulaScope, float> formula, string? id = null, bool? register = null) =>
         ScalingStrategy.Formula(formula, id, register);
 
     /// <summary>
-    /// Strategy from a programmable factor, <c>screen =&gt; factor</c> (runs once per window, then one multiply
+    /// Strategy from a programmable factor, <c>s =&gt; s.Clamp(s.Width / 360f, 0.85f, 1.8f)</c> (runs once per window, then one multiply
     /// per value); see <see cref="global::AppDimens.Net.Custom.CustomScaleStrategy.Create"/>.
     /// </summary>
-    public static ScalingStrategy CustomScaleStrategy(ScreenFactor factor, string? id = null, bool? register = null) =>
+    public static ScalingStrategy CustomScaleStrategy(Func<ScreenScope, float> factor, string? id = null, bool? register = null) =>
         global::AppDimens.Net.Custom.CustomScaleStrategy.Create(factor, id, register);
 
     /// <summary>Default device class: UI mode first, then desktop operating systems, then size.</summary>

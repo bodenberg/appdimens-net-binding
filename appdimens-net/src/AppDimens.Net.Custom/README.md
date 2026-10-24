@@ -15,16 +15,16 @@ dotnet add package AppDimens.Net.Custom
 
 ## Use
 
-The simplest way is to write the formula. `base` is the value you pass, and the result is the scaled value:
+The simplest way is to write the math as ordinary C# on one line. IntelliSense completes `s.Base`, `s.Sw`, `s.Width`, `s.Tablet`, `s.Pow`, `s.Clamp`…, and typos fail at compile time:
 
 ```csharp
 using AppDimens.Net.Custom;
 
-float padding = 16.Cdp("base * pow(sw / 360, 0.8)");                                  // inline
-var hud = ScalingStrategy.Formula("base * (tablet ? 0.9 : 1) * clamp(sw / 360, 0.85, 1.6)");
+var product = CustomScaleStrategy.Create(s => s.Clamp(s.Width / 360f, 0.85f, 1.80f));   // factor × every value
+var hud = ScalingStrategy.Formula(s => s.Base * s.Pow(s.Sw / 360f, 0.8f));             // final value (Base = 16 in 16.Cdp)
+float padding = 16.Cdp(product);
 float score = 18.Csp(hud);
-var fancy = CustomDimens.Formula((b, screen) => b * MathF.Pow(screen.SmallestWidthDp / 360f, 0.8f));  // plain C#
-var product = CustomScaleStrategy.Create(screen => Math.Clamp(screen.WidthDp / 360f, 0.85f, 1.8f));  // programmable factor
+var remote = ScalingStrategy.Formula("base * pow(sw / 360, 0.8)");                      // same thing as text, for JSON / remote config
 ```
 
 For rules per device, factor bounds or a font-scale policy, use the full configuration:

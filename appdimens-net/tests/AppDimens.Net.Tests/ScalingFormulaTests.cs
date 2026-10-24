@@ -112,13 +112,13 @@ public class ScalingFormulaTests : IDisposable
     [Fact]
     public void CodeFormula_HasNoLimits()
     {
-        var s = ScalingStrategy.Formula((b, screen) => b * MathF.Pow(screen.SmallestWidthDp / 360f, 0.8f) + (screen.IsLandscape ? 2f : 0f));
+        var s = ScalingStrategy.Formula(x => x.Base * x.Pow(x.Sw / 360f, 0.8f) + (x.Landscape ? 2f : 0f));
         Assert.Equal(16f * MathF.Pow(411f / 360f, 0.8f), s.Scale(16f, Phone), 5);
         Assert.Equal(16f * MathF.Pow(800f / 360f, 0.8f) + 2f, s.Scale(16f, Tablet), 4);
         Assert.True(s.IsValueDependent);
         Assert.StartsWith("formula#", s.Id);
-        Assert.NotEqual(s.Id, CustomDimens.Formula((b, _) => b).Id);
-        var named = ScalingStrategy.Formula((b, _) => b * 3f, id: "hud");
+        Assert.NotEqual(s.Id, CustomDimens.Formula(x => x.Base).Id);
+        var named = ScalingStrategy.Formula(x => x.Base * 3f, id: "hud");
         Assert.Same(named, ScalingStrategies.Get("hud"));
         Assert.Throws<InvalidOperationException>(() => s.ToJson());
     }
@@ -126,7 +126,7 @@ public class ScalingFormulaTests : IDisposable
     [Fact]
     public void ProgrammableFactor_IsScreenOnly_AndMultipliesEveryValue()
     {
-        var product = CustomScaleStrategy.Create(screen => Math.Clamp(screen.WidthDp / 360f, 0.85f, 1.80f));
+        var product = CustomScaleStrategy.Create(x => x.Clamp(x.Width / 360f, 0.85f, 1.80f));
         Assert.False(product.IsValueDependent);
         Assert.Equal(411f / 360f, product.Factor(Phone), 6);
         Assert.Equal(1.8f, product.Factor(Tablet)); // 1280 / 360 clamped
@@ -139,6 +139,34 @@ public class ScalingFormulaTests : IDisposable
         Assert.Equal(20f, named.Scale(16f, Phone));
         var e = Assert.Throws<InvalidOperationException>(() => CustomScaleStrategy.Create(_ => float.NaN).Factor(Phone));
         Assert.Contains("non-finite", e.Message);
+    }
+
+    [Fact]
+    public void CodeScope_MatchesTheTextLanguage()
+    {
+        // Same names, same numbers: the code form and the text form agree.
+        var pairs = new (ScalingStrategy Code, string Text)[]
+        {
+            (ScalingStrategy.Formula(x => x.Base * x.Pow(x.Sw / 360f, 0.8f)), "base * pow(sw / 360, 0.8)"),
+            (ScalingStrategy.Formula(x => x.Base * x.Ratio), "base * ratio"),
+            (ScalingStrategy.Formula(x => x.Base * (x.Tablet ? 0.9f : 1f) * x.Clamp(x.Width / 360f, 0.85f, 1.6f)),
+                "base * (tablet ? 0.9 : 1) * clamp(width / 360, 0.85, 1.6)"),
+            (ScalingStrategy.Formula(x => x.Round(x.Base * x.Lerp(1f, x.AspectRatio, 0.1f))), "round(base * lerp(1, aspectRatio, 0.1))"),
+            (ScalingStrategy.Formula(x => x.Base * x.Smoothstep(300f, 900f, x.Diagonal) + x.Sqrt(x.ShortSide) - x.Ln(x.LongSide)),
+                "base * smoothstep(300, 900, diagonal) + sqrt(shortSide) - ln(longSide)"),
+            (ScalingStrategy.Formula(x => x.Max(x.Base, x.Min(x.Perimeter / 100f, x.Exp(x.Log10(x.Density))))),
+                "max(base, min(perimeter / 100, exp(log10(density))))"),
+            (ScalingStrategy.Formula(x => x.Abs(-x.Base) * (x.Landscape && !x.Portrait ? 2f : 1f) * (x.Phone || x.Desktop ? 1f : 0.5f)),
+                "abs(-base) * (landscape && !portrait ? 2 : 1) * (phone || desktop ? 1 : 0.5)"),
+        };
+        foreach (var (code, text) in pairs)
+            foreach (var screen in new[] { Phone, Tablet })
+                foreach (var b in new[] { 1f, 16f, 48f })
+                    Assert.True(Math.Abs(ScalingStrategy.Formula(text).Scale(b, screen) - code.Scale(b, screen)) <= 1e-4f * Math.Max(1f, Math.Abs(code.Scale(b, screen))), text);
+        var tvScreen = new ScreenSnapshot(960, 540, 540, 2f, isLandscape: true, device: DeviceClass.Tv);
+        var factor = CustomScaleStrategy.Create(x => x.Tv ? x.Height / 540f : x.Ratio);
+        Assert.Equal(1f, factor.Factor(tvScreen));
+        Assert.Equal(411f / 300f, factor.Factor(Phone), 6);
     }
 
     [Fact]
@@ -160,7 +188,7 @@ public class ScalingFormulaTests : IDisposable
     public void Explain_ShowsTheFormula()
     {
         Assert.EndsWith("then Formula(base * 2)", ScalingStrategy.Formula("base * 2").Explain(Phone));
-        Assert.EndsWith("then transform", ScalingStrategy.Formula((b, _) => b).Explain(Phone));
+        Assert.EndsWith("then transform", ScalingStrategy.Formula(x => x.Base).Explain(Phone));
     }
 
     [Fact]

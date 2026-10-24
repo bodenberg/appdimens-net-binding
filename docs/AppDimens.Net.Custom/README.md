@@ -27,57 +27,66 @@ Works with .NET MAUI, WPF, Windows Forms, WinUI 3 and plain .NET (`net8.0` / `ne
 
 ## Quick start: just write the formula
 
-The easiest way is to write the formula yourself. You get the value you pass (`base`, for example 16) and the screen, and you return the scaled value. There is nothing to configure.
+The easiest way is to write the math yourself, as ordinary C# on one line. Inside the lambda, IntelliSense completes everything you can use (`s.Base`, `s.Sw`, `s.Width`, `s.Tablet`, `s.Pow`, `s.Clamp`…), and a typo is a compile error. There is nothing to configure.
 
 ```csharp
 using AppDimens.Net.Custom;
 
-// 1. Inline: the formula is the value
-var padding = 16.Cdp("base * pow(sw / 360, 0.8)");
-var title = 20.Csp("base * min(sw / 360, 1.3)");
-
-// 2. Named, to reuse it everywhere
-public static readonly ScalingStrategy Hud = ScalingStrategy.Formula("base * (tablet ? 0.9 : 1) * clamp(sw / 360, 0.85, 1.6)");
-var icon = 48.Cdp(Hud);
-
-// 3. In code, with no limits (not JSON-serializable)
-public static readonly ScalingStrategy Fancy = CustomDimens.Formula((b, screen) => b * MathF.Pow(screen.SmallestWidthDp / 360f, 0.8f));
-
-// 4. Programmable factor: return the factor that multiplies every value
-public static readonly ScalingStrategy Product = CustomScaleStrategy.Create(screen =>
+public static class AppStrategies
 {
-    var width = screen.WidthDp;
-    return Math.Clamp(width / 360f, 0.85f, 1.80f);
-});
-var card = 16.Cdp(Product);    // 16 × factor
+    // 1. Formula: the result is the final value (Base = the value you pass, e.g. 16)
+    public static readonly ScalingStrategy Hud = ScalingStrategy.Formula(s => s.Base * s.Pow(s.Sw / 360f, 0.8f));
+    public static readonly ScalingStrategy Card = ScalingStrategy.Formula(s => s.Tablet ? s.Base * 1.2f : s.Base * s.Ratio);
+
+    // 2. Factor: the result multiplies every value
+    public static readonly ScalingStrategy Product = CustomScaleStrategy.Create(s => s.Clamp(s.Width / 360f, 0.85f, 1.80f));
+    public static readonly ScalingStrategy Living = CustomScaleStrategy.Create(s => s.Tv ? s.Height / 540f : s.Ratio);
+}
+
+var padding = 16.Cdp(AppStrategies.Product);   // 16 × factor
+var score = 18.Csp(AppStrategies.Hud);          // text follows the user font scale
 ```
+
+Declare each strategy once (for example as a `static readonly` field), then use it anywhere. `CustomDimens.Formula(…)` and `CustomDimens.CustomScaleStrategy(…)` are the same factories. Pass `id: "hud"` to give one a name and register it; otherwise it gets a unique `formula#N` / `scale#N` id.
+
+### What you can use inside the lambda
+
+| Name | Meaning |
+|---|---|
+| `Base` | the value you pass (`16` in `16.Cdp(Hud)`), only in `ScalingStrategy.Formula(s => …)` |
+| `Sw` · `Width` · `Height` | smallest width · window width · window height (dp) |
+| `ShortSide` · `LongSide` · `Diagonal` · `Perimeter` · `AspectRatio` | other window measures |
+| `Ratio` | `Sw / 300`, the ratio `Sdp` uses (`Base * Ratio` is the same as `Sdp`) |
+| `Phone` `Tablet` `Desktop` `Tv` `Watch` `Car` `Vr` · `Landscape` `Portrait` `MultiWindow` | `bool` |
+| `Density` · `FontScale` · `Device` · `Screen` | screen density · user font scale · `DeviceClass` · the whole `ScreenSnapshot` |
+| `Pow` `Sqrt` `Ln` `Log10` `Exp` `Abs` `Round` `Min` `Max` `Clamp` `Lerp` `Smoothstep` | math on `float`, no cast needed |
+
+Anything else from C# or your own code also works (`switch`, `Math.Clamp`, your helpers). Strategies must be pure: they must not read mutable state, because results are memoized per window.
 
 | Form | You return | Cost per value | JSON |
 |---|---|---|---|
-| `16.Cdp("…")` / `ScalingStrategy.Formula("…")` | the final value (`base` = input) | one multiply when shaped `base * (…)`, otherwise cached | yes |
-| `CustomDimens.Formula((b, screen) => …)` | the final value | cached per value and window | no |
-| `CustomScaleStrategy.Create(screen => …)` (or `CustomDimens.CustomScaleStrategy(…)`) | the **factor** (any C#: `if`, `switch`, helpers, `Math.Clamp`…) | one multiply (the lambda runs once per window) | no |
+| `CustomScaleStrategy.Create(s => …)` | the **factor** | one multiply (runs once per window) | no |
+| `ScalingStrategy.Formula(s => …)` | the final value | cached per value and window | no |
+| `ScalingStrategy.Formula("…")` / `16.Cdp("…")` | the final value, as text | one multiply when shaped `base * (…)`, otherwise cached | yes |
 
-In the lambdas, `screen` is a `ScreenSnapshot`: `WidthDp`, `HeightDp`, `SmallestWidthDp`, `MinDp`, `MaxDp`, `AspectRatio`, `Density`, `FontScale`, `IsLandscape`, `IsMultiWindow`, `Device` (`DeviceClass.Phone`, `Tablet`, `Tv`…). Lambdas must be pure (they must not read mutable state), because results are memoized per window. A non-finite factor throws when the window resolves; the code forms get unique `formula#N` / `scale#N` ids unless you pass `id:` (which also registers them).
+### Text formulas (for JSON and remote config)
+
+When the formula has to live outside the code, in a JSON file, a remote config or an A/B test, write the same thing as text. It uses the same names in camelCase (`base`, `sw`, `tablet`…; flags are 1/0):
+
+```csharp
+var hud = ScalingStrategy.Formula("base * pow(sw / 360, 0.8)");
+var padding = 16.Cdp("base * (tablet ? 0.9 : 1) * clamp(sw / 360, 0.85, 1.6)");   // inline
+```
 
 Every helper takes the formula text: `Cdp` (dp), `CdpPx` (px), `Csp` (sp units), `CspDp` / `CspPx` (final text size), on `int` and `float`, with or without an explicit `IAppDimensContext`. `ScalingStrategies.Formula("…")` and `CustomDimens.Formula("…")` return the same shared strategy.
 
-| You write | Means |
-|---|---|
-| `base` | the value you pass (`16` in `16.Cdp(…)`) |
-| `sw` · `width` · `height` | smallest width · window width · window height (dp) |
-| `shortSide` · `longSide` · `diagonal` · `aspectRatio` | other window measures |
-| `ratio` | `sw / 300`, the ratio `Sdp` uses (so `base * ratio` = `Sdp`) |
-| `phone` `tablet` `desktop` `tv` `watch` `car` `vr` · `landscape` `portrait` `multiWindow` | 1 when true, 0 when false |
-| `density` · `fontScale` | screen density · user font scale |
+Text is checked when the strategy is created: an unknown name fails right away with its position and the list of valid names (e.g. `unknown variable 'sww' (allowed: aspectRatio, base, …)`). The same text works in the strategies JSON (`{"id": "hud", "formula": "base * pow(sw / 360, 0.8)"}`) and gives the same numbers on every AppDimens platform. Operators and functions are listed in [Free-form formulas](#free-form-formulas-no-limits-from-the-built-in-curves).
 
-You can use `+ - * / ^`, `cond ? a : b`, `min` `max` `clamp` `pow` `sqrt` `log` `round` `lerp` `smoothstep`, and more (see [Free-form formulas](#free-form-formulas-no-limits-from-the-built-in-curves)). Typos fail right away with the position, for example `unknown variable 'sww'`.
+**Sharing.** Without an id, `ScalingStrategy.Formula("…")` returns one shared, unregistered strategy per formula text (id `formula:<text>`; up to 256 texts are kept, more still work but are built per call). With an id, `ScalingStrategy.Formula("…", id: "hud")` creates a new strategy and registers it (`register: false` to opt out).
 
-**Fast path.** When the formula has the shape `base * (…)` and the `(…)` part does not read `base`, it costs one multiply per value: the `(…)` part is computed once per window and the shared cache is skipped. Any other shape also works and is cached per value and window. `base * sw / 360` is evaluated as written, `(base * sw) / 360`. Write `base * (sw / 360)` for the fast path.
+**Fast path.** A text formula shaped `base * (…)`, where the `(…)` part does not read `base`, costs one multiply per value, because the `(…)` part is computed once per window and the shared cache is skipped. `base * sw / 360` is evaluated as written, `(base * sw) / 360`, so write `base * (sw / 360)` to get the fast path. In code, prefer `CustomScaleStrategy.Create(s => …)` for the same effect.
 
-**Sharing.** Without an id, `ScalingStrategy.Formula("…")` returns one shared, unregistered strategy per formula text (id `formula:<text>`; up to 256 texts are kept, more still work but are built per call). With an id, `ScalingStrategy.Formula("…", id: "hud")` creates a new strategy and registers it (`register: false` to opt out). The code form gets a unique `formula#N` id unless you pass one.
-
-The same text works in the strategies JSON (`{"id": "hud", "formula": "base * pow(sw / 360, 0.8)"}`) and gives the same numbers on every AppDimens platform. If you need more structure (rules per device, factor bounds, font-scale policy), use the full configuration below.
+For rules per device, factor bounds or a font-scale policy, use the full configuration below.
 
 ## What it does
 
@@ -276,6 +285,6 @@ The pure .NET `AppDimens.Net.Custom` package works on Android as well. The Kotli
 
 ## Português (resumo)
 
-Forma mais simples: escreva a fórmula. `base` é o valor passado e o resultado é o valor escalado: `16.Cdp("base * pow(sw / 360, 0.8)")`, `ScalingStrategy.Formula("…")` (compartilhada por texto) ou `CustomDimens.Formula((b, screen) => …)` (código, não serializa). Fator programável: `CustomScaleStrategy.Create(screen => Math.Clamp(screen.WidthDp / 360f, 0.85f, 1.8f))` roda uma vez por janela. Fórmulas no formato `base * (…)` ficam no caminho rápido (uma multiplicação por valor).
+Forma mais simples: uma linha de C# tipado, com autocomplete e os mesmos nomes da linguagem em texto: `CustomScaleStrategy.Create(s => s.Clamp(s.Width / 360f, 0.85f, 1.8f))` (fator, roda uma vez por janela) ou `ScalingStrategy.Formula(s => s.Base * s.Pow(s.Sw / 360f, 0.8f))` (valor final; `Base` = valor passado). Em texto, para JSON/config remota: `ScalingStrategy.Formula("base * pow(sw / 360, 0.8)")` ou `16.Cdp("…")`; fórmulas no formato `base * (…)` ficam no caminho rápido.
 
 Estratégias de escala próprias: frame de referência, eixo, curva (ou **fórmula livre em texto**, `ScalingCurve.Expression("…")` / `b.SetFormula("…")`), limites, política de fonte e regras por dispositivo/tela, em C# ou JSON (mesmo formato em todas as plataformas AppDimens). Use `16.Cdp(brand)`, `14.Csp(brand)`, `ScalingStrategies.Default` ou `CustomDimens.Use(brand)`. Estratégias só de fator custam uma multiplicação; as dependentes do valor usam o `DimenCache`.
