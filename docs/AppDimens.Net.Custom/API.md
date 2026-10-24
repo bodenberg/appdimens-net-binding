@@ -12,13 +12,15 @@ Guide: [README.md](README.md).
 
 | Type | Members |
 |---|---|
-| `ScalingStrategy` | `Define(id, Action<ScalingStrategyBuilder>, register = true)`, ctor `(id, ScalingConfig)`, `Id`, `Config`, `CacheId`, `IsValueDependent`, `Resolve(ScreenSnapshot)`, `Resolve(token, Func<ScreenSnapshot>)`, `Factor`, `Scale`, `Explain`, `Extend(id, …)`, `WithAxis(axis)`, `ToJson()` |
-| `ScalingStrategies` | `Default`, `Register`, `Get`, `Require`, `Ids`, `Unregister`, `LoadJson`, `ExportJson`, `ResetForTesting`, `MaxCacheId` |
+| `ScalingStrategy` | `Define(id, Action<ScalingStrategyBuilder>, register = true)`, `Formula(string formula, id?, register?)` (shared per text without an id), `Formula(ScalingFormula, id?, register?)` (code, `formula#N`), ctor `(id, ScalingConfig)`, `Id`, `Config`, `CacheId`, `IsValueDependent`, `Resolve(ScreenSnapshot)`, `Resolve(token, Func<ScreenSnapshot>)`, `Factor`, `Scale`, `Explain`, `Extend(id, …)`, `WithAxis(axis)`, `ToJson()` |
+| `ScalingFormula` / `ScreenFactor` | delegates `(float baseValue, ScreenSnapshot screen) => float` (final value) / `(ScreenSnapshot screen) => float` (factor) |
+| `CustomScaleStrategy` | `Create(ScreenFactor, id?, register?)`: programmable factor as a code curve (screen-only, once per window, `scale#N`) |
+| `ScalingStrategies` | `Default`, `Register`, `Get`, `Require`, `Ids`, `Unregister`, `LoadJson`, `ExportJson`, `Formula(text)` (shared, bounded at 256 texts), `ResetForTesting`, `MaxCacheId` |
 | `ScalingStrategyBuilder` / `ScalingPatchBuilder` | `Axis`, `Curve`, `Multiplier`, `FontScale`, `IgnoreMultiWindow`, `SetReference`, `Clamp`, `ClampValue`, `EnableAspectRatio`, `Transform`, `SetFormula`, `Multiply`, `FollowFontScale`, `IgnoreFontScale`, `ClampFontScale`; root only: `On(…)`, `OnScreen(…)`, `Landscape`, `Portrait`, `MultiWindow`, `LargeScreens` |
 | `ScalingConfig` | immutable: `Reference`, `Axis`, `Curve`, `Multiplier`, `MinFactor`, `MaxFactor`, `MinValue`, `MaxValue`, `AspectRatio`, `Sensitivity`, `FontScale`, `IgnoreMultiWindow`, `Transform`, `Formula`, `Rules`, `IsValueDependent`, `Validate`, `Apply(patch)`, `With…` |
 | `ScalingCurve` | `Linear`, `Power(e)`, `Logarithmic(k)`, `Interpolated(t)`, `Constant(f)`, `Breakpoints(...)`, `Expression(source)`, `Custom(CurveFunction)` |
 | `ScalingExpression` | `Parse(source, allowed?)`, `Evaluate(Func<string, double>)`, `Variables(...)`, `Source`, `ScreenVariables`, `CurveVariables`, `FormulaVariables` |
-| `Formula` | `new Formula(source)`, `Expression`, `AsTransform()` |
+| `Formula` | `new Formula(source)`, `Expression`, `IsProportional` (`base * E` with screen-only `E`: one multiply, no per-value cache), `AsTransform()` |
 | `FontScalePolicy` | `Follow`, `Ignore`, `Clamp(max)`, `Effective(systemFontScale)` |
 | `ScreenCondition`, `ScalingPatch`, `ScalingRule` | rule model (`ScalingRule.On(devices, patch, name)`) |
 | `ScreenSnapshot`, `ReferenceScreen`, `Breakpoint` | inputs |
@@ -32,8 +34,8 @@ Guide: [README.md](README.md).
 
 | Type | Members |
 |---|---|
-| `CustomDimens` | `Current`, `Use(strategy)` (`IDisposable`, async-flow scoped), `DeviceClassResolver`, `DefaultDeviceClass(ctx)`, `ToScreenSnapshot(this DimenMetrics, DeviceClass)`, `ScreenSnapshot(this IAppDimensContext)`, `Resolve(this ScalingStrategy, IAppDimensContext)`, `CacheKey(this ScalingStrategy, base, valueType)` |
-| `CustomExtensions` | `Cdp`, `CdpPx`, `Csp` (sp units), `CspDp`, `CspPx` on `int` / `float` / `double` with optional strategy and/or `IAppDimensContext`; `Dp`, `Sp`, `Px`, `CurrentFactor`, `ExplainCurrent` on `ScalingStrategy`; `LoadFile(path)` |
+| `CustomDimens` | `Formula(text, id?, register?)`, `Formula(ScalingFormula, id?, register?)`, `CustomScaleStrategy(ScreenFactor, id?, register?)`, `Current`, `Use(strategy)` (`IDisposable`, async-flow scoped), `DeviceClassResolver`, `DefaultDeviceClass(ctx)`, `ToScreenSnapshot(this DimenMetrics, DeviceClass)`, `ScreenSnapshot(this IAppDimensContext)`, `Resolve(this ScalingStrategy, IAppDimensContext)`, `CacheKey(this ScalingStrategy, base, valueType)` |
+| `CustomExtensions` | `Cdp`, `CdpPx`, `Csp` (sp units), `CspDp`, `CspPx` on `int` / `float` / `double` with optional strategy and/or `IAppDimensContext`; every one also takes a formula string (`16f.Cdp("base * pow(sw / 360, 0.8)")`, `14.CspPx("…", ctx)`); `Dp`, `Sp`, `Px`, `CurrentFactor`, `ExplainCurrent` on `ScalingStrategy`; `LoadFile(path)` |
 
 ## Core additions (`AppDimens.Net`)
 

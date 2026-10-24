@@ -28,6 +28,28 @@ public static class CustomDimens
         return new Restore(previous);
     }
 
+    /// <summary>
+    /// Strategy whose value is the text <paramref name="formula"/> — the formula <b>is</b> the value:
+    /// <c>16.Cdp(CustomDimens.Formula("base * pow(sw / 360, 0.8)"))</c>. Shared per text when no
+    /// <paramref name="id"/> is given; see <see cref="ScalingStrategy.Formula(string, string?, bool?)"/>.
+    /// </summary>
+    public static ScalingStrategy Formula(string formula, string? id = null, bool? register = null) =>
+        ScalingStrategy.Formula(formula, id, register);
+
+    /// <summary>
+    /// Strategy from a code formula, <c>(base, screen) =&gt; dp</c> (not JSON-serializable);
+    /// see <see cref="ScalingStrategy.Formula(ScalingFormula, string?, bool?)"/>.
+    /// </summary>
+    public static ScalingStrategy Formula(ScalingFormula formula, string? id = null, bool? register = null) =>
+        ScalingStrategy.Formula(formula, id, register);
+
+    /// <summary>
+    /// Strategy from a programmable factor, <c>screen =&gt; factor</c> (runs once per window, then one multiply
+    /// per value); see <see cref="global::AppDimens.Net.Custom.CustomScaleStrategy.Create"/>.
+    /// </summary>
+    public static ScalingStrategy CustomScaleStrategy(ScreenFactor factor, string? id = null, bool? register = null) =>
+        global::AppDimens.Net.Custom.CustomScaleStrategy.Create(factor, id, register);
+
     /// <summary>Default device class: UI mode first, then desktop operating systems, then size.</summary>
     public static DeviceClass DefaultDeviceClass(IAppDimensContext context)
     {
@@ -156,6 +178,48 @@ public static class CustomExtensions
         CustomDimens.Cached(strategy, v, ctx, DimenCache.ValueType.SpPxWithScale, r => r.ScaleSpDp(v) * r.Screen.Density);
     public static float CspPx(this int v, ScalingStrategy strategy) => v.CspPx(strategy, AppDimensAmbient.Require());
     public static float CspPx(this int v) => v.CspPx(CustomDimens.Current, AppDimensAmbient.Require());
+
+    // ── inline formulas: the formula *is* the value (shared per text; base * (…) is the fast path) ──
+    // PT fórmulas inline: a fórmula *é* o valor (compartilhada por texto; base * (…) é o caminho rápido)
+
+    /// <summary><c>16f.Cdp("base * pow(sw / 360, 0.8)")</c> → dp. See <see cref="ScalingStrategies.Formula"/>.</summary>
+    public static float Cdp(this float v, string formula, IAppDimensContext ctx) => v.Cdp(ScalingStrategies.Formula(formula), ctx);
+    public static float Cdp(this float v, string formula) => v.Cdp(ScalingStrategies.Formula(formula));
+    public static float Cdp(this int v, string formula, IAppDimensContext ctx) => ((float)v).Cdp(formula, ctx);
+    public static float Cdp(this int v, string formula) => ((float)v).Cdp(formula);
+    public static float Cdp(this double v, string formula) => ((float)v).Cdp(formula);
+
+    /// <summary><c>16.CdpPx("base * (sw / 360)")</c> → px.</summary>
+    public static float CdpPx(this float v, string formula, IAppDimensContext ctx) => v.CdpPx(ScalingStrategies.Formula(formula), ctx);
+    public static float CdpPx(this float v, string formula) => v.CdpPx(formula, AppDimensAmbient.Require());
+    public static float CdpPx(this int v, string formula, IAppDimensContext ctx) => ((float)v).CdpPx(formula, ctx);
+    public static float CdpPx(this int v, string formula) => ((float)v).CdpPx(formula, AppDimensAmbient.Require());
+
+    /// <summary><c>14.Csp("base * min(sw / 360, 1.3)")</c> → sp units (font-scale policy pre-compensated).</summary>
+    public static float Csp(this float v, string formula, IAppDimensContext ctx) => v.Csp(ScalingStrategies.Formula(formula), ctx);
+    public static float Csp(this float v, string formula) => v.Csp(formula, AppDimensAmbient.Require());
+    public static float Csp(this int v, string formula, IAppDimensContext ctx) => ((float)v).Csp(formula, ctx);
+    public static float Csp(this int v, string formula) => ((float)v).Csp(formula, AppDimensAmbient.Require());
+
+    /// <summary><c>14.CspDp("…")</c> → final text size in dp (font scale applied).</summary>
+    public static float CspDp(this float v, string formula, IAppDimensContext ctx)
+    {
+        var strategy = ScalingStrategies.Formula(formula);
+        return CustomDimens.Cached(strategy, v, ctx, DimenCache.ValueType.SpNoScale, r => r.ScaleSpDp(v));
+    }
+    public static float CspDp(this float v, string formula) => v.CspDp(formula, AppDimensAmbient.Require());
+    public static float CspDp(this int v, string formula, IAppDimensContext ctx) => ((float)v).CspDp(formula, ctx);
+    public static float CspDp(this int v, string formula) => ((float)v).CspDp(formula, AppDimensAmbient.Require());
+
+    /// <summary><c>14.CspPx("…")</c> → text size in px (font scale applied).</summary>
+    public static float CspPx(this float v, string formula, IAppDimensContext ctx)
+    {
+        var strategy = ScalingStrategies.Formula(formula);
+        return CustomDimens.Cached(strategy, v, ctx, DimenCache.ValueType.SpPxWithScale, r => r.ScaleSpDp(v) * r.Screen.Density);
+    }
+    public static float CspPx(this float v, string formula) => v.CspPx(formula, AppDimensAmbient.Require());
+    public static float CspPx(this int v, string formula, IAppDimensContext ctx) => ((float)v).CspPx(formula, ctx);
+    public static float CspPx(this int v, string formula) => ((float)v).CspPx(formula, AppDimensAmbient.Require());
 
     // ── strategy-first facilitators ──
     public static float Dp(this ScalingStrategy s, float value) => value.Cdp(s);

@@ -21,7 +21,15 @@ namespace AppDimens.Net.Custom
         {
             Screen = screen; Config = config; Factor = factor; AppliedRules = appliedRules;
             AxisDp = axisDp; ReferenceDp = referenceDp; CurveFactor = curveFactor; AspectRatioMultiplier = aspectRatioMultiplier;
+            var coefficient = config.Formula?.Expression.BaseCoefficient;
+            _formulaCoefficient = coefficient == null ? double.NaN : coefficient.Evaluate(ScalingExpression.Variables(
+                screen, referenceDp > 0f ? axisDp / referenceDp : 1f, axisDp, referenceDp, config.Reference));
         }
+
+        // E of a proportional formula (base * E), evaluated once for this window; NaN when the formula (if
+        // any) needs the value. base * E then costs one multiply, like a curve.
+        // PT E de uma fórmula proporcional, calculado uma vez por janela; NaN caso contrário.
+        private readonly double _formulaCoefficient;
 
         public ScreenSnapshot Screen { get; }
         /// <summary>Effective config after the matching rules.</summary>
@@ -48,7 +56,10 @@ namespace AppDimens.Net.Custom
                 if (max.HasValue && magnitude > max.Value) magnitude = max.Value;
                 output = output < 0f ? -magnitude : magnitude;
             }
-            if (Config.Formula != null) output = Config.Formula.Evaluate(this, baseValue, output);
+            if (Config.Formula != null)
+                output = Config.Formula.IsProportional
+                    ? (float)(baseValue * _formulaCoefficient) // bit-identical to evaluating base * E per value
+                    : Config.Formula.Evaluate(this, baseValue, output);
             else if (Config.Transform != null) output = Config.Transform(baseValue, output, Screen);
             return output;
         }
@@ -82,6 +93,8 @@ namespace AppDimens.Net.Custom
                 sb.Append(" clamp[").Append(Config.MinFactor.HasValue ? Fmt(Config.MinFactor.Value) : "-").Append(", ")
                   .Append(Config.MaxFactor.HasValue ? Fmt(Config.MaxFactor.Value) : "-").Append(']');
             sb.Append(" => factor ").Append(Fmt(Factor));
+            if (Config.Formula != null) sb.Append(" then ").Append(Config.Formula);
+            else if (Config.Transform != null) sb.Append(" then transform");
             if (AppliedRules.Count > 0) sb.Append(" rules=[").Append(string.Join(", ", AppliedRules)).Append(']');
             return sb.ToString();
         }
@@ -142,6 +155,49 @@ namespace AppDimens.Net.Custom
             configure(builder);
             var s = new ScalingStrategy(id, builder.Build());
             return register ? ScalingStrategies.Register(s) : s;
+        }
+
+        /// <summary>
+        /// One-liner strategy from a text formula — the formula <b>is</b> the final value:
+        /// <code>
+        /// var hud = ScalingStrategy.Formula("base * pow(sw / 360, 0.8)");
+        /// 16.Cdp(hud);    // or straight: 16.Cdp("base * pow(sw / 360, 0.8)")
+        /// </code>
+        /// Variables: <c>base</c> (the value you pass, e.g. 16), <c>sw</c>, <c>width</c>, <c>height</c>, <c>shortSide</c>,
+        /// <c>longSide</c>, <c>diagonal</c>, <c>aspectRatio</c>, <c>density</c>, <c>fontScale</c>, the device flags
+        /// (<c>tablet</c>, <c>tv</c>, <c>landscape</c>, …) and <c>ratio</c> (<c>sw / 300</c>, the ratio <c>Sdp</c> uses).
+        /// Same language and same numbers on every AppDimens platform (see <see cref="ScalingExpression"/>).
+        /// <para>Writing it as <c>base * (…)</c> keeps it on the one-multiply fast path (the <c>(…)</c> part is computed
+        /// once per window). Any other shape still works and is cached per value and window.</para>
+        /// <para>Without an <paramref name="id"/> the strategy is shared per formula text (calling this again with the
+        /// same text returns the same instance) and is not registered. With an id, a new strategy is created and
+        /// registered unless <paramref name="register"/> is <c>false</c>. Parse errors throw right away.</para>
+        /// <para>PT Estratégia em uma linha a partir de uma fórmula em texto — a fórmula <b>é</b> o valor final.
+        /// Escrever como <c>base * (…)</c> mantém o caminho rápido (uma multiplicação).</para>
+        /// </summary>
+        public static ScalingStrategy Formula(string formula, string? id = null, bool? register = null)
+        {
+            var doRegister = register ?? id != null;
+            if (id == null && !doRegister) return FormulaStrategies.Get(formula);
+            var s = new ScalingStrategy(id ?? FormulaStrategies.IdOf(formula), new ScalingConfig(formula: new Formula(formula)));
+            return doRegister ? ScalingStrategies.Register(s) : s;
+        }
+
+        /// <summary>
+        /// One-liner strategy from a code formula — full C#, no limits:
+        /// <code>
+        /// var hud = ScalingStrategy.Formula((b, screen) => b * MathF.Pow(screen.SmallestWidthDp / 360f, 0.8f));
+        /// </code>
+        /// Must be pure (results are cached per value and window). Not JSON-serializable (use the text form for
+        /// that). Without an <paramref name="id"/> a unique <c>formula#N</c> id is generated and it is not registered.
+        /// <para>PT Estratégia em uma linha a partir de uma fórmula em código. Não serializa em JSON.</para>
+        /// </summary>
+        public static ScalingStrategy Formula(ScalingFormula formula, string? id = null, bool? register = null)
+        {
+            if (formula == null) throw new ArgumentNullException(nameof(formula));
+            var s = new ScalingStrategy(id ?? FormulaStrategies.NextLambdaId(),
+                new ScalingConfig(transform: (baseValue, _, screen) => formula(baseValue, screen)));
+            return register ?? id != null ? ScalingStrategies.Register(s) : s;
         }
 
         /// <summary>Resolves (memoized) for <paramref name="screen"/>.</summary>
@@ -324,16 +380,96 @@ namespace AppDimens.Net.Custom
         public static string ExportJson() =>
             ScalingStrategyJson.EncodeDocument(ById.Values.OrderBy(s => s.Id, StringComparer.Ordinal).ToArray(), _default?.Id);
 
+        /// <summary>
+        /// Strategy whose value is the text <paramref name="formula"/> (<c>"base * pow(sw / 360, 0.8)"</c>), shared
+        /// per text and not registered. Same as <see cref="ScalingStrategy.Formula(string, string?, bool?)"/> without an id.
+        /// <para>PT Estratégia cujo valor é a fórmula em texto, compartilhada por texto.</para>
+        /// </summary>
+        public static ScalingStrategy Formula(string formula) => FormulaStrategies.Get(formula);
+
         internal static ScalingStrategy Derived(string id, Func<ScalingStrategy> create) =>
             DerivedCache.GetOrAdd(id, _ => create());
 
-        /// <summary>Test helper: clears registrations and the default.</summary>
+        /// <summary>Test helper: clears registrations, shared formula strategies and the default.</summary>
         public static void ResetForTesting()
         {
             ById.Clear();
             DerivedCache.Clear();
+            FormulaStrategies.Clear();
             _default = null;
         }
+    }
+
+    /// <summary>
+    /// The simplest custom strategy, in code: how a value becomes its scaled value,
+    /// <c>(base, screen) =&gt; dp</c>. Must be pure. See <see cref="ScalingStrategy.Formula(ScalingFormula, string?, bool?)"/>.
+    /// <para>PT A estratégia custom mais simples, em código: como o valor vira o valor escalado.</para>
+    /// </summary>
+    public delegate float ScalingFormula(float baseValue, ScreenSnapshot screen);
+
+    /// <summary>
+    /// Programmable factor: you get the window and return the <b>factor</b> that multiplies every value.
+    /// Plain C#, so any function, branch or helper of your code works. Must be pure.
+    /// <para>PT Fator programável: você recebe a janela e devolve o <b>fator</b> que multiplica todo valor.</para>
+    /// </summary>
+    public delegate float ScreenFactor(ScreenSnapshot screen);
+
+    /// <summary>
+    /// Strategy from a programmable factor — the most flexible form, written in code:
+    /// <code>
+    /// var product = CustomScaleStrategy.Create(screen => Math.Clamp(screen.WidthDp / 360f, 0.85f, 1.80f));
+    /// 16.Cdp(product);   // 16 × factor
+    /// </code>
+    /// The factor depends only on the window, so it runs once per window and every value then costs one
+    /// multiply (no per-value cache). A non-finite factor throws when the window resolves. Without an id a
+    /// unique <c>scale#N</c> id is generated and it is not registered. Not JSON-serializable: for JSON, use a
+    /// text curve (<c>ScalingCurve.Expression("clamp(width / 360, 0.85, 1.8)")</c>).
+    /// <para>PT Estratégia a partir de um fator programável. Roda uma vez por janela; cada valor custa uma multiplicação.</para>
+    /// </summary>
+    public static class CustomScaleStrategy
+    {
+        private static int _ids;
+
+        public static ScalingStrategy Create(ScreenFactor factor, string? id = null, bool? register = null)
+        {
+            if (factor == null) throw new ArgumentNullException(nameof(factor));
+            var curve = ScalingCurve.Custom((_, screen) => factor(screen));
+            var s = new ScalingStrategy(id ?? "scale#" + Interlocked.Increment(ref _ids).ToString(CultureInfo.InvariantCulture),
+                new ScalingConfig(curve: curve));
+            return register ?? id != null ? ScalingStrategies.Register(s) : s;
+        }
+    }
+
+    /// <summary>Shared strategies for inline formulas (<c>16.Cdp("…")</c>), keyed by the formula text.</summary>
+    internal static class FormulaStrategies
+    {
+        /// <summary>Bound for distinct texts; past it, strategies are built per call (still correct).</summary>
+        public const int Max = 256;
+
+        private static readonly ConcurrentDictionary<string, ScalingStrategy> ByText = new ConcurrentDictionary<string, ScalingStrategy>(StringComparer.Ordinal);
+        private static readonly object Gate = new object();
+        private static int _lambdaIds;
+
+        public static ScalingStrategy Get(string formula)
+        {
+            if (formula == null) throw new ArgumentNullException(nameof(formula));
+            if (ByText.TryGetValue(formula, out var cached)) return cached;
+            var s = new ScalingStrategy(IdOf(formula), new ScalingConfig(formula: new Formula(formula)));
+            lock (Gate) // misses only: keeps the bound exact under contention
+            {
+                if (ByText.TryGetValue(formula, out cached)) return cached;
+                if (ByText.Count >= Max) return s;
+                ByText[formula] = s;
+                return s;
+            }
+        }
+
+        public static string IdOf(string formula) => "formula:" + formula;
+
+        public static string NextLambdaId() =>
+            "formula#" + Interlocked.Increment(ref _lambdaIds).ToString(CultureInfo.InvariantCulture);
+
+        public static void Clear() => ByText.Clear();
     }
 
     /// <summary>

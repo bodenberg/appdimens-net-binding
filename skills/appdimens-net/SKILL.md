@@ -113,6 +113,8 @@ float pad = 16.Cdp(brand); float title = 20.Csp(brand);   // dp / sp units; CdpP
 ScalingStrategies.LoadJson(json);                         // or ScalingStrategies.Default = brand / CustomDimens.Use(brand)
 ```
 
+Simplest form, for when the user just wants to write the math: `16.Cdp("base * pow(sw / 360, 0.8)")`, `var hud = ScalingStrategy.Formula("…")` or `CustomDimens.Formula((b, screen) => …)` (code, not JSON). A programmable **factor** in plain C#: `CustomScaleStrategy.Create(screen => Math.Clamp(screen.WidthDp / 360f, 0.85f, 1.8f))`, which runs once per window (one multiply per value). Text formulas shaped `base * (…)` (with no `base` inside the parentheses) stay on the one-multiply fast path; other shapes are cached per value.
+
 Start from a built-in or preset (`BuiltInStrategies.Power.Extend("x", …)`, `CustomPresets.TabletFriendly`/`TvSafe`/`Wearable`/`GameHud`). Formula variables: `sw width height shortSide longSide diagonal perimeter aspectRatio density fontScale`, flags `landscape portrait multiWindow phone tablet desktop tv watch car vr`, `ratio axis ref` (curves) and `base scaled factor` (formulas). Verify with `brand.ExplainCurrent()`. On desktop OSes the device class is `desktop` unless `CustomDimens.DeviceClassResolver` says otherwise. Guide: docs/AppDimens.Net.Custom/README.md.
 
 Special packages:

@@ -468,7 +468,9 @@ namespace AppDimens.Net.Custom
         /// <summary>Per-value text formula (JSON-serializable). Setting it replaces <see cref="Transform"/>.</summary>
         public Formula? Formula { get; }
 
-        internal bool IsValueDependent => MinValue.HasValue || MaxValue.HasValue || Transform != null || Formula != null;
+        // A proportional text formula (base * E) is screen-only; any other formula or transform is not.
+        internal bool IsValueDependent =>
+            MinValue.HasValue || MaxValue.HasValue || Transform != null || (Formula != null && !Formula.IsProportional);
     }
 
     /// <summary>
@@ -552,7 +554,7 @@ namespace AppDimens.Net.Custom
 
         /// <summary>True when some path depends on the value itself (not only on the screen).</summary>
         public bool IsValueDependent =>
-            MinValue.HasValue || MaxValue.HasValue || Transform != null || Formula != null ||
+            MinValue.HasValue || MaxValue.HasValue || Transform != null || (Formula != null && !Formula.IsProportional) ||
             Rules.Any(r => r.Patch.IsValueDependent);
 
         /// <summary>

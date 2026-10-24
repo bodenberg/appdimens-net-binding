@@ -15,9 +15,21 @@ dotnet add package AppDimens.Net.Custom
 
 ## Use
 
+The simplest way is to write the formula. `base` is the value you pass, and the result is the scaled value:
+
 ```csharp
 using AppDimens.Net.Custom;
 
+float padding = 16.Cdp("base * pow(sw / 360, 0.8)");                                  // inline
+var hud = ScalingStrategy.Formula("base * (tablet ? 0.9 : 1) * clamp(sw / 360, 0.85, 1.6)");
+float score = 18.Csp(hud);
+var fancy = CustomDimens.Formula((b, screen) => b * MathF.Pow(screen.SmallestWidthDp / 360f, 0.8f));  // plain C#
+var product = CustomScaleStrategy.Create(screen => Math.Clamp(screen.WidthDp / 360f, 0.85f, 1.8f));  // programmable factor
+```
+
+For rules per device, factor bounds or a font-scale policy, use the full configuration:
+
+```csharp
 var brand = ScalingStrategy.Define("brand", b =>
 {
     b.SetReference(360, 640);

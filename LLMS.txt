@@ -27,7 +27,7 @@
 - Estratégias: `.Auto` (ASdp), `.Density` (DSdp), `.Diagonal` (DGSdp), `.Fill` (FLSdp), `.Fit` (`FitScaledDp()` → pixels),
   `.Fluid` (FSdp), `.Interpolated` (ISdp), `.Logarithmic` (LOGSdp), `.Percent` (PSdp + `SpaceWDp`), `.Perimeter` (PRSdp),
   `.Power` (PWSdp), `.Resize` (`AutoResizeTextPx` → sp, `AutoResizeSquarePx` → dp), `.Units` (mm/cm/inch),
-  `.Custom` (não lançado: estratégias próprias `16.Cdp(brand)` / `14.Csp(brand)`, builder `ScalingStrategy.Define`, JSON multiplataforma,
+  `.Custom` (não lançado: fórmula direta `16.Cdp("base * pow(sw / 360, 0.8)")` / `ScalingStrategy.Formula("…")`, fator programável `CustomScaleStrategy.Create(screen => …)`, estratégias próprias `16.Cdp(brand)` / `14.Csp(brand)`, builder `ScalingStrategy.Define`, JSON multiplataforma,
   regras por dispositivo/tela, fórmulas livres `ScalingCurve.Expression("…")` / `SetFormula("…")`, presets).
 - Integrações: `.Maui` (`AppDimensMaui.AttachWindow`), `.Wpf` (`AppDimensWpf.Initialize`, `{ad:Sdp 16}` ao vivo, 41 funções),
   `.WinForms` (`AppDimensWinForms.Initialize/Apply`, `DimenPx`), `.WinUI` (`AppDimensWinUI.Initialize`, `{ad:Sdp Value=16}`).

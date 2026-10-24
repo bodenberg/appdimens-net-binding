@@ -44,11 +44,41 @@ namespace AppDimens.Net.Custom
         public string Source { get; }
 
         /// <summary>Parses <paramref name="source"/>; every identifier must be in <paramref name="allowed"/>.</summary>
-        public static ScalingExpression Parse(string source, IReadOnlyCollection<string>? allowed = null) =>
-            new ScalingExpression(source, new Parser(source ?? throw new ArgumentNullException(nameof(source)), allowed ?? FormulaVariables).ParseAll());
+        public static ScalingExpression Parse(string source, IReadOnlyCollection<string>? allowed = null)
+        {
+            var root = new Parser(source ?? throw new ArgumentNullException(nameof(source)), allowed ?? FormulaVariables).ParseAll();
+            var expression = new ScalingExpression(source, root);
+            expression.BaseCoefficient = Coefficient(source, root);
+            return expression;
+        }
 
         /// <summary>Evaluates with a name → value lookup.</summary>
         public double Evaluate(Func<string, double> vars) => _root.Eval(vars);
+
+        /// <summary>
+        /// Non-null when the whole formula is <c>base</c>, <c>base * E</c> or <c>E * base</c> and <c>E</c> reads no
+        /// value variable (<c>base</c>, <c>scaled</c>, <c>factor</c>). Such a formula is a pure screen factor, so
+        /// strategies evaluate <c>E</c> once per window and skip the per-value cache (same result, bit for bit).
+        /// <para>PT Não nulo quando a fórmula é <c>base</c>, <c>base * E</c> ou <c>E * base</c> e <c>E</c> não lê
+        /// variáveis de valor: vira um fator só da tela, calculado uma vez por janela (mesmo resultado).</para>
+        /// </summary>
+        internal ScalingExpression? BaseCoefficient { get; private set; }
+
+        private static readonly HashSet<string> ValueVariables = new HashSet<string> { "base", "scaled", "factor" };
+
+        private static ScalingExpression? Coefficient(string source, Node root)
+        {
+            Node? coefficient = null;
+            if (IsBase(root)) coefficient = new Num(1);
+            else if (root is Binary b && b.Op == "*")
+            {
+                if (IsBase(b.A) && !b.B.Reads(ValueVariables)) coefficient = b.B;
+                else if (IsBase(b.B) && !b.A.Reads(ValueVariables)) coefficient = b.A;
+            }
+            return coefficient == null ? null : new ScalingExpression(source, coefficient);
+        }
+
+        private static bool IsBase(Node n) => n is Var v && v.Name == "base";
 
         /// <summary>Variable lookup for <paramref name="screen"/> plus the strategy context.</summary>
         public static Func<string, double> Variables(ScreenSnapshot screen, float ratio, float axisDp, float refDp,
@@ -100,6 +130,9 @@ namespace AppDimens.Net.Custom
         private abstract class Node
         {
             public abstract double Eval(Func<string, double> v);
+
+            /// <summary>True when this subtree reads any of <paramref name="names"/>.</summary>
+            public abstract bool Reads(ISet<string> names);
         }
 
         private sealed class Num : Node
@@ -107,13 +140,16 @@ namespace AppDimens.Net.Custom
             private readonly double _value;
             public Num(double value) { _value = value; }
             public override double Eval(Func<string, double> v) => _value;
+            public override bool Reads(ISet<string> names) => false;
         }
 
         private sealed class Var : Node
         {
             private readonly string _name;
             public Var(string name) { _name = name; }
+            public string Name => _name;
             public override double Eval(Func<string, double> v) => v(_name);
+            public override bool Reads(ISet<string> names) => names.Contains(_name);
         }
 
         private sealed class Unary : Node
@@ -121,6 +157,7 @@ namespace AppDimens.Net.Custom
             private readonly char _op;
             private readonly Node _a;
             public Unary(char op, Node a) { _op = op; _a = a; }
+            public override bool Reads(ISet<string> names) => _a.Reads(names);
 
             public override double Eval(Func<string, double> v)
             {
@@ -134,6 +171,10 @@ namespace AppDimens.Net.Custom
             private readonly string _op;
             private readonly Node _a, _b;
             public Binary(string op, Node a, Node b) { _op = op; _a = a; _b = b; }
+            public string Op => _op;
+            public Node A => _a;
+            public Node B => _b;
+            public override bool Reads(ISet<string> names) => _a.Reads(names) || _b.Reads(names);
 
             public override double Eval(Func<string, double> v)
             {
@@ -164,6 +205,7 @@ namespace AppDimens.Net.Custom
             private readonly Node _c, _a, _b;
             public Ternary(Node c, Node a, Node b) { _c = c; _a = a; _b = b; }
             public override double Eval(Func<string, double> v) => _c.Eval(v) != 0 ? _a.Eval(v) : _b.Eval(v);
+            public override bool Reads(ISet<string> names) => _c.Reads(names) || _a.Reads(names) || _b.Reads(names);
         }
 
         private sealed class Call : Node
@@ -171,6 +213,7 @@ namespace AppDimens.Net.Custom
             private readonly string _name;
             private readonly Node[] _args;
             public Call(string name, Node[] args) { _name = name; _args = args; }
+            public override bool Reads(ISet<string> names) => _args.Any(a => a.Reads(names));
 
             public override double Eval(Func<string, double> v)
             {
@@ -406,6 +449,12 @@ namespace AppDimens.Net.Custom
     {
         public Formula(string source) { Expression = ScalingExpression.Parse(source, ScalingExpression.FormulaVariables); }
         public ScalingExpression Expression { get; }
+
+        /// <summary>
+        /// True when the formula is <c>base × (screen-only E)</c>: the strategy evaluates <c>E</c> once per window
+        /// and needs no per-value cache. PT Verdadeiro quando a fórmula é <c>base × E</c> (E só da tela).
+        /// </summary>
+        public bool IsProportional => Expression.BaseCoefficient != null;
 
         /// <summary>The formula as a <see cref="ValueTransform"/> (curve-context variables read as NaN).</summary>
         public ValueTransform AsTransform() => Transform;
