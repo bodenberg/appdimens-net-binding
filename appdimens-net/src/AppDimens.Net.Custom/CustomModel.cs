@@ -545,6 +545,7 @@ namespace AppDimens.Net.Custom
         public bool AspectRatio { get; }
         public float? Sensitivity { get; }
         public FontScalePolicy FontScale { get; }
+        /// <summary>In multi-window the value stays unscaled (only value bounds apply); formulas and transforms are skipped.</summary>
         public bool IgnoreMultiWindow { get; }
         /// <summary>Code-only per-value hook (not serializable).</summary>
         public ValueTransform? Transform { get; }

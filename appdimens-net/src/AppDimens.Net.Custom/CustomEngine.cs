@@ -17,8 +17,9 @@ namespace AppDimens.Net.Custom
     public sealed class ResolvedScaling
     {
         internal ResolvedScaling(ScreenSnapshot screen, ScalingConfig config, float factor, IReadOnlyList<string> appliedRules,
-            float axisDp, float referenceDp, float curveFactor, float aspectRatioMultiplier)
+            float axisDp, float referenceDp, float curveFactor, float aspectRatioMultiplier, bool multiWindowIgnored = false)
         {
+            MultiWindowIgnored = multiWindowIgnored;
             Screen = screen; Config = config; Factor = factor; AppliedRules = appliedRules;
             AxisDp = axisDp; ReferenceDp = referenceDp; CurveFactor = curveFactor; AspectRatioMultiplier = aspectRatioMultiplier;
             var coefficient = config.Formula?.Expression.BaseCoefficient;
@@ -41,6 +42,11 @@ namespace AppDimens.Net.Custom
         public float ReferenceDp { get; }
         public float CurveFactor { get; }
         public float AspectRatioMultiplier { get; }
+        /// <summary>
+        /// True when <see cref="ScalingConfig.IgnoreMultiWindow"/> applied: in multi-window the value stays
+        /// unscaled (only value bounds apply); formulas and transforms are skipped.
+        /// </summary>
+        public bool MultiWindowIgnored { get; }
 
         /// <summary>Scales <paramref name="baseValue"/> (dp) → dp.</summary>
         public float Scale(float baseValue)
@@ -56,6 +62,7 @@ namespace AppDimens.Net.Custom
                 if (max.HasValue && magnitude > max.Value) magnitude = max.Value;
                 output = output < 0f ? -magnitude : magnitude;
             }
+            if (MultiWindowIgnored) return output;
             if (Config.Formula != null)
                 output = Config.Formula.IsProportional
                     ? (float)(baseValue * _formulaCoefficient) // bit-identical to evaluating base * E per value
@@ -274,7 +281,7 @@ namespace AppDimens.Net.Custom
             var axisDp = screen.Read(cfg.Axis);
             var refDp = cfg.Reference.Read(cfg.Axis);
             if (cfg.IgnoreMultiWindow && screen.IsMultiWindow)
-                return new ResolvedScaling(screen, cfg, 1f, applied, axisDp, refDp, 1f, 1f);
+                return new ResolvedScaling(screen, cfg, 1f, applied, axisDp, refDp, 1f, 1f, multiWindowIgnored: true);
             var ratio = refDp > 0f ? axisDp / refDp : 1f;
             var curveFactor = Curve(cfg.Curve, ratio, axisDp, refDp, cfg.Reference, screen);
             var factor = curveFactor * cfg.Multiplier;

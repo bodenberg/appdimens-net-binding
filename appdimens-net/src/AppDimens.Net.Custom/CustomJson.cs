@@ -248,7 +248,9 @@ namespace AppDimens.Net.Custom
         {
             (float?, float?) Range(string key)
             {
-                if (!(Get(obj, key) is Dictionary<string, object?> r)) return (null, null);
+                var value = Get(obj, key);
+                if (value == null) return (null, null);
+                if (!(value is Dictionary<string, object?> r)) throw new ArgumentException($"{path}.{key} must be an object with min/max");
                 return (Num(Get(r, "min"), $"{path}.{key}.min"), Num(Get(r, "max"), $"{path}.{key}.max"));
             }
 

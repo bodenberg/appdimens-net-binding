@@ -214,6 +214,22 @@ public class CustomStrategyTests : IDisposable
         Assert.Throws<InvalidOperationException>(() => bad.Resolve(Phone));
     }
 
+    [Fact]
+    public void Json_RangeConditionMustBeObject()
+    {
+        var ex = Assert.Throws<ArgumentException>(() => ScalingStrategyJson.Decode(
+            """{"strategies":[{"id":"x","rules":[{"when":{"width":600},"set":{"multiplier":2}}]}]}"""));
+        Assert.Contains("must be an object", ex.Message);
+    }
+
+    [Fact]
+    public void IgnoreMultiWindow_SkipsFormula()
+    {
+        var s = ScalingStrategy.Define("mwf", b => { b.IgnoreMultiWindow = true; b.SetFormula("base * 3"); }, register: false);
+        Assert.Equal(16f, s.Resolve(new ScreenSnapshot(411, 891, isMultiWindow: true)).Scale(16));
+        Assert.Equal(48f, s.Resolve(new ScreenSnapshot(411, 891)).Scale(16));
+    }
+
     // ── cross-platform fixture ──────────────────────────────────────────────
 
     [Fact]
