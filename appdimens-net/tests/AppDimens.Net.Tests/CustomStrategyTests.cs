@@ -230,6 +230,36 @@ public class CustomStrategyTests : IDisposable
         Assert.Equal(48f, s.Resolve(new ScreenSnapshot(411, 891)).Scale(16));
     }
 
+    [Fact]
+    public void ReviewFixes_MalformedJsonFailsLoudly_AndLoadIsAtomic()
+    {
+        Assert.Contains("when must be an object", Assert.Throws<ArgumentException>(() => ScalingStrategies.LoadJson(
+            """{"strategies":[{"id":"x","rules":[{"when":"tablet","set":{"multiplier":2}}]}]}""")).Message);
+        Assert.Contains("must be a boolean", Assert.Throws<ArgumentException>(() => ScalingStrategies.LoadJson(
+            """{"strategies":[{"id":"x","ignoreMultiWindow":"true"}]}""")).Message);
+        Assert.Contains("clamp must be an object", Assert.Throws<ArgumentException>(() => ScalingStrategies.LoadJson(
+            """{"strategies":[{"id":"x","clamp":1.5}]}""")).Message);
+        Assert.Contains("maxValue must be >= 0", Assert.Throws<ArgumentException>(() =>
+            ScalingStrategy.Define("neg", b => b.ClampValue(max: -1), register: false)).Message);
+        Assert.Contains("missing", Assert.Throws<KeyNotFoundException>(() => ScalingStrategies.LoadJson(
+            """{"default":"missing","strategies":[{"id":"atomic","multiplier":2}]}""")).Message);
+        Assert.Null(ScalingStrategies.Get("atomic")); // nothing registered by the failed load
+
+        // WithAxis is cached per source instance, not per id.
+        var a = ScalingStrategy.Define("same", b => b.Multiply(1f), register: false);
+        var b2 = ScalingStrategy.Define("same", b => b.Multiply(2f), register: false);
+        Assert.Equal(1f, a.WithAxis(ScalingAxis.Height).Config.Multiplier);
+        Assert.Equal(2f, b2.WithAxis(ScalingAxis.Height).Config.Multiplier);
+        Assert.Same(b2.WithAxis(ScalingAxis.Height), b2.WithAxis(ScalingAxis.Height));
+
+        // A sensitivity-only rule patch survives export + import.
+        var s = ScalingStrategies.LoadJson(
+            """{"strategies":[{"id":"sens","aspectRatio":true,"rules":[{"when":{"device":"tablet"},"set":{"sensitivity":0.01}}]}]}""")["sens"];
+        var again = ScalingStrategies.LoadJson("{\"strategies\":[" + s.ToJson() + "]}")["sens"];
+        Assert.Equal(s.Factor(Tablet), again.Factor(Tablet));
+        Assert.NotEqual(ScalingStrategy.Define("noSens", b => b.EnableAspectRatio(), register: false).Factor(Tablet), s.Factor(Tablet));
+    }
+
     // ── cross-platform fixture ──────────────────────────────────────────────
 
     [Fact]

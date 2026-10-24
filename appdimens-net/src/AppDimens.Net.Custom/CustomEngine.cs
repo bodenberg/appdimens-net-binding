@@ -250,9 +250,18 @@ namespace AppDimens.Net.Custom
         public ScalingStrategy WithAxis(ScalingAxis axis)
         {
             if (axis == Config.Axis) return this;
+            // Cached per source instance, so a re-registered id never returns another config's variant.
+            // A race only builds an equivalent variant twice.
+            var slot = (int)axis;
+            var cached = Volatile.Read(ref _axisVariants[slot]);
+            if (cached != null) return cached;
             var derivedId = Id + "@" + axis.JsonName();
-            return ScalingStrategies.Derived(derivedId, () => new ScalingStrategy(derivedId, Config.With(axis: axis)));
+            var variant = new ScalingStrategy(derivedId, Config.With(axis: axis));
+            Volatile.Write(ref _axisVariants[slot], variant);
+            return variant;
         }
+
+        private readonly ScalingStrategy?[] _axisVariants = new ScalingStrategy?[Enum.GetValues(typeof(ScalingAxis)).Length];
 
         /// <summary>JSON for this strategy (throws for lambda curves/transforms).</summary>
         public string ToJson() => ScalingStrategyJson.Encode(this);
@@ -339,7 +348,6 @@ namespace AppDimens.Net.Custom
         public const int MaxCacheId = 0xFFFF;
 
         private static readonly ConcurrentDictionary<string, ScalingStrategy> ById = new ConcurrentDictionary<string, ScalingStrategy>();
-        private static readonly ConcurrentDictionary<string, ScalingStrategy> DerivedCache = new ConcurrentDictionary<string, ScalingStrategy>();
         private static int _cacheIds = -1;
         private static volatile ScalingStrategy? _default;
 
@@ -387,9 +395,12 @@ namespace AppDimens.Net.Custom
         public static IReadOnlyDictionary<string, ScalingStrategy> LoadJson(string json)
         {
             var doc = ScalingStrategyJson.Decode(json);
-            foreach (var s in doc.Strategies.Values) Register(s);
+            // Resolve the default first, so a bad document registers nothing.
+            ScalingStrategy? defaultStrategy = null;
             if (doc.DefaultId != null)
-                Default = doc.Strategies.TryGetValue(doc.DefaultId, out var d) ? d : Require(doc.DefaultId);
+                defaultStrategy = doc.Strategies.TryGetValue(doc.DefaultId, out var d) ? d : Require(doc.DefaultId);
+            foreach (var s in doc.Strategies.Values) Register(s);
+            if (defaultStrategy != null) Default = defaultStrategy;
             return doc.Strategies;
         }
 
@@ -404,14 +415,10 @@ namespace AppDimens.Net.Custom
         /// </summary>
         public static ScalingStrategy Formula(string formula) => FormulaStrategies.Get(formula);
 
-        internal static ScalingStrategy Derived(string id, Func<ScalingStrategy> create) =>
-            DerivedCache.GetOrAdd(id, _ => create());
-
         /// <summary>Test helper: clears registrations, shared formula strategies and the default.</summary>
         public static void ResetForTesting()
         {
             ById.Clear();
-            DerivedCache.Clear();
             FormulaStrategies.Clear();
             _default = null;
         }

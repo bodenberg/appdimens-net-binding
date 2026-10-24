@@ -568,6 +568,9 @@ namespace AppDimens.Net.Custom
                 throw new ArgumentException("minFactor must be <= maxFactor");
             if (MinValue.HasValue && MaxValue.HasValue && MinValue.Value > MaxValue.Value)
                 throw new ArgumentException("minValue must be <= maxValue");
+            // Value bounds clamp the magnitude, so they must not be negative.
+            if (MinValue.HasValue && MinValue.Value < 0f) throw new ArgumentException("minValue must be >= 0");
+            if (MaxValue.HasValue && MaxValue.Value < 0f) throw new ArgumentException("maxValue must be >= 0");
             foreach (var r in Rules) Apply(r.Patch).WithRules(Array.Empty<ScalingRule>()).Validate();
             return this;
         }

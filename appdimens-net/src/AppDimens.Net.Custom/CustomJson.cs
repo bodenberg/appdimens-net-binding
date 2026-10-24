@@ -145,8 +145,8 @@ namespace AppDimens.Net.Custom
                 {
                     var rp = $"{path}.rules[{i}]";
                     var rule = list[i] as Dictionary<string, object?> ?? throw new ArgumentException($"{rp} must be an object");
-                    var when = Get(rule, "when") as Dictionary<string, object?> ?? new Dictionary<string, object?>();
-                    var set = Get(rule, "set") as Dictionary<string, object?> ?? throw new ArgumentException($"{rp}.set is required");
+                    var when = Obj(Get(rule, "when"), rp + ".when") ?? new Dictionary<string, object?>();
+                    var set = Obj(Get(rule, "set"), rp + ".set") ?? throw new ArgumentException($"{rp}.set is required");
                     rules.Add(new ScalingRule(ReadCondition(when, rp + ".when"), ReadPatch(set, rp + ".set"), Get(rule, "name") as string));
                 }
             }
@@ -155,8 +155,8 @@ namespace AppDimens.Net.Custom
 
         private static ScalingPatch ReadPatch(Dictionary<string, object?> obj, string path)
         {
-            var clamp = Get(obj, "clamp") as Dictionary<string, object?>;
-            var valueClamp = Get(obj, "valueClamp") as Dictionary<string, object?>;
+            var clamp = Obj(Get(obj, "clamp"), path + ".clamp");
+            var valueClamp = Obj(Get(obj, "valueClamp"), path + ".valueClamp");
             var ar = Get(obj, "aspectRatio");
             ReferenceScreen? reference = null;
             if (Get(obj, "reference") is Dictionary<string, object?> r)
@@ -167,7 +167,7 @@ namespace AppDimens.Net.Custom
             {
                 case null: aspect = null; break;
                 case bool b: aspect = b; break;
-                case Dictionary<string, object?> m: aspect = Get(m, "enabled") as bool? ?? true; break;
+                case Dictionary<string, object?> m: aspect = Bool(Get(m, "enabled"), path + ".aspectRatio.enabled") ?? true; break;
                 default: throw new ArgumentException($"{path}.aspectRatio must be a boolean or object");
             }
             var sensitivity = ar is Dictionary<string, object?> arMap
@@ -195,7 +195,7 @@ namespace AppDimens.Net.Custom
                 aspectRatio: aspect,
                 sensitivity: sensitivity,
                 fontScale: fontScale == null ? null : ReadFontScale(fontScale, path + ".fontScale"),
-                ignoreMultiWindow: Get(obj, "ignoreMultiWindow") as bool?,
+                ignoreMultiWindow: Bool(Get(obj, "ignoreMultiWindow"), path + ".ignoreMultiWindow"),
                 formula: formula);
         }
 
@@ -277,8 +277,24 @@ namespace AppDimens.Net.Custom
             var h = Range("height");
             var ar = Range("aspectRatio");
             return new ScreenCondition(devices, landscape, sw.Item1, sw.Item2, w.Item1, w.Item2, h.Item1, h.Item2,
-                ar.Item1, ar.Item2, Get(obj, "multiWindow") as bool?);
+                ar.Item1, ar.Item2, Bool(Get(obj, "multiWindow"), path + ".multiWindow"));
         }
+
+        /// <summary>Present values must be objects; null/absent → null.</summary>
+        private static Dictionary<string, object?>? Obj(object? v, string path) => v switch
+        {
+            null => null,
+            Dictionary<string, object?> m => m,
+            _ => throw new ArgumentException($"{path} must be an object"),
+        };
+
+        /// <summary>Present values must be booleans; null/absent → null.</summary>
+        private static bool? Bool(object? v, string path) => v switch
+        {
+            null => null,
+            bool b => b,
+            _ => throw new ArgumentException($"{path} must be a boolean"),
+        };
 
         private static float? Num(object? v, string path)
         {
@@ -342,6 +358,8 @@ namespace AppDimens.Net.Custom
                 if (p.Sensitivity.HasValue) sb.Append(",\"sensitivity\":").Append(N(p.Sensitivity.Value));
                 sb.Append('}');
             }
+            else if (!p.AspectRatio.HasValue && p.Sensitivity.HasValue)
+                sb.Append(",\"sensitivity\":").Append(N(p.Sensitivity.Value)); // sensitivity-only patch
             if (p.FontScale != null && (!defaults || p.FontScale != FontScalePolicy.Follow))
             {
                 sb.Append(",\"fontScale\":");
