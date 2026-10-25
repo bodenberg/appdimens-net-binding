@@ -1,11 +1,11 @@
 # AppDimens.Net.Custom
 
-**Your own scaling strategy — reference frame, axis, curve or free-form formula, limits, font-scale policy and rules per device/screen — in C# or JSON (same format on every AppDimens platform).**
+**Your own scaling strategy: write the math in one line of typed C#, or configure a full strategy (reference frame, axis, curve or free-form formula, limits, font-scale policy, rules per device and screen) that loads from the same JSON on every AppDimens platform with the same numbers.**
 
-Part of **AppDimens for .NET** · requires `AppDimens.Net` (installed automatically).
+Part of **AppDimens for .NET** · requires `AppDimens.Net` (installed automatically) · included in `AppDimens.Net.Sdk`.
 Works with .NET MAUI, WPF, Windows Forms, WinUI 3 and plain .NET (`net8.0` / `net9.0` / `net10.0`).
 
-📖 **Complete guide:** [AppDimens.Net.Custom documentation](https://github.com/bodenberg/appdimens-net-binding/blob/main/docs/AppDimens.Net.Custom/README.md) · **API reference:** [API.md](https://github.com/bodenberg/appdimens-net-binding/blob/main/docs/AppDimens.Net.Custom/API.md)
+📖 **Documentation:** [custom-strategy guides](https://github.com/bodenberg/appdimens-net-binding/blob/main/docs/AppDimens.Net.Custom/README.md) (quick start, code formulas, text formulas, configuration, JSON, API reference, performance, cookbook, troubleshooting) · **Types:** [API.md](https://github.com/bodenberg/appdimens-net-binding/blob/main/docs/AppDimens.Net.Custom/API.md)
 
 ## Install
 
@@ -15,30 +15,39 @@ dotnet add package AppDimens.Net.Custom
 
 ## Use
 
-The simplest way is to write the math as ordinary C# on one line. IntelliSense completes `s.Base`, `s.Sw`, `s.Width`, `s.Tablet`, `s.Pow`, `s.Clamp`…, and typos fail at compile time:
+Initialize your UI framework as usual (`AppDimensMaui.AttachWindow(window)`, `AppDimensWpf.Initialize(this)`, `AppDimensWinForms.Initialize(this)`, `AppDimensWinUI.Initialize(window)` or `AppDimensHost.Activate(scope)`), then:
 
 ```csharp
 using AppDimens.Net.Custom;
 
 var product = CustomScaleStrategy.Create(s => s.Clamp(s.Width / 360f, 0.85f, 1.80f));   // factor × every value
 var hud = ScalingStrategy.Formula(s => s.Base * s.Pow(s.Sw / 360f, 0.8f));             // final value (Base = 16 in 16.Cdp)
-float padding = 16.Cdp(product);
-float score = 18.Csp(hud);
-var remote = ScalingStrategy.Formula("base * pow(sw / 360, 0.8)");                      // same thing as text, for JSON / remote config
+float padding = 16.Cdp(product);   // dp
+float score = 18.Csp(hud);         // sp units
 ```
 
-For rules per device, factor bounds or a font-scale policy, use the full configuration:
+The same as text, for JSON and remote config: `ScalingStrategy.Formula("base * pow(sw / 360, 0.8)")` or `16.Cdp("…")`. Rules per device, bounds and a font-scale policy: `ScalingStrategy.Define("brand", b => { … })`. Shared documents: `ScalingStrategies.LoadJson(json)`.
 
-```csharp
-var brand = ScalingStrategy.Define("brand", b =>
-{
-    b.SetReference(360, 640);
-    b.Curve = ScalingCurve.Power(0.8f);                       // or ScalingCurve.Expression("pow(ratio, 0.8)")
-    b.Clamp(0.85f, 1.6f);
-    b.On(DeviceClass.Tv, r => r.Curve = ScalingCurve.Expression("height / 540"));
-});
+## Files
 
-float padding = 16.Cdp(brand);      // dp
-float title   = 20.Csp(brand);      // sp units (font-scale policy applied)
-ScalingStrategies.LoadJson(File.ReadAllText("appdimens-strategies.json"));
+| File | Contents |
+|---|---|
+| `CustomEngine.cs` | `ScalingStrategy` (`Define`, `Formula`, `Extend`, `WithAxis`), `CustomScaleStrategy`, `ScreenScope` / `FormulaScope`, `ScalingStrategies` registry, `ResolvedScaling`, `BuiltInStrategies`, `CustomPresets` |
+| `CustomModel.cs` | `ScalingConfig`, `ScalingCurve`, `ScreenSnapshot`, `ReferenceScreen`, `ScreenCondition`, `ScalingRule`, `FontScalePolicy`, `ScalingAxis`, `DeviceClass` |
+| `CustomBuilder.cs` | `ScalingStrategyBuilder` / `ScalingPatchBuilder` (the `b` and `r` of `Define`) |
+| `CustomExpression.cs` | the text formula language (`ScalingExpression`, `Formula`, `ExpressionCurve`) |
+| `CustomJson.cs` | the cross-platform JSON codec (`ScalingStrategyJson`, `MiniJson`) |
+| `CustomDimens.cs` | .NET bridge: `CustomDimens` (`Use`, `DeviceClassResolver`, `IAppDimensContext` snapshots) and the `Cdp` / `CdpPx` / `Csp` / `CspDp` / `CspPx` extensions |
+
+## Tests
+
+```bash
+cd appdimens-net
+dotnet test tests/AppDimens.Net.Tests --filter "FullyQualifiedName~CustomStrategyTests"
 ```
+
+They include the cross-platform fixture (`tests/AppDimens.Net.Tests/Fixtures/custom-strategy-fixture.json`, 540 cases) that every AppDimens platform must reproduce.
+
+## Português
+
+Estratégias de escala próprias: fator em uma linha (`CustomScaleStrategy.Create(s => …)`), valor final (`ScalingStrategy.Formula(s => …)` ou em texto `ScalingStrategy.Formula("…")` / `16.Cdp("…")`), configuração completa (`ScalingStrategy.Define`) e JSON multiplataforma (`ScalingStrategies.LoadJson`). Guias completos no link acima.

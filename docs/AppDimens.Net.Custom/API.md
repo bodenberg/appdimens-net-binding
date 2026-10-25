@@ -1,6 +1,6 @@
 # AppDimens.Net.Custom — API reference
 
-Guide: [README.md](README.md).
+Guides: [overview](README.md) · [quick start](quick-start.md) · [usage reference](api-reference.md) (overload matrix, registry, debug helpers). This page lists the public types.
 
 ## Assemblies
 

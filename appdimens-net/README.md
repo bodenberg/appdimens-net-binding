@@ -53,7 +53,7 @@ float title   = 22.Ssp();   // text size
 | `AppDimens.Net.Density` | Density (`DSdp`) |
 | `AppDimens.Net.Resize` | Auto-resize math (`AutoResizeTextPx`, `AutoResizeSquarePx`) |
 | `AppDimens.Net.Units` | Physical units (mm / cm / inch) |
-| `AppDimens.Net.Custom` *(unreleased)* | Custom strategies (`Cdp` / `Csp`): builder + JSON, rules per device/screen, free-form formulas, presets |
+| `AppDimens.Net.Custom` *(unreleased)* | Custom strategies (`Cdp` / `Csp`): builder + JSON, rules per device/screen, free-form formulas, presets ([guides](https://github.com/bodenberg/appdimens-net-binding/blob/main/docs/AppDimens.Net.Custom/README.md)) |
 | `AppDimens.Net.Sdk` | Meta-package: core + every strategy |
 | `AppDimens.Net.Maui` | .NET MAUI: window scope, `{appdimens:Sdp Value=16}` markup, converters |
 | `AppDimens.Net.Wpf` | WPF: window scope, **live** `{ad:Sdp 16}` markup (scaled/fluid/percent), converters |

@@ -85,7 +85,7 @@ scope.Update(widthDp: 1280, heightDp: 720, density: 1.5);   // from your resize 
 - Units (AppDimens.Net.Code.Units): `DimenPhysicalUnits.ToDpFromMm/Cm/Inch`, `ToPxFrom*`, `ToSpFrom*`, `RadiusFromDiameter(d, UnitType)`.
 - Custom (AppDimens.Net.Custom, unreleased): simplest form: one line of typed C#, e.g. `CustomScaleStrategy.Create(s => s.Clamp(s.Width / 360f, 0.85f, 1.8f))` (factor) or `ScalingStrategy.Formula(s => s.Base * s.Pow(s.Sw / 360f, 0.8f))` (final value); as text for JSON: `ScalingStrategy.Formula("base * pow(sw / 360, 0.8)")`, `16.Cdp("…")`. Full form: `ScalingStrategy.Define(id, b => { b.SetReference(360, 640); b.Curve = ScalingCurve.Power(0.8f); b.Clamp(0.85f, 1.6f); b.On(DeviceClass.Tablet, r => …); })`,
   free-form `ScalingCurve.Expression("pow(ratio, 0.8) * (tablet ? 0.9 : 1)")` and `b.SetFormula("base * pow(sw / 360, 0.7) + 2")`, JSON `ScalingStrategies.LoadJson` (cross-platform format),
-  `16.Cdp(brand)` (dp), `CdpPx`, `14.Csp(brand)` (sp units), `CspDp`, `CspPx`, `ScalingStrategies.Default`, `CustomDimens.Use(brand)`, presets `CustomPresets.*`. Guide: docs/AppDimens.Net.Custom/README.md.
+  `16.Cdp(brand)` (dp), `CdpPx`, `14.Csp(brand)` (sp units), `CspDp`, `CspPx`, `ScalingStrategies.Default`, `CustomDimens.Use(brand)`, presets `CustomPresets.*`. Guides: docs/AppDimens.Net.Custom/ (README, quick-start, code-formulas, text-formulas, configuration, json, api-reference, performance, cookbook, troubleshooting); agent reference: skills/appdimens-net/custom.md.
 
 ## UI integrations
 
