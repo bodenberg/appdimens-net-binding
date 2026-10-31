@@ -25,7 +25,8 @@ Signature: `static ScalingStrategy Define(string id, Action<ScalingStrategyBuild
 ```
 ratio  = axis(window) / axis(reference)
 factor = clamp( curve(ratio) × multiplier × AR , minFactor, maxFactor )
-value  = formula( clampValue( base × factor , minValue, maxValue ) )
+scaled = clampValue( base × factor , minValue, maxValue )   // the configured result
+value  = formula ? formula(base, scaled, factor) : scaled   // a formula replaces the result (it gets the original base)
 ```
 
 ## Fields
