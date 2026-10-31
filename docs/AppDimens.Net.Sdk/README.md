@@ -34,6 +34,7 @@ dotnet add package AppDimens.Net.Maui      # or .Wpf / .WinForms / .WinUI
 | `AppDimens.Net.Power` | `AppDimens.Net.Code.Power` | `PWSdp` | [guide](../AppDimens.Net.Power/README.md) |
 | `AppDimens.Net.Resize` | `AppDimens.Net.Code.Resize` | `DimenResize.AutoResizeTextPx` | [guide](../AppDimens.Net.Resize/README.md) |
 | `AppDimens.Net.Units` | `AppDimens.Net.Code.Units` | `DimenPhysicalUnits.ToDpFromMm` | [guide](../AppDimens.Net.Units/README.md) |
+| `AppDimens.Net.Custom` | `AppDimens.Net.Custom` | `Cdp`, `Csp`, `ScalingStrategy.Define` | [guide](../AppDimens.Net.Custom/README.md) |
 
 UI integrations (install separately): [Maui](../AppDimens.Net.Maui/README.md) · [Wpf](../AppDimens.Net.Wpf/README.md) ·
 [WinForms](../AppDimens.Net.WinForms/README.md) · [WinUI](../AppDimens.Net.WinUI/README.md).

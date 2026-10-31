@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net8.0;net9.0;net10.0</TargetFrameworks>
+    <TargetFrameworks Condition="$([MSBuild]::VersionGreaterThanOrEquals('$(NETCoreSdkVersion)', '11.0'))">$(TargetFrameworks);net11.0</TargetFrameworks>
+    <RootNamespace>AppDimens.Net.Custom</RootNamespace>
+    <AssemblyName>AppDimens.Net.Custom</AssemblyName>
+    <PackageId>AppDimens.Net.Custom</PackageId>
+    <Description>AppDimens .NET — custom scaling strategies (Cdp/Csp): builder + JSON configs per device and screen, rules, clamps, free-form formulas and presets.</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AppDimens.Net\AppDimens.Net.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -7,7 +7,7 @@ install, the one-time setup call, the functions and markup, and the common mista
 | Skill | Library set | Packages |
 |-------|-------------|----------|
 | [`appdimens-sdps-net`](appdimens-sdps-net/SKILL.md) | SDPS native (Android SDP parity) for MAUI, WPF, Windows Forms, WinUI 3 | `Bodenberg.AppDimens.Maui.Sdps`, `Bodenberg.AppDimens.Sdps.Wpf` / `.WinForms` / `.WinUI` |
-| [`appdimens-net`](appdimens-net/SKILL.md) | AppDimens.Net — C# port of appdimens-kmp (core, 13 strategies, UI integrations) | `AppDimens.Net`, `AppDimens.Net.Sdk`, `AppDimens.Net.<Strategy>`, `AppDimens.Net.Maui` / `.Wpf` / `.WinForms` / `.WinUI` |
+| [`appdimens-net`](appdimens-net/SKILL.md) | AppDimens.Net — C# port of appdimens-kmp (core, 13 strategies, UI integrations) | `AppDimens.Net`, `AppDimens.Net.Sdk`, `AppDimens.Net.<Strategy>`, `AppDimens.Net.Maui` / `.Wpf` / `.WinForms` / `.WinUI`; custom strategies reference: [`custom.md`](appdimens-net/custom.md) |
 | [`appdimens-android-sdps-ssps`](appdimens-android-sdps-ssps/SKILL.md) | Android bindings with XML `@dimen` resources | `Bodenberg.AppDimens.Sdps`, `Bodenberg.AppDimens.Ssps` |
 | [`appdimens-android-dynamic`](appdimens-android-dynamic/SKILL.md) | Android binding, code-only strategies | `Bodenberg.AppDimens.Dynamic` |
 

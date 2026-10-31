@@ -26,7 +26,9 @@
   `HostDimensScope`/`AppDimensHost` p/ qualquer host, `FakeAppDimensContext`), `AppDimens.Net.Sdk` (meta-pacote).
 - Estratégias: `.Auto` (ASdp), `.Density` (DSdp), `.Diagonal` (DGSdp), `.Fill` (FLSdp), `.Fit` (`FitScaledDp()` → pixels),
   `.Fluid` (FSdp), `.Interpolated` (ISdp), `.Logarithmic` (LOGSdp), `.Percent` (PSdp + `SpaceWDp`), `.Perimeter` (PRSdp),
-  `.Power` (PWSdp), `.Resize` (`AutoResizeTextPx` → sp, `AutoResizeSquarePx` → dp), `.Units` (mm/cm/inch).
+  `.Power` (PWSdp), `.Resize` (`AutoResizeTextPx` → sp, `AutoResizeSquarePx` → dp), `.Units` (mm/cm/inch),
+  `.Custom` (não lançado: fórmula em C# tipado `ScalingStrategy.Formula(s => s.Base * s.Pow(s.Sw / 360f, 0.8f))`, fator `CustomScaleStrategy.Create(s => s.Clamp(s.Width / 360f, 0.85f, 1.8f))`, em texto `16.Cdp("base * pow(sw / 360, 0.8)")`, estratégias próprias `16.Cdp(brand)` / `14.Csp(brand)`, builder `ScalingStrategy.Define`, JSON multiplataforma,
+  regras por dispositivo/tela, fórmulas livres `ScalingCurve.Expression("…")` / `SetFormula("…")`, presets). Guias: docs/AppDimens.Net.Custom/ (quick-start, code-formulas, text-formulas, configuration, json, api-reference, performance, cookbook, troubleshooting); referência p/ agentes: skills/appdimens-net/custom.md.
 - Integrações: `.Maui` (`AppDimensMaui.AttachWindow`), `.Wpf` (`AppDimensWpf.Initialize`, `{ad:Sdp 16}` ao vivo, 41 funções),
   `.WinForms` (`AppDimensWinForms.Initialize/Apply`, `DimenPx`), `.WinUI` (`AppDimensWinUI.Initialize`, `{ad:Sdp Value=16}`).
 
