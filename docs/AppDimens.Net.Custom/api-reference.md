@@ -48,12 +48,12 @@ Overloads that exist (`v` is the receiver; `s` a `ScalingStrategy`; `"f"` a text
 | Method | with `s` | with `s, ctx` | no strategy | with `ctx` | with `"f"` | with `"f", ctx` |
 |---|---|---|---|---|---|---|
 | `Cdp` | `int` `float` `double` | `int` `float` | `int` `float` `double` | `int` `float` | `int` `float` `double` | `int` `float` |
-| `CdpPx` | `int` | `int` `float` | `int` | `int` `float` | `int` `float` | `int` `float` |
-| `Csp` | `int` | `int` `float` | `int` | `int` `float` | `int` `float` | `int` `float` |
-| `CspDp` | `int` | `int` | `int` | — | `int` `float` | `int` `float` |
-| `CspPx` | `int` | `int` | `int` | — | `int` `float` | `int` `float` |
+| `CdpPx` | `int` `float` | `int` `float` | `int` `float` | `int` `float` | `int` `float` | `int` `float` |
+| `Csp` | `int` `float` | `int` `float` | `int` `float` | `int` `float` | `int` `float` | `int` `float` |
+| `CspDp` | `int` `float` | `int` `float` | `int` `float` | — | `int` `float` | `int` `float` |
+| `CspPx` | `int` `float` | `int` `float` | `int` `float` | — | `int` `float` | `int` `float` |
 
-So `16.Cdp(s)`, `16f.Cdp(s)`, `16f.Cdp("…")`, `16f.CdpPx("…")`, `14f.Csp("…")`, `14f.CspDp("…")`, `14f.CspPx("…")` and `16f.CdpPx(s, ctx)` all compile; for a `float` with a strategy and no context, pass the context (`16f.CdpPx(s, AppDimensAmbient.Require())`) or use the strategy-first forms below.
+So `16.Cdp(s)`, `16f.Cdp(s)`, `16f.CdpPx(s)`, `14f.Csp(s)`, `14f.CspDp(s)`, `14f.CspPx(s)` and every text-formula form (`16f.Cdp("…")`, `14f.CspPx("…")`…) compile, with or without a context.
 
 Strategy-first forms and debug helpers:
 

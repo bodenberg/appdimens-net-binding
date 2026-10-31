@@ -42,7 +42,7 @@ Scope names on `s` (PascalCase of the text names): `Base` (formula only) `Sw Wid
 - **Prefer a factor** when the math is `Base × screen-term`: `CustomScaleStrategy`, a curve, or text shaped `base * (…)` all cost one multiply. `base * sw / 360` misses the text fast path; write `base * (sw / 360)`.
 - **Value bounds** (`b.ClampValue`) only for real absolute limits (tap targets, max text); they must be ≥ 0.
 - **Text vs code**: code lambdas cannot be exported to JSON (`ToJson()` throws `InvalidOperationException`); use text when the user mentions JSON, remote config, A/B tests or other platforms.
-- **Units**: `Cdp` dp, `CdpPx` px (WinForms, canvas), `Csp` sp units (toolkit applies font scale), `CspDp` / `CspPx` final text size. Some `float` + strategy overloads need a context (`16f.CdpPx(s, ctx)`); `int` receivers have every overload.
+- **Units**: `Cdp` dp, `CdpPx` px (WinForms, canvas), `Csp` sp units (toolkit applies font scale), `CspDp` / `CspPx` final text size. `int` and `float` receivers have every overload, with or without a context.
 - **Desktop OSes are `desktop`**: a tablet-only rule never fires on Windows/macOS/Linux. Add `DeviceClass.Desktop`, use `OnScreen(minSmallestWidth: 600)`, or set `CustomDimens.DeviceClassResolver`.
 - **Errors**: parse/JSON errors throw `ArgumentException` (with position / JSON path), unknown ids `KeyNotFoundException`, a non-finite factor `InvalidOperationException`. `LoadJson` is atomic.
 

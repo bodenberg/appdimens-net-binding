@@ -41,8 +41,6 @@ The line reads left to right: device class, axis value and reference, the curve 
 
 **Strategies created in a handler leak cache ids.** `CustomScaleStrategy.Create(…)` and `ScalingStrategy.Formula(s => …)` build a new strategy on each call. Declare them once as `static readonly` fields. Inline text formulas (`16.Cdp("…")`) are shared per text and are fine.
 
-**`16f.CdpPx(strategy)` does not compile.** For `float` receivers some strategy overloads need the context: `16f.CdpPx(strategy, ctx)`, or use `16.CdpPx(strategy)` / `strategy.Px(16f)`. The full matrix is in the [API reference](api-reference.md#extensions-customextensions).
-
 **Fonts ignore my strategy.** `Csp` follows the user font scale by default. Use `b.IgnoreFontScale()` for fixed text, or `b.ClampFontScale(max)` to cap it.
 
 **Are the numbers the same on Android / iOS / Flutter / Web?** Yes for everything that can be written as JSON (curves, rules, text formulas): a shared 540-case fixture checks every platform. Code lambdas run your own code, so they match as long as the code does.

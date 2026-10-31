@@ -148,6 +148,8 @@ public static class CustomExtensions
     public static float CdpPx(this float v, ScalingStrategy strategy, IAppDimensContext ctx) =>
         CustomDimens.Cached(strategy, v, ctx, DimenCache.ValueType.Px, r => r.Scale(v) * r.Screen.Density);
     public static float CdpPx(this float v, IAppDimensContext ctx) => v.CdpPx(CustomDimens.Current, ctx);
+    public static float CdpPx(this float v, ScalingStrategy strategy) => v.CdpPx(strategy, AppDimensAmbient.Require());
+    public static float CdpPx(this float v) => v.CdpPx(AppDimensAmbient.Require());
     public static float CdpPx(this int v, ScalingStrategy strategy, IAppDimensContext ctx) => ((float)v).CdpPx(strategy, ctx);
     public static float CdpPx(this int v, IAppDimensContext ctx) => ((float)v).CdpPx(ctx);
     public static float CdpPx(this int v, ScalingStrategy strategy) => ((float)v).CdpPx(strategy, AppDimensAmbient.Require());
@@ -162,22 +164,30 @@ public static class CustomExtensions
     public static float Csp(this float v, ScalingStrategy strategy, IAppDimensContext ctx) =>
         CustomDimens.Cached(strategy, v, ctx, DimenCache.ValueType.SpWithScale, r => r.ScaleSpUnits(v));
     public static float Csp(this float v, IAppDimensContext ctx) => v.Csp(CustomDimens.Current, ctx);
+    public static float Csp(this float v, ScalingStrategy strategy) => v.Csp(strategy, AppDimensAmbient.Require());
+    public static float Csp(this float v) => v.Csp(AppDimensAmbient.Require());
     public static float Csp(this int v, ScalingStrategy strategy, IAppDimensContext ctx) => ((float)v).Csp(strategy, ctx);
     public static float Csp(this int v, IAppDimensContext ctx) => ((float)v).Csp(ctx);
     public static float Csp(this int v, ScalingStrategy strategy) => ((float)v).Csp(strategy, AppDimensAmbient.Require());
     public static float Csp(this int v) => ((float)v).Csp(AppDimensAmbient.Require());
 
     /// <summary>Final text size in dp (policy applied) — for toolkits that do not scale fonts themselves.</summary>
-    public static float CspDp(this int v, ScalingStrategy strategy, IAppDimensContext ctx) =>
+    public static float CspDp(this float v, ScalingStrategy strategy, IAppDimensContext ctx) =>
         CustomDimens.Cached(strategy, v, ctx, DimenCache.ValueType.SpNoScale, r => r.ScaleSpDp(v));
-    public static float CspDp(this int v, ScalingStrategy strategy) => v.CspDp(strategy, AppDimensAmbient.Require());
-    public static float CspDp(this int v) => v.CspDp(CustomDimens.Current, AppDimensAmbient.Require());
+    public static float CspDp(this float v, ScalingStrategy strategy) => v.CspDp(strategy, AppDimensAmbient.Require());
+    public static float CspDp(this float v) => v.CspDp(CustomDimens.Current, AppDimensAmbient.Require());
+    public static float CspDp(this int v, ScalingStrategy strategy, IAppDimensContext ctx) => ((float)v).CspDp(strategy, ctx);
+    public static float CspDp(this int v, ScalingStrategy strategy) => ((float)v).CspDp(strategy);
+    public static float CspDp(this int v) => ((float)v).CspDp();
 
     /// <summary>Text size in pixels (policy applied).</summary>
-    public static float CspPx(this int v, ScalingStrategy strategy, IAppDimensContext ctx) =>
+    public static float CspPx(this float v, ScalingStrategy strategy, IAppDimensContext ctx) =>
         CustomDimens.Cached(strategy, v, ctx, DimenCache.ValueType.SpPxWithScale, r => r.ScaleSpDp(v) * r.Screen.Density);
-    public static float CspPx(this int v, ScalingStrategy strategy) => v.CspPx(strategy, AppDimensAmbient.Require());
-    public static float CspPx(this int v) => v.CspPx(CustomDimens.Current, AppDimensAmbient.Require());
+    public static float CspPx(this float v, ScalingStrategy strategy) => v.CspPx(strategy, AppDimensAmbient.Require());
+    public static float CspPx(this float v) => v.CspPx(CustomDimens.Current, AppDimensAmbient.Require());
+    public static float CspPx(this int v, ScalingStrategy strategy, IAppDimensContext ctx) => ((float)v).CspPx(strategy, ctx);
+    public static float CspPx(this int v, ScalingStrategy strategy) => ((float)v).CspPx(strategy);
+    public static float CspPx(this int v) => ((float)v).CspPx();
 
     // ── inline formulas: the formula *is* the value (shared per text; base * (…) is the fast path) ──
     // PT fórmulas inline: a fórmula *é* o valor (compartilhada por texto; base * (…) é o caminho rápido)
