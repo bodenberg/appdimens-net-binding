@@ -103,3 +103,5 @@ Libs desktop compilam em qualquer SO (`EnableWindowsTargeting`); testes desktop 
 - Este repositório: https://github.com/bodenberg/appdimens-net-binding
 
 Licença: Apache-2.0 © Jean Bodenberg
+
+Family (same tokens and math): appdimens-dynamic (Android), appdimens-sdps/ssps (XML), appdimens-kmp, appdimens-ios, appdimens-flutter, appdimens-react-native, appdimens-web, appdimens-net-binding (.NET), appdimens-qt, appdimens-gtk, appdimens-lvgl, appdimens-roku, appdimens-py, appdimens-games — https://github.com/bodenberg/appdimens · agent skills: https://github.com/bodenberg/appdimens-skills
