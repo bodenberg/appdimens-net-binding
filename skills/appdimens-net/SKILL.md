@@ -97,7 +97,7 @@ Each strategy `X` lives in `AppDimens.Net.Code.X` with `{P}Sdp/{P}Hdp/{P}Wdp`, s
 
 Beginner rule: `Sdp` for layout, `Ssp` for text; switch an over-growing value to `FSdp` or `ASdp`.
 
-**Custom strategies** (`AppDimens.Net.Custom`, unreleased — on `main`): when no built-in passes QA, or one growth law must be shared with other platforms (same JSON format), define your own instead of call-site `if`s:
+**Custom strategies** (`AppDimens.Net.Custom`): when no built-in passes QA, or one growth law must be shared with other platforms (same JSON format), define your own instead of call-site `if`s:
 
 ```csharp
 using AppDimens.Net.Custom;

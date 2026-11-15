@@ -4,7 +4,7 @@
 
 | | |
 |---|---|
-| **NuGet** | `AppDimens.Net.Custom` *(unreleased: on `main`, ships with the next AppDimens.Net release)* · included in `AppDimens.Net.Sdk` |
+| **NuGet** | `AppDimens.Net.Custom` · included in `AppDimens.Net.Sdk` |
 | **Frameworks** | `net8.0`, `net9.0`, `net10.0` (+ `net11.0` with SDK 11); MAUI, WPF, Windows Forms, WinUI 3, any `HostDimensScope` host |
 | **Namespace** | `AppDimens.Net.Custom` |
 | **Type list** | [API.md](API.md) (every public type) · usage reference: [api-reference.md](api-reference.md) |
