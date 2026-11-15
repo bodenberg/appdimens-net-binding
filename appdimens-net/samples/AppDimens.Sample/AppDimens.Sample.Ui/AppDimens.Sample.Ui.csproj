@@ -14,6 +14,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\src\AppDimens.Net.Sdk\AppDimens.Net.Sdk.csproj" />
     <ProjectReference Include="..\..\..\src\AppDimens.Net.Maui\AppDimens.Net.Maui.csproj" />
+    <ProjectReference Include="..\..\..\src\AppDimens.Net.Custom\AppDimens.Net.Custom.csproj" />
   </ItemGroup>
 
 </Project>

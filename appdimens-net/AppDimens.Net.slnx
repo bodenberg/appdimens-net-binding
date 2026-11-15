@@ -10,6 +10,7 @@
   </Folder>
   <Folder Name="/src/">
     <Project Path="src/AppDimens.Net.Auto/AppDimens.Net.Auto.csproj" />
+    <Project Path="src/AppDimens.Net.Custom/AppDimens.Net.Custom.csproj" />
     <Project Path="src/AppDimens.Net.Density/AppDimens.Net.Density.csproj" />
     <Project Path="src/AppDimens.Net.Diagonal/AppDimens.Net.Diagonal.csproj" />
     <Project Path="src/AppDimens.Net.Fill/AppDimens.Net.Fill.csproj" />

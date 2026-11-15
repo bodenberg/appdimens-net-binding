@@ -222,6 +222,7 @@ public class MainPage : ContentPage
         NavRow("Scaled details (suffixes a/i/ia)", () => new ScaledDemoPage());
         NavRow("All strategies table", () => new StrategiesPage());
         NavRow("Interactive resize & physical units", () => new ResizeDemoPage());
+        NavRow("Custom strategies (factor, formula, builder)", () => new CustomStrategyPage());
         NavRow("Builders (ScaledDimension / Fit)", () => new BuildersPage());
         NavRow("Cache & live metrics", () => new CacheInfoPage());
     }
